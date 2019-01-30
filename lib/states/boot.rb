@@ -3,7 +3,7 @@ class Boot < CyberarmEngine::GameState
     @title = Gosu::Font.new(56, name: "Noto Sans Display", bold: true)
     @text  = Gosu::Font.new(18, name: "Noto Sans Thaana", bold: true)
     @name = "I-MIC RTS"
-    @logo = Gosu::Image.new("../../Documents/Inkscape/ruby_clan_logo-i_mic_rts.png")
+    @logo = Gosu::Image.new("assets/logo.png")
 
     @messages = ["Loading", "Compiling Protons", "Launching Warhead", "git push origin --force"]
     @messages_index = 0
