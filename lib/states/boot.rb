@@ -15,7 +15,7 @@ class Boot < CyberarmEngine::GameState
     @background     = Gosu::Color.new(0x007a0d71)
     @background_two = Gosu::Color.new(0x007b6ead)
 
-    @boot_life = 5_000
+    @boot_life = 5#_000
     @boot_started = Gosu.milliseconds
   end
 

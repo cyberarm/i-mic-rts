@@ -14,4 +14,4 @@ class Window < CyberarmEngine::Engine
   end
 end
 
-Window.new(Gosu.screen_width, Gosu.screen_height, false).show
+Window.new(Gosu.screen_width, Gosu.screen_height, true).show
