@@ -1,5 +1,7 @@
 class Boot < CyberarmEngine::GameState
   def setup
+    self.show_cursor = false
+
     @title = Gosu::Font.new(56, name: "Noto Sans Display", bold: true)
     @text  = Gosu::Font.new(18, name: "Noto Sans Thaana", bold: true)
     @name = "I-MIC RTS"
@@ -29,6 +31,10 @@ class Boot < CyberarmEngine::GameState
 
     @background     = Gosu::Color.new(0x007a0d71)
     @background_two = Gosu::Color.new(0x007b6ead)
+
+    $window.width = Gosu.screen_width
+    $window.height = Gosu.screen_height
+    $window.fullscreen = true
   end
 
   def draw

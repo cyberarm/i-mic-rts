@@ -12,9 +12,9 @@ require_relative "lib/states/main_menu"
 class Window < CyberarmEngine::Engine
   def setup
     self.caption = "I-MIC RTS (#{Gosu.language})"
-    push_state(Boot)
+    push_state(MainMenu)
   end
 end
 
-# Window.new(Gosu.screen_width, Gosu.screen_height, true).show
-Window.new(Gosu.screen_width, Gosu.screen_height, false).show
+Window.new(Gosu.screen_width, Gosu.screen_height, true).show
+# Window.new(Gosu.screen_width, Gosu.screen_height, false).show

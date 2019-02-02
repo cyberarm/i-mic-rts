@@ -10,7 +10,7 @@ class MainMenu < CyberarmEngine::GameState
         # background 0xff00aa00
 
         stack do
-          # background 0xffaa0000
+          background 0xffaaeedd
           # fill Gosu::Color::BLACK
           button("Play")
           button("About")
@@ -39,6 +39,8 @@ class MainMenu < CyberarmEngine::GameState
               puts "Logging in... #{@username.value}:#{Base64.encode64(@password.value)}"
             end
             button "Sign Up"
+
+            check_box checked: true
           end
         end
       end
@@ -46,5 +48,6 @@ class MainMenu < CyberarmEngine::GameState
 
     $window.width = @root_container.children.first.width.to_i
     $window.height = @root_container.children.first.height.to_i
+    $window.fullscreen = false
   end
 end
