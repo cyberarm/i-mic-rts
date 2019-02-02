@@ -1,3 +1,5 @@
+require "base64"
+
 begin
   require "cyberarm_engine"
 rescue LoadError
@@ -14,4 +16,5 @@ class Window < CyberarmEngine::Engine
   end
 end
 
-Window.new(Gosu.screen_width, Gosu.screen_height, true).show
+# Window.new(Gosu.screen_width, Gosu.screen_height, true).show
+Window.new(Gosu.screen_width, Gosu.screen_height, false).show

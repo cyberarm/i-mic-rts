@@ -12,11 +12,23 @@ class Boot < CyberarmEngine::GameState
     @last_update = Gosu.milliseconds
     @update_interval = 250
 
+    @switcher = CyberarmEngine::Timer.new(5_000) do
+      push_state(MainMenu)
+    end
+
+    @loader = CyberarmEngine::Timer.new(250) do
+      split = @status.scan(".")
+      if split.size >= 3
+        @messages_index+=1
+        @messages_index = 0 unless @messages_index < @messages.size
+        @status = @messages[@messages_index]
+      else
+        @status = "#{@status}."
+      end
+    end
+
     @background     = Gosu::Color.new(0x007a0d71)
     @background_two = Gosu::Color.new(0x007b6ead)
-
-    @boot_life = 5#_000
-    @boot_started = Gosu.milliseconds
   end
 
   def draw
@@ -52,22 +64,7 @@ class Boot < CyberarmEngine::GameState
     @background.alpha+=1
     @background_two.alpha+=1
 
-    if Gosu.milliseconds > @boot_started + @boot_life
-      push_state(MainMenu)
-    end
-
-    if Gosu.milliseconds > @last_update + @update_interval
-      @last_update = Gosu.milliseconds
-
-
-      split = @status.scan(".")
-      if split.size >= 3
-        @messages_index+=1
-        @messages_index = 0 unless @messages_index < @messages.size
-        @status = @messages[@messages_index]
-      else
-        @status = "#{@status}."
-      end
-    end
+    @switcher.update
+    @loader.update
   end
 end
