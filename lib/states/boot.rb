@@ -1,7 +1,5 @@
 class Boot < CyberarmEngine::GameState
   def setup
-    self.show_cursor = false
-
     @title = Gosu::Font.new(56, name: "Noto Sans Display", bold: true)
     @text  = Gosu::Font.new(18, name: "Noto Sans Thaana", bold: true)
     @name = "I-MIC RTS"
@@ -67,6 +65,8 @@ class Boot < CyberarmEngine::GameState
   end
 
   def update
+    self.show_cursor = false
+
     @background.alpha+=1
     @background_two.alpha+=1
 

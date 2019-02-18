@@ -21,33 +21,37 @@ class MainMenu < CyberarmEngine::GameState
 
         stack do
           image("assets/logo.png", height: 256) do
-            pop_state
+            pop_state if last_state
           end
         end
 
         stack do
           background Gosu::Color.rgba(50, 50, 50, 200)
 
-          label "Username"
-          @username = edit_line ""
-          label "Password"
-          @password = edit_line "", type: :password
+          1.times do
+            label "Username"
+            @username = edit_line ""
+            label "Password"
+            @password = edit_line "", type: :password
 
-          flow do
-            button "Log In" do
-              push_state(Boot)
-              puts "Logging in... #{@username.value}:#{Base64.encode64(@password.value)}"
+            flow do
+              button "Log In" do
+                push_state(Boot)
+                puts "Logging in... #{@username.value}:#{Base64.encode64(@password.value)}"
+              end
+              button "Sign Up"
+
+              check_box checked: true
             end
-            button "Sign Up"
-
-            check_box checked: true
           end
         end
       end
     end
 
-    $window.width = @root_container.children.first.width.to_i
-    $window.height = @root_container.children.first.height.to_i
+    $window.width = Gosu.screen_width/2
+    $window.height = Gosu.screen_height/2
     $window.fullscreen = false
+
+    @root_container.recalculate
   end
 end
