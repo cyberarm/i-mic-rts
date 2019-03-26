@@ -1,4 +1,4 @@
-class MainMenu < CyberarmEngine::GameState
+class MainMenu < CyberarmEngine::GuiState
   def setup
     self.show_cursor = true
 
@@ -21,7 +21,7 @@ class MainMenu < CyberarmEngine::GameState
 
         stack do
           image("assets/logo.png", height: 256) do
-            pop_state if last_state
+            pop_state if previous_state
           end
         end
 
@@ -34,6 +34,8 @@ class MainMenu < CyberarmEngine::GameState
             label "Password"
             @password = edit_line "", type: :password
 
+            check_box "Remember me?", checked: true
+
             flow do
               button "Log In" do
                 push_state(Boot)
@@ -41,15 +43,14 @@ class MainMenu < CyberarmEngine::GameState
               end
               button "Sign Up"
 
-              check_box checked: true
             end
           end
         end
       end
     end
 
-    $window.width = Gosu.screen_width/2
-    $window.height = Gosu.screen_height/2
+    $window.width = @root_container.width
+    $window.height = @root_container.height
     $window.fullscreen = false
 
     @root_container.recalculate
