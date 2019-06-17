@@ -6,7 +6,7 @@ class MainMenu < CyberarmEngine::GuiState
     stack do
       background 0xaabada55
 
-      flow(padding: 10, margin: 10) do
+      flow do
         # background 0xff00aa00
 
         stack do
@@ -20,7 +20,7 @@ class MainMenu < CyberarmEngine::GuiState
         end
 
         stack do
-          image("assets/logo.png", height: 256) do
+          image("assets/logo.png", height: 250) do
             pop_state if previous_state
           end
         end

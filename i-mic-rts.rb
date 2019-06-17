@@ -1,9 +1,9 @@
 require "base64"
 
 begin
-  require "cyberarm_engine"
-rescue LoadError
   require_relative "../cyberarm_engine/lib/cyberarm_engine"
+rescue LoadError
+  require "cyberarm_engine"
 end
 
 require_relative "lib/states/boot"
@@ -17,4 +17,4 @@ class Window < CyberarmEngine::Engine
 end
 
 # Window.new(Gosu.screen_width, Gosu.screen_height, true).show
-Window.new(Gosu.screen_width/2, Gosu.screen_height/2, false).show
+Window.new(width: Gosu.screen_width/2, height: Gosu.screen_height/2, fullscreen: false).show
