@@ -2,16 +2,13 @@ class MainMenu < CyberarmEngine::GuiState
   def setup
     self.show_cursor = true
 
-    background 0xff7a0d71
-    stack do
-      background 0xaabada55
+    @container = stack do
+      background 0xff00aa00
 
       flow do
-        # background 0xff00aa00
 
-        stack do
-          background 0xffaaeedd
-          # fill Gosu::Color::BLACK
+        stack(height: 1.0) do
+          background Gosu::Color.rgba(50, 50, 50, 200)
           button("Play")
           button("About")
           button("Exit") do
@@ -20,7 +17,7 @@ class MainMenu < CyberarmEngine::GuiState
         end
 
         stack do
-          image("assets/logo.png", height: 250) do
+          image("assets/logo.png", height: 275) do
             pop_state if previous_state
           end
         end
@@ -49,10 +46,8 @@ class MainMenu < CyberarmEngine::GuiState
       end
     end
 
-    $window.width = @root_container.width
-    $window.height = @root_container.height
+    $window.width = @container.width
+    $window.height = @container.height
     $window.fullscreen = false
-
-    @root_container.recalculate
   end
 end
