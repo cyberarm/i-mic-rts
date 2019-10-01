@@ -18,11 +18,11 @@ class IMICRTS
       factor = (1.0 - ((Gosu.milliseconds - @started_at) / @close_time.to_f)).clamp(0.0, 1.0)
       @color.alpha = 255 * (factor - 0.1)
 
-      window.close if Gosu.milliseconds - @started_at >= @close_time
+      window.close! if Gosu.milliseconds - @started_at >= @close_time
     end
 
     def button_up(id)
-      window.close if id == Gosu::KB_ESCAPE
+      window.close!
     end
   end
 end
