@@ -2,8 +2,10 @@ class IMICRTS
   class Game < CyberarmEngine::GuiState
     def setup
       @units = []
+      @camera = Camera.new
+      @mouse_pos = CyberarmEngine::Text.new("X: 0\nY: 0", x: 500, y: 10, z: Float::INFINITY)
 
-      stack(height: 1.0) do
+      @sidebar = stack(height: 1.0) do
         background [0xff555555, Gosu::Color::GRAY]
 
         label "SIDEBAR", text_size: 78
@@ -24,7 +26,6 @@ class IMICRTS
         )
         end
 
-        label ""
 
         button("Leave", width: 1.0) do
           finalize
@@ -35,9 +36,52 @@ class IMICRTS
 
     def draw
       super
+
       Gosu.draw_rect(0, 0, window.width, window.height, Gosu::Color.rgb(10, 175, 35))
 
-      @units.each(&:draw)
+      @camera.draw do
+        @units.each(&:draw)
+
+        draw_rect(@anchor.x - 10, @anchor.y - 10, 20, 20, Gosu::Color::RED, Float::INFINITY) if @anchor
+        # draw_rect(@camera.center.x - 10, @camera.center.y - 10, 20, 20, Gosu::Color::BLACK, Float::INFINITY)
+
+        # mouse_center = CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y) - @camera.position
+        # draw_rect(mouse_center.x - 10, mouse_center.y - 10, 20, 20, Gosu::Color::YELLOW, Float::INFINITY)
+      end
+
+      @mouse_pos.draw
+    end
+
+    def update
+      super
+
+      @camera.update
+
+      if @anchor
+        @camera.center_around(@anchor, 0.9)
+      end
+
+      @mouse_pos.text = "X: #{window.mouse_x}\nY: #{window.mouse_y}"
+    end
+
+    def button_down(id)
+      super
+
+      case id
+      when Gosu::MS_LEFT
+        unless @sidebar.hit?(window.mouse_x, window.mouse_y)
+          @anchor = CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y) - @camera.position
+        end
+      when Gosu::MS_RIGHT
+        @anchor = nil
+      end
+      @camera.button_down(id)
+    end
+
+    def button_up(id)
+      super
+
+      @camera.button_up(id)
     end
 
     def finalize

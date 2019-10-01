@@ -1,11 +1,25 @@
 class IMICRTS
   class Window < CyberarmEngine::Engine
     def setup
-      Gosu.milliseconds # Start counter
+      @last_update_time = Gosu.milliseconds
 
       self.caption = "I-MIC RTS (#{Gosu.language})"
-      push_state(Boot)
-      # push_state(MainMenu)
+      # push_state(Boot)
+      push_state(MainMenu)
+    end
+
+    def update
+      super
+
+      @last_update_time = Gosu.milliseconds
+    end
+
+    def delta_time
+      Gosu.milliseconds - @last_update_time
+    end
+
+    def dt
+      delta_time / 1000.0
     end
   end
 end
