@@ -35,7 +35,7 @@ class IMICRTS
     end
 
     def mouse_pick(x, y)
-      mouse = CyberarmEngine::Vector.new(x, y)
+      mouse = CyberarmEngine::Vector.new(x, y) / @zoom
 
       normalized = (mouse / @zoom - @position / @zoom) * @zoom
       normalized.x = normalized.x.floor
@@ -56,6 +56,10 @@ class IMICRTS
 
     def lerp(vec1, vec2, factor)
       (vec1 - vec2) * factor.clamp(0.0, 1.0)
+    end
+
+    def aspect_ratio
+      window.height / window.width.to_f
     end
 
     def move

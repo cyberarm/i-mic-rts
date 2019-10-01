@@ -63,7 +63,7 @@ class IMICRTS
       end
 
       mouse = @camera.mouse_pick(window.mouse_x, window.mouse_y)
-      @mouse_pos.text = "Zoom: #{@camera.zoom}\nX: #{window.mouse_x}\nY: #{window.mouse_y}\n\nX: #{mouse.x}\nY: #{mouse.y}"
+      @mouse_pos.text = "Aspect Ratio: #{@camera.aspect_ratio}\nZoom: #{@camera.zoom}\nX: #{window.mouse_x}\nY: #{window.mouse_y}\n\nX: #{mouse.x}\nY: #{mouse.y}"
     end
 
     def button_down(id)
