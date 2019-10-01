@@ -2,6 +2,7 @@ class IMICRTS
   class Game < CyberarmEngine::GuiState
     def setup
       @units = []
+      @selected_entities = []
       @camera = Camera.new
       @mouse_pos = CyberarmEngine::Text.new("X: 0\nY: 0", x: 500, y: 10, z: Float::INFINITY)
 
@@ -42,12 +43,13 @@ class IMICRTS
 
       @camera.draw do
         @units.each(&:draw)
+        @selected_entities.each(&:selected_draw)
 
-        draw_rect(@anchor.x - 10, @anchor.y - 10, 20, 20, Gosu::Color::RED, Float::INFINITY) if @anchor
-        draw_rect(@camera.center.x - 10, @camera.center.y - 10, 20, 20, Gosu::Color::BLACK, Float::INFINITY)
+        # draw_rect(@camera.center.x - 10, @camera.center.y - 10, 20, 20, Gosu::Color::BLACK, Float::INFINITY)
 
-        mouse = @camera.mouse_pick(window.mouse_x, window.mouse_y)
-        draw_rect(mouse.x - 10, mouse.y - 10, 20, 20, Gosu::Color::YELLOW, Float::INFINITY)
+        # mouse = @camera.mouse_pick(window.mouse_x, window.mouse_y)
+        # draw_rect(mouse.x - 10, mouse.y - 10, 20, 20, Gosu::Color::YELLOW, Float::INFINITY)
+        Gosu.draw_rect(@box.min.x, @box.min.y, @box.width, @box.height, Gosu::Color.rgba(50, 50, 50, 150), Float::INFINITY) if @box
       end
 
       @mouse_pos.draw
@@ -58,8 +60,8 @@ class IMICRTS
 
       @camera.update
 
-      if @anchor
-        @camera.center_around(@anchor, 0.9)
+      if @selection_start
+        select_entities
       end
 
       mouse = @camera.mouse_pick(window.mouse_x, window.mouse_y)
@@ -72,7 +74,7 @@ class IMICRTS
       case id
       when Gosu::MS_LEFT
         unless @sidebar.hit?(window.mouse_x, window.mouse_y)
-          @anchor = @camera.mouse_pick(window.mouse_x, window.mouse_y)
+          @selection_start = CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y) - @camera.position
         end
       when Gosu::MS_RIGHT
         @anchor = nil
@@ -83,7 +85,27 @@ class IMICRTS
     def button_up(id)
       super
 
+      case id
+      when Gosu::MS_LEFT
+        @box = nil
+        @selection_start = nil
+      end
+
       @camera.button_up(id)
+    end
+
+    def select_entities
+      @box = CyberarmEngine::BoundingBox.new(@selection_start, CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y) - @camera.position)
+
+      selected_entities = @units.select do |ent|
+        @box.point?(ent.position)
+      end
+
+      if Gosu.button_down?(Gosu::KB_LEFT_SHIFT) || Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
+        @selected_entities = @selected_entities.union(selected_entities)
+      else
+        @selected_entities = selected_entities
+      end
     end
 
     def finalize

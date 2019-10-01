@@ -18,8 +18,8 @@ class IMICRTS
 
     def draw(&block)
       if block
+        center_point = center
         Gosu.translate(@position.x, @position.y) do
-          center_point = center
           Gosu.scale(@zoom, @zoom, center.x, center.y) do
             block.call
           end
@@ -28,6 +28,8 @@ class IMICRTS
     end
 
     def update
+      @zoom = 1.0
+
       move
       @velocity *= @drag
 
@@ -35,9 +37,9 @@ class IMICRTS
     end
 
     def mouse_pick(x, y)
-      mouse = CyberarmEngine::Vector.new(x, y) / @zoom
+      mouse = CyberarmEngine::Vector.new(x, y)
 
-      worldspace = (mouse - @position)
+      worldspace = (mouse - @position) / @zoom
       worldspace.x = worldspace.x.floor
       worldspace.y = worldspace.y.floor
 

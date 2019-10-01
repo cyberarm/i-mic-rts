@@ -2,7 +2,14 @@ class IMICRTS
   class ZOrder
     base_z = 5
     enum = [
-      :GROUND_VEHICLE
+      :TILE,
+      :DECORATION,
+      :GROUND_VEHICLE,
+      :BUILDING,
+      :AIR_VEHICLE,
+
+      :ENTITY_BOUNDING_BOX,
+      :ENTITY_GIZMOS, # Health bar and the like
     ]
 
     enum.each_with_index do |constant, index|
