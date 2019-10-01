@@ -1,53 +1,25 @@
-class MainMenu < CyberarmEngine::GuiState
-  def setup
-    self.show_cursor = true
+class IMICRTS
+  class MainMenu < CyberarmEngine::GuiState
+    def setup
+      self.show_cursor = true
 
-    @container = stack do
-      background 0xff00aa00
+      background [0xff7b6ead, 0xff7a0d71, 0xff7a0d71, 0xff7b6ead]
 
-      flow do
-
-        stack(height: 1.0) do
-          background Gosu::Color.rgba(50, 50, 50, 200)
-          button("Play")
-          button("About")
-          button("Exit") do
-            $window.close
-          end
+      stack(height: 1.0) do
+        background [0xff555555, Gosu::Color::GRAY]
+        label "I-MIC-RTS", text_size: 78, margin: 20
+        button("Play", width: 1.0) do
+          push_state(Game)
         end
 
-        stack do
-          image("assets/logo.png", height: 275) do
-            pop_state if previous_state
-          end
+        button("About", width: 1.0) do
+          push_state(AboutMenu)
         end
 
-        stack do
-          background Gosu::Color.rgba(50, 50, 50, 200)
-
-          1.times do
-            label "Username"
-            @username = edit_line ""
-            label "Password"
-            @password = edit_line "", type: :password
-
-            check_box "Remember me?", checked: true
-
-            flow do
-              button "Log In" do
-                push_state(Boot)
-                puts "Logging in... #{@username.value}:#{Base64.encode64(@password.value)}"
-              end
-              button "Sign Up"
-
-            end
-          end
+        button("Exit", width: 1.0) do
+          push_state(Closing)
         end
       end
     end
-
-    $window.width = @container.width
-    $window.height = @container.height
-    $window.fullscreen = false
   end
 end

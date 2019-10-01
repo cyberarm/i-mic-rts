@@ -1,76 +1,78 @@
-class Boot < CyberarmEngine::GameState
-  def setup
-    @title = Gosu::Font.new(56, name: "Noto Sans Display", bold: true)
-    @text  = Gosu::Font.new(18, name: "Noto Sans Thaana", bold: true)
-    @name = "I-MIC RTS"
-    @logo = Gosu::Image.new("assets/logo.png")
+class IMICRTS
+  class Boot < CyberarmEngine::GameState
+    def setup
+      @title = Gosu::Font.new(56, name: "Noto Sans Display", bold: true)
+      @text  = Gosu::Font.new(18, name: "Noto Sans Thaana", bold: true)
+      @name = "I-MIC RTS"
+      @logo = Gosu::Image.new("assets/logo.png")
 
-    @messages = ["Loading", "Compiling Protons", "Launching Warhead", "git push origin --force"]
-    @messages_index = 0
-    @status = @messages[@messages_index]
+      @messages = ["Loading", "Compiling Protons", "Launching Warhead", "git push origin --force"]
+      @messages_index = 0
+      @status = @messages[@messages_index]
 
-    @last_update = Gosu.milliseconds
-    @update_interval = 250
+      @last_update = Gosu.milliseconds
+      @update_interval = 250
 
-    @switcher = CyberarmEngine::Timer.new(5_000) do
-      push_state(MainMenu)
-    end
-
-    @loader = CyberarmEngine::Timer.new(250) do
-      split = @status.scan(".")
-      if split.size >= 3
-        @messages_index+=1
-        @messages_index = 0 unless @messages_index < @messages.size
-        @status = @messages[@messages_index]
-      else
-        @status = "#{@status}."
+      @switcher = CyberarmEngine::Timer.new(5_000) do
+        push_state(MainMenu)
       end
+
+      @loader = CyberarmEngine::Timer.new(250) do
+        split = @status.scan(".")
+        if split.size >= 3
+          @messages_index+=1
+          @messages_index = 0 unless @messages_index < @messages.size
+          @status = @messages[@messages_index]
+        else
+          @status = "#{@status}."
+        end
+      end
+
+      @background     = Gosu::Color.new(0x007a0d71)
+      @background_two = Gosu::Color.new(0x007b6ead)
+
+      $window.width = Gosu.screen_width
+      $window.height = Gosu.screen_height
+      $window.fullscreen = true
     end
 
-    @background     = Gosu::Color.new(0x007a0d71)
-    @background_two = Gosu::Color.new(0x007b6ead)
+    def draw
+      Gosu.draw_quad(
+        0, 0, @background_two,
+        $window.width, 0, @background,
+        0, $window.height, @background,
+        $window.width, $window.height, @background_two
+      )
 
-    $window.width = Gosu.screen_width
-    $window.height = Gosu.screen_height
-    $window.fullscreen = true
-  end
+      Gosu.draw_rect(
+        0, $window.height/2 - 35,
+        $window.width, 71,
+        Gosu::Color.new(0xff949dad)
+      )
 
-  def draw
-    Gosu.draw_quad(
-      0, 0, @background_two,
-      $window.width, 0, @background,
-      0, $window.height, @background,
-      $window.width, $window.height, @background_two
-    )
-
-    Gosu.draw_rect(
-      0, $window.height/2 - 35,
-      $window.width, 71,
-      Gosu::Color.new(0xff949dad)
-    )
-
-    c = Gosu::Color.new(0xff55dae1)
-    c2 = Gosu::Color.new(0xff3c9ec5)
-    Gosu.draw_quad(
-      0, $window.height/2 - 30, c,
-      $window.width, $window.height/2 - 30, c2,
-      0, $window.height/2 + 30, c,
-      $window.width, $window.height/2 + 30, c2
-    )
+      c = Gosu::Color.new(0xff55dae1)
+      c2 = Gosu::Color.new(0xff3c9ec5)
+      Gosu.draw_quad(
+        0, $window.height/2 - 30, c,
+        $window.width, $window.height/2 - 30, c2,
+        0, $window.height/2 + 30, c,
+        $window.width, $window.height/2 + 30, c2
+      )
 
 
-    @logo.draw($window.width/2 - @logo.width/2, $window.height/2 - (@logo.height/3 + 14), 0)
+      @logo.draw($window.width/2 - @logo.width/2, $window.height/2 - (@logo.height/3 + 14), 0)
 
-    @text.draw_text(@status, $window.width - (@text.text_width(@status.gsub(".", "")) + @text.text_width("...")), $window.height - @text.height, 0)
-  end
+      @text.draw_text(@status, $window.width - (@text.text_width(@status.gsub(".", "")) + @text.text_width("...")), $window.height - @text.height, 0)
+    end
 
-  def update
-    self.show_cursor = false
+    def update
+      self.show_cursor = false
 
-    @background.alpha+=1
-    @background_two.alpha+=1
+      @background.alpha+=1
+      @background_two.alpha+=1
 
-    @switcher.update
-    @loader.update
+      @switcher.update
+      @loader.update
+    end
   end
 end
