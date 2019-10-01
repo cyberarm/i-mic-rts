@@ -3,7 +3,7 @@ class IMICRTS
     def setup
       @last_update_time = Gosu.milliseconds
 
-      self.caption = "I-MIC RTS (#{Gosu.language})"
+      self.caption = "#{IMICRTS::NAME} (#{IMICRTS::VERSION} #{IMICRTS::VERSION_NAME})"
       # push_state(Boot)
       push_state(MainMenu)
     end

@@ -3,7 +3,7 @@ class IMICRTS
     def setup
       @title = Gosu::Font.new(56, name: "Noto Sans Display", bold: true)
       @text  = Gosu::Font.new(18, name: "Noto Sans Thaana", bold: true)
-      @name = "I-MIC RTS"
+      @name = IMICRTS::NAME
       @logo = Gosu::Image.new("assets/logo.png")
 
       @messages = ["Loading", "Compiling Protons", "Launching Warhead", "git push origin --force"]
