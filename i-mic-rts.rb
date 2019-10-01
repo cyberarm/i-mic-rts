@@ -18,4 +18,4 @@ require_relative "lib/zorder"
 require_relative "lib/entity"
 # require_relative "lib/entities/"
 
-IMICRTS::Window.new(width: Gosu.screen_width, height: Gosu.screen_height, fullscreen: true).show
+IMICRTS::Window.new(width: Gosu.screen_width / 4 * 3, height: Gosu.screen_height / 4 * 3, fullscreen: false, resizable: true).show

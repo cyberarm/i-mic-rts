@@ -37,25 +37,20 @@ class IMICRTS
     def mouse_pick(x, y)
       mouse = CyberarmEngine::Vector.new(x, y) / @zoom
 
-      normalized = (mouse / @zoom - @position / @zoom) * @zoom
-      normalized.x = normalized.x.floor
-      normalized.y = normalized.y.floor
+      worldspace = (mouse - @position)
+      worldspace.x = worldspace.x.floor
+      worldspace.y = worldspace.y.floor
 
-      return normalized
+      return worldspace
     end
 
     def center
-      (CyberarmEngine::Vector.new(window.width / 2, window.height / 2) / @zoom - @position / @zoom) * @zoom
+      (CyberarmEngine::Vector.new(window.width / 2, window.height / 2) - @position)
     end
 
     def center_around(vector, factor)
       @velocity *= 0
-      delta = lerp(self.center, vector, factor)
-      @position += delta * window.dt
-    end
-
-    def lerp(vec1, vec2, factor)
-      (vec1 - vec2) * factor.clamp(0.0, 1.0)
+      @position += center.lerp(vector, factor) * window.dt
     end
 
     def aspect_ratio
@@ -70,7 +65,7 @@ class IMICRTS
 
       if @drag_start
         @velocity *= 0.0
-        @position = lerp(@position, CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y) - @drag_start, @grab_drag)
+        @position = @position.lerp(@drag_start - CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y), @grab_drag)
       end
     end
 
@@ -84,15 +79,13 @@ class IMICRTS
       when Gosu::MS_WHEEL_DOWN
         @zoom = (@zoom - 0.25).clamp(@min_zoom, @max_zoom)
       when Gosu::MS_MIDDLE
-        @position_start = @position.clone
-        @drag_start = CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y)
+        @drag_start = CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y) - @position
       end
     end
 
     def button_up(id)
       case id
       when Gosu::MS_MIDDLE
-        @position_start = nil
         @drag_start = nil
       end
     end

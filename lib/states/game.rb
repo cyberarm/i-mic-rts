@@ -12,14 +12,14 @@ class IMICRTS
 
         @h = button("Harvester", width: 1.0) do
           @units << Entity.new(
-            images: Gosu::Image.new("assets/vehicles/harvester/images/harvester.png", retro: true),
+            images: Gosu::Image.new("#{ASSETS_PATH}/vehicles/harvester/images/harvester.png", retro: true),
             position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
             angle: rand(360)
           )
         end
         @c = button("Construction Worker", width: 1.0) do
           @units << Entity.new(
-            images: Gosu::Image.new("assets/vehicles/construction_worker/images/construction_worker.png", retro: true),
+            images: Gosu::Image.new("#{ASSETS_PATH}/vehicles/construction_worker/images/construction_worker.png", retro: true),
             position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
             angle: rand(360)
         )
