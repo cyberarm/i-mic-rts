@@ -6,18 +6,42 @@ class IMICRTS
       IMICRTS::Order.constants(false).find { |const| IMICRTS::Order.const_get(const) == order_id }
     end
 
+    def self.get(order_id)
+      @@orders.dig(order_id)
+    end
+
     def self.define_handler(order_id, arguments: [], &handler)
       raise "Handler from #{order_name(order_id)} already defined!" if @@orders.dig(order_id)
 
       @@orders[order_id] = IMICRTS::Order.new(id: order_id, arguments: arguments, &handler)
     end
 
+    attr_reader :id
     def initialize(id:, arguments:, &handler)
-
+      @id = id
+      @arguments = arguments
+      @handler = handler
     end
 
-    def execute
-      @handler.call(self, Director.instance)
+    def execute(director, *arguments)
+      @handler.call(arguments(arguments), director)
+    end
+
+    def arguments(args)
+      raise "Did not receive correct number of arguments: got #{args.size} expected #{@arguments.size}." unless @arguments.size == args.size
+
+      hash = FriendlyHash.new
+      @arguments.each_with_index do |key, value|
+        hash[key] = args[value]
+      end
+
+      return hash
+    end
+
+    def serialize
+    end
+
+    def deserialize
     end
   end
 

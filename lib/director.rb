@@ -32,9 +32,12 @@ class IMICRTS
       @players.find { |player| player.id == id }
     end
 
-    def issue_order(player_id, order_id, *args)
-      # pp Order.order_name(order_id)
-      # pp args
+    def issue_order(order_id, *args)
+      if order = Order.get(order_id)
+        order.execute(self, *args)
+      else
+        raise "Undefined order: #{Order.order_name(order_id)}"
+      end
     end
 
 

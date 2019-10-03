@@ -8,7 +8,7 @@ class IMICRTS
 
       @selected_entities = []
 
-      @mouse_pos = CyberarmEngine::Text.new("X: 0\nY: 0", x: 500, y: 10, z: Float::INFINITY)
+      @debug_info = CyberarmEngine::Text.new("X: 0\nY: 0", x: 500, y: 10, z: Float::INFINITY)
 
       @sidebar = stack(height: 1.0) do
         background [0x55555555, 0x55666666]
@@ -66,7 +66,7 @@ class IMICRTS
         Gosu.draw_rect(@box.min.x, @box.min.y, @box.width, @box.height, Gosu::Color.rgba(50, 50, 50, 150), Float::INFINITY) if @box
       end
 
-      @mouse_pos.draw
+      @debug_info.draw
     end
 
     def update
@@ -84,7 +84,19 @@ class IMICRTS
       end
 
       mouse = @player.camera.mouse_pick(window.mouse_x, window.mouse_y)
-      @mouse_pos.text = "Aspect Ratio: #{@player.camera.aspect_ratio}\nZoom: #{@player.camera.zoom}\nX: #{window.mouse_x}\nY: #{window.mouse_y}\n\nX: #{mouse.x}\nY: #{mouse.y}"
+      @debug_info.text = %(
+        Aspect Ratio: #{@player.camera.aspect_ratio}
+        Zoom: #{@player.camera.zoom}
+        Window Mouse X: #{window.mouse_x}
+        Window Mouse Y: #{window.mouse_y}
+
+        World Mouse X: #{mouse.x}
+        World Mouse Y: #{mouse.y}
+
+        Director Tick: #{@director.current_tick}
+      ).lines.map { |line| line.strip }.join("\n")
+
+      @debug_info.x = @sidebar.width + 20
     end
 
     def button_down(id)
@@ -111,7 +123,7 @@ class IMICRTS
         @box = nil
         @selection_start = nil
 
-        @director.issue_order(@player.id, Order::SELECTED_UNITS, @selected_entities)
+        @director.issue_order(Order::SELECTED_UNITS, @player.id, @selected_entities)
       end
 
       @player.camera.button_up(id)

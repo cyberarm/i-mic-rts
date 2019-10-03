@@ -24,6 +24,7 @@ require_relative "lib/entity"
 # require_relative "lib/entities/"
 
 require_relative "lib/order"
+require_relative "lib/friendly_hash"
 require_relative "lib/director"
 require_relative "lib/player"
 require_relative "lib/connection"
