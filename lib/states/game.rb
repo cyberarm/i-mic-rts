@@ -11,19 +11,27 @@ class IMICRTS
 
         label "SIDEBAR", text_size: 78, margin_bottom: 20
 
-        @h = button("Harvester", width: 1.0) do
-          @units << Entity.new(
-            images: Gosu::Image.new("#{ASSETS_PATH}/vehicles/harvester/images/harvester.png", retro: true),
-            position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
-            angle: rand(360)
-          )
-        end
-        @c = button("Construction Worker", width: 1.0) do
-          @units << Entity.new(
-            images: Gosu::Image.new("#{ASSETS_PATH}/vehicles/construction_worker/images/construction_worker.png", retro: true),
-            position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
-            angle: rand(360)
-        )
+        flow do
+          @buttons = stack(width: 75) do
+            @h = button("Harvester", width: 1.0) do
+              @units << Entity.new(
+                images: Gosu::Image.new("#{ASSETS_PATH}/vehicles/harvester/images/harvester.png", retro: true),
+                position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
+                angle: rand(360)
+              )
+            end
+            @c = button("Construction Worker", width: 1.0) do
+              @units << Entity.new(
+                images: Gosu::Image.new("#{ASSETS_PATH}/vehicles/construction_worker/images/construction_worker.png", retro: true),
+                position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
+                angle: rand(360)
+              )
+            end
+          end
+
+          stack(width: 0.25, height: 1.0) do
+            background Gosu::Color::GREEN
+          end
         end
 
 
