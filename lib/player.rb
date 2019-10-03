@@ -8,7 +8,7 @@ class IMICRTS
 
       @entities = []
       @orders = []
-      @camera = Camera.new
+      @camera = Camera.new(viewport: [0, 0, $window.width, $window.height])
 
       @selected_entities = []
       @current_entity_id = 0

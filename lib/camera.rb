@@ -1,7 +1,8 @@
 class IMICRTS
   class Camera
-    attr_reader :position, :velocity, :zoom, :drag
-    def initialize(scroll_speed: 10, position: CyberarmEngine::Vector.new(0.0, 0.0))
+    attr_reader :viewport, :position, :velocity, :zoom, :drag
+    def initialize(viewport:, scroll_speed: 10, position: CyberarmEngine::Vector.new(0.0, 0.0))
+      @viewport = CyberarmEngine::BoundingBox.new(viewport[0], viewport[1], viewport[2], viewport[3])
       @scroll_speed = scroll_speed
       @position = position
       @velocity = CyberarmEngine::Vector.new(0.0, 0.0)
@@ -16,12 +17,14 @@ class IMICRTS
 
     def window; $window; end
 
-    def draw(*args, &block)
+    def draw(&block)
       if block
-        center_point = center
-        Gosu.translate(@position.x, @position.y) do
-          Gosu.scale(@zoom, @zoom, center.x, center.y) do
-            block.call
+        Gosu.clip_to(@viewport.min.x, @viewport.min.y, @viewport.max.x, @viewport.max.y) do
+          center_point = center
+          Gosu.translate(@position.x, @position.y) do
+            Gosu.scale(@zoom, @zoom, center.x, center.y) do
+              block.call
+            end
           end
         end
       end
@@ -34,6 +37,9 @@ class IMICRTS
       @velocity *= @drag
 
       @position += @velocity * @scroll_speed
+
+      @viewport.max.x = window.width
+      @viewport.max.y = window.height
     end
 
     def mouse_pick(x, y)
@@ -53,6 +59,18 @@ class IMICRTS
     def center_around(vector, factor)
       @velocity *= 0
       @position += center.lerp(vector, factor) * window.dt
+    end
+
+    def visible?(object)
+      if object.is_a?(Map::Tile)
+        object.position.x - object.size >= @viewport.min.x - @position.x &&
+        object.position.y - object.size >= @viewport.min.y - @position.y &&
+        object.position.x <= @viewport.max.x - @position.x &&
+        object.position.y <= @viewport.max.y - @position.y
+      else
+        pp object.class
+        exit
+      end
     end
 
     def aspect_ratio

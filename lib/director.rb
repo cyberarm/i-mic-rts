@@ -1,6 +1,6 @@
 class IMICRTS
   class Director
-    attr_reader :current_tick
+    attr_reader :current_tick, :map
     def initialize(map:, players:, networking_mode: :virtual, tick_rate: 10)
       @map = map
       @players = players

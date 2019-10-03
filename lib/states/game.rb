@@ -4,11 +4,11 @@ class IMICRTS
       window.show_cursor = true
 
       @player = Player.new(id: 0)
-      @director = Director.new(map: nil, players: [@player])
+      @director = Director.new(map: Map.new(width: 256, height: 256), players: [@player])
 
       @selected_entities = []
 
-      @debug_info = CyberarmEngine::Text.new("X: 0\nY: 0", x: 500, y: 10, z: Float::INFINITY)
+      @debug_info = CyberarmEngine::Text.new("", y: 10, z: Float::INFINITY)
 
       @sidebar = stack(height: 1.0) do
         background [0x55555555, 0x55666666]
@@ -55,7 +55,8 @@ class IMICRTS
 
       Gosu.draw_rect(0, 0, window.width, window.height, Gosu::Color.rgb(10, 175, 35))
 
-      @player.camera.draw(0, 0, window.width, window.height) do
+      @player.camera.draw do
+        @director.map.draw(@player.camera)
         @director.entities.each(&:draw)
         @selected_entities.each(&:selected_draw)
 
@@ -85,6 +86,7 @@ class IMICRTS
 
       mouse = @player.camera.mouse_pick(window.mouse_x, window.mouse_y)
       @debug_info.text = %(
+        FPS: #{Gosu.fps}
         Aspect Ratio: #{@player.camera.aspect_ratio}
         Zoom: #{@player.camera.zoom}
         Window Mouse X: #{window.mouse_x}
