@@ -1,9 +1,11 @@
 class IMICRTS
   class Game < CyberarmEngine::GuiState
     def setup
-      @units = []
+      window.show_cursor = true
       @selected_entities = []
-      @camera = Camera.new
+
+      @player = Player.new(id: 0)
+      @director = Director.new(map: nil, players: [@player])
       @mouse_pos = CyberarmEngine::Text.new("X: 0\nY: 0", x: 500, y: 10, z: Float::INFINITY)
 
       @sidebar = stack(height: 1.0) do
@@ -14,14 +16,14 @@ class IMICRTS
         flow do
           @buttons = stack(width: 75) do
             @h = button("Harvester", width: 1.0) do
-              @units << Entity.new(
+              @player.entities << Entity.new(
                 images: Gosu::Image.new("#{ASSETS_PATH}/vehicles/harvester/images/harvester.png", retro: true),
                 position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
                 angle: rand(360)
               )
             end
             @c = button("Construction Worker", width: 1.0) do
-              @units << Entity.new(
+              @player.entities << Entity.new(
                 images: Gosu::Image.new("#{ASSETS_PATH}/vehicles/construction_worker/images/construction_worker.png", retro: true),
                 position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
                 angle: rand(360)
@@ -49,8 +51,8 @@ class IMICRTS
 
       Gosu.draw_rect(0, 0, window.width, window.height, Gosu::Color.rgb(10, 175, 35))
 
-      @camera.draw do
-        @units.each(&:draw)
+      @player.camera.draw(0, 0, window.width, window.height) do
+        @director.entities.each(&:draw)
         @selected_entities.each(&:selected_draw)
 
         # draw_rect(@camera.center.x - 10, @camera.center.y - 10, 20, 20, Gosu::Color::BLACK, Float::INFINITY)
@@ -66,14 +68,19 @@ class IMICRTS
     def update
       super
 
-      @camera.update
+      @director.update
+      @player.camera.update
+
+      @selected_entities.each do |ent|
+        ent.rotate_towards(@goal) if @goal
+      end
 
       if @selection_start
         select_entities
       end
 
-      mouse = @camera.mouse_pick(window.mouse_x, window.mouse_y)
-      @mouse_pos.text = "Aspect Ratio: #{@camera.aspect_ratio}\nZoom: #{@camera.zoom}\nX: #{window.mouse_x}\nY: #{window.mouse_y}\n\nX: #{mouse.x}\nY: #{mouse.y}"
+      mouse = @player.camera.mouse_pick(window.mouse_x, window.mouse_y)
+      @mouse_pos.text = "Aspect Ratio: #{@player.camera.aspect_ratio}\nZoom: #{@player.camera.zoom}\nX: #{window.mouse_x}\nY: #{window.mouse_y}\n\nX: #{mouse.x}\nY: #{mouse.y}"
     end
 
     def button_down(id)
@@ -82,31 +89,36 @@ class IMICRTS
       case id
       when Gosu::MS_LEFT
         unless @sidebar.hit?(window.mouse_x, window.mouse_y)
-          @selection_start = CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y) - @camera.position
+          @selection_start = CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y) - @player.camera.position
         end
       when Gosu::MS_RIGHT
         @anchor = nil
       end
-      @camera.button_down(id) unless @sidebar.hit?(window.mouse_x, window.mouse_y)
+      @player.camera.button_down(id) unless @sidebar.hit?(window.mouse_x, window.mouse_y)
     end
 
     def button_up(id)
       super
 
       case id
+      when Gosu::MS_RIGHT
+        @goal = @player.camera.mouse_pick(window.mouse_x, window.mouse_y)
       when Gosu::MS_LEFT
         @box = nil
         @selection_start = nil
+
+        @director.issue_order(@player.id, Order::SELECTED_UNITS, @selected_entities)
       end
 
-      @camera.button_up(id)
+      @player.camera.button_up(id)
     end
 
     def select_entities
-      @box = CyberarmEngine::BoundingBox.new(@selection_start, CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y) - @camera.position)
+      @box = CyberarmEngine::BoundingBox.new(@selection_start, CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y) - @player.camera.position)
 
-      selected_entities = @units.select do |ent|
-        @box.point?(ent.position)
+      selected_entities = @player.entities.select do |ent|
+        @box.point?(ent.position - ent.radius) ||
+        @box.point?(ent.position + ent.radius)
       end
 
       if Gosu.button_down?(Gosu::KB_LEFT_SHIFT) || Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)

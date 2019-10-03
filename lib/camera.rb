@@ -16,7 +16,7 @@ class IMICRTS
 
     def window; $window; end
 
-    def draw(&block)
+    def draw(*args, &block)
       if block
         center_point = center
         Gosu.translate(@position.x, @position.y) do

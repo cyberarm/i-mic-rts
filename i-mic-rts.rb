@@ -23,4 +23,8 @@ require_relative "lib/zorder"
 require_relative "lib/entity"
 # require_relative "lib/entities/"
 
+require_relative "lib/order"
+require_relative "lib/director"
+require_relative "lib/player"
+
 IMICRTS::Window.new(width: Gosu.screen_width / 4 * 3, height: Gosu.screen_height / 4 * 3, fullscreen: false, resizable: true).show
