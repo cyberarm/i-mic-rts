@@ -2,10 +2,12 @@ class IMICRTS
   class Game < CyberarmEngine::GuiState
     def setup
       window.show_cursor = true
-      @selected_entities = []
 
       @player = Player.new(id: 0)
       @director = Director.new(map: nil, players: [@player])
+
+      @selected_entities = []
+
       @mouse_pos = CyberarmEngine::Text.new("X: 0\nY: 0", x: 500, y: 10, z: Float::INFINITY)
 
       @sidebar = stack(height: 1.0) do
@@ -17,6 +19,7 @@ class IMICRTS
           @buttons = stack(width: 75) do
             @h = button("Harvester", width: 1.0) do
               @player.entities << Entity.new(
+                id: @player.next_entity_id,
                 images: Gosu::Image.new("#{ASSETS_PATH}/vehicles/harvester/images/harvester.png", retro: true),
                 position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
                 angle: rand(360)
@@ -24,6 +27,7 @@ class IMICRTS
             end
             @c = button("Construction Worker", width: 1.0) do
               @player.entities << Entity.new(
+                id: @player.next_entity_id,
                 images: Gosu::Image.new("#{ASSETS_PATH}/vehicles/construction_worker/images/construction_worker.png", retro: true),
                 position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
                 angle: rand(360)

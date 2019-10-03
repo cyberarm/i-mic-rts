@@ -1,7 +1,8 @@
 class IMICRTS
   class Entity
-    attr_reader :position, :angle, :radius
-    def initialize(manifest: nil, images:, position:, angle:)
+    attr_reader :id, :position, :angle, :radius
+    def initialize(id:, manifest: nil, images:, position:, angle:)
+      @id = id
       @manifest = manifest
       @images = images
       @position = position
@@ -40,20 +41,18 @@ class IMICRTS
 
     def rotate_towards(vector)
       _angle = Gosu.angle(@position.x, @position.y, vector.x, vector.y)
-      a = (360 + (_angle - @angle)) % 360
+      a = (360.0 + (_angle - @angle)) % 360.0
 
       # Fails if vector is directly behind entity
       if @angle.between?(_angle - 3, _angle + 3)
         @angle = _angle
       elsif a < 180
-        @angle -= 1
+        @angle -= 1.0
       else
-        @angle += 1
+        @angle += 1.0
       end
 
-      @angle %= 360
-
-      pp [a, _angle, @angle]
+      @angle %= 360.0
     end
   end
 end
