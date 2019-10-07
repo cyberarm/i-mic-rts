@@ -1,10 +1,12 @@
 class IMICRTS
   class Map
-    Tile = Struct.new(:position, :color, :size)
+    Tile = Struct.new(:position, :color, :image)
 
     def initialize(width:, height:, tile_size: 32)
       @width, @height = width, height
       @tile_size = tile_size
+
+      @tileset = Gosu::Image.load_tiles("#{ASSETS_PATH}/tilesets/default.png", tile_size, tile_size, retro: true)
 
       @tiles = []
 
@@ -14,7 +16,7 @@ class IMICRTS
             Tile.new(
               CyberarmEngine::Vector.new(x * @tile_size, y * @tile_size, ZOrder::TILE),
               Gosu::Color.rgb(rand(25), rand(150..200), rand(25)),
-              @tile_size
+              @tileset.sample
             )
           )
         end
@@ -23,11 +25,7 @@ class IMICRTS
 
     def draw(camera)
       visible_tiles(camera).each do |tile|
-        Gosu.draw_rect(
-          tile.position.x, tile.position.y,
-          @tile_size, @tile_size,
-          tile.color, tile.position.z
-        )
+        tile.image.draw(tile.position.x, tile.position.y, tile.position.z)
       end
     end
 
@@ -38,10 +36,10 @@ class IMICRTS
       top_left.x = top_left.x.ceil
       top_left.y = top_left.y.ceil
 
-      top_left /= @tiles.first.size
+      top_left /= @tile_size
 
       # +1 to overdraw a bit to hide pop-in
-      _width  = ($window.width / @tile_size) + 1
+      _width  = ($window.width / @tile_size)  + 1
       _height = ($window.height / @tile_size) + 1
 
       _height.times do |y|

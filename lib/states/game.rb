@@ -53,17 +53,20 @@ class IMICRTS
     def draw
       super
 
-      Gosu.draw_rect(0, 0, window.width, window.height, Gosu::Color.rgb(10, 175, 35))
+      # Gosu.draw_rect(0, 0, window.width, window.height, Gosu::Color.rgb(10, 175, 35))
 
       @player.camera.draw do
         @director.map.draw(@player.camera)
         @director.entities.each(&:draw)
         @selected_entities.each(&:selected_draw)
 
-        # draw_rect(@camera.center.x - 10, @camera.center.y - 10, 20, 20, Gosu::Color::BLACK, Float::INFINITY)
+        draw_rect(@player.camera.center.x - 10, @player.camera.center.y - 10, 20, 20, Gosu::Color::RED, Float::INFINITY)
 
-        # mouse = @camera.mouse_pick(window.mouse_x, window.mouse_y)
-        # draw_rect(mouse.x - 10, mouse.y - 10, 20, 20, Gosu::Color::YELLOW, Float::INFINITY)
+        mouse = @player.camera.pick(window.mouse)
+        draw_rect(mouse.x - 10, mouse.y - 10, 20, 20, Gosu::Color::YELLOW, Float::INFINITY)
+
+        draw_rect(@goal.x - 10, @goal.y - 10, 20, 20, Gosu::Color::WHITE, Float::INFINITY) if @goal
+
         Gosu.draw_rect(@box.min.x, @box.min.y, @box.width, @box.height, Gosu::Color.rgba(50, 50, 50, 150), Float::INFINITY) if @box
       end
 
@@ -76,7 +79,7 @@ class IMICRTS
       @director.update
       @player.camera.update
 
-      @selected_entities.each do |ent|
+      @player.selected_entities.each do |ent|
         ent.rotate_towards(@goal) if @goal
       end
 
@@ -84,13 +87,13 @@ class IMICRTS
         select_entities
       end
 
-      mouse = @player.camera.mouse_pick(window.mouse_x, window.mouse_y)
+      mouse = @player.camera.pick(window.mouse)
       @debug_info.text = %(
         FPS: #{Gosu.fps}
         Aspect Ratio: #{@player.camera.aspect_ratio}
         Zoom: #{@player.camera.zoom}
-        Window Mouse X: #{window.mouse_x}
-        Window Mouse Y: #{window.mouse_y}
+        Window Mouse X: #{window.mouse.x}
+        Window Mouse Y: #{window.mouse.y}
 
         World Mouse X: #{mouse.x}
         World Mouse Y: #{mouse.y}
@@ -107,7 +110,7 @@ class IMICRTS
       case id
       when Gosu::MS_LEFT
         unless @sidebar.hit?(window.mouse_x, window.mouse_y)
-          @selection_start = CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y) - @player.camera.position
+          @selection_start = @player.camera.pick(window.mouse)
         end
       when Gosu::MS_RIGHT
         @anchor = nil
@@ -120,7 +123,7 @@ class IMICRTS
 
       case id
       when Gosu::MS_RIGHT
-        @goal = @player.camera.mouse_pick(window.mouse_x, window.mouse_y)
+        @goal = @player.camera.pick(window.mouse)
       when Gosu::MS_LEFT
         @box = nil
         @selection_start = nil
@@ -132,7 +135,7 @@ class IMICRTS
     end
 
     def select_entities
-      @box = CyberarmEngine::BoundingBox.new(@selection_start, CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y) - @player.camera.position)
+      @box = CyberarmEngine::BoundingBox.new(@selection_start, @player.camera.pick(window.mouse))
 
       selected_entities = @player.entities.select do |ent|
         @box.point?(ent.position - ent.radius) ||

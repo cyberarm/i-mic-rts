@@ -1,7 +1,9 @@
 class IMICRTS
   class Window < CyberarmEngine::Engine
+    attr_reader :mouse
     def setup
       @last_update_time = Gosu.milliseconds
+      @mouse = CyberarmEngine::Vector.new
 
       self.caption = "#{IMICRTS::NAME} (#{IMICRTS::VERSION} #{IMICRTS::VERSION_NAME})"
       if ARGV.join.include?("--fast")
@@ -14,6 +16,7 @@ class IMICRTS
     end
 
     def update
+      @mouse.x, @mouse.y = self.mouse_x, self.mouse_y
       super
 
       @last_update_time = Gosu.milliseconds

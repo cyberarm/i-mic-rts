@@ -21,18 +21,14 @@ class IMICRTS
       if block
         Gosu.clip_to(@viewport.min.x, @viewport.min.y, @viewport.max.x, @viewport.max.y) do
           center_point = center
-          Gosu.translate(@position.x, @position.y) do
-            Gosu.scale(@zoom, @zoom, center.x, center.y) do
-              block.call
-            end
+          Gosu.transform(*worldspace.elements) do
+            block.call
           end
         end
       end
     end
 
     def update
-      @zoom = 1.0
-
       move
       @velocity *= @drag
 
@@ -42,14 +38,12 @@ class IMICRTS
       @viewport.max.y = window.height
     end
 
-    def mouse_pick(x, y)
-      mouse = CyberarmEngine::Vector.new(x, y)
+    def pick(vector)
+      inverse = (vector - @position) / @zoom
+      inverse.x = inverse.x.floor
+      inverse.y = inverse.y.floor
 
-      worldspace = (mouse - @position) / @zoom
-      worldspace.x = worldspace.x.floor
-      worldspace.y = worldspace.y.floor
-
-      return worldspace
+      return inverse
     end
 
     def center
@@ -59,6 +53,13 @@ class IMICRTS
     def center_around(vector, factor)
       @velocity *= 0
       @position += center.lerp(vector, factor) * window.dt
+    end
+
+    def worldspace
+      zoom_vector = CyberarmEngine::Vector.new(@zoom, @zoom)
+      position_matrix = CyberarmEngine::Matrix.translate(@position)
+
+      CyberarmEngine::Matrix.concat(CyberarmEngine::Matrix.scale(zoom_vector, center), position_matrix)
     end
 
     def visible?(object)
@@ -99,7 +100,7 @@ class IMICRTS
       when Gosu::MS_WHEEL_DOWN
         @zoom = (@zoom - 0.25).clamp(@min_zoom, @max_zoom)
       when Gosu::MS_MIDDLE
-        @drag_start = CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y) - @position
+        @drag_start = pick(CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y))
       end
     end
 
