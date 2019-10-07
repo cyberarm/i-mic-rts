@@ -32,19 +32,24 @@ class IMICRTS
     def visible_tiles(camera)
       _tiles = []
 
-      top_left = camera.center - CyberarmEngine::Vector.new($window.width / 2, $window.height / 2) / camera.zoom
-      top_left.x = top_left.x.ceil
-      top_left.y = top_left.y.ceil
-
+      top_left = (camera.center - camera.position) - CyberarmEngine::Vector.new($window.width / 2, $window.height / 2) / camera.zoom
       top_left /= @tile_size
 
+      top_left.x = top_left.x.floor
+      top_left.y = top_left.y.floor
+
+
       # +1 to overdraw a bit to hide pop-in
-      _width  = ($window.width / @tile_size)  + 1
-      _height = ($window.height / @tile_size) + 1
+      _width  = ((($window.width / @tile_size)  + 2) / camera.zoom).ceil
+      _height = ((($window.height / @tile_size) + 2) / camera.zoom).ceil
 
       _height.times do |y|
         _width.times do |x|
-          if tile = tile_at(x + top_left.x, y + top_left.y)
+          _x, _y = x + top_left.x, y + top_left.y
+          next if _x < 0 || _x > @width
+          next if _y < 0 || _y > @height
+
+          if tile = tile_at(_x, _y)
             _tiles.push(tile)
           end
         end

@@ -60,7 +60,8 @@ class IMICRTS
         @director.entities.each(&:draw)
         @selected_entities.each(&:selected_draw)
 
-        draw_rect(@player.camera.center.x - 10, @player.camera.center.y - 10, 20, 20, Gosu::Color::RED, Float::INFINITY)
+        center = @player.camera.center - @player.camera.position
+        draw_rect(center.x - 10, center.y - 10, 20, 20, Gosu::Color::RED, Float::INFINITY)
 
         mouse = @player.camera.pick(window.mouse)
         draw_rect(mouse.x - 10, mouse.y - 10, 20, 20, Gosu::Color::YELLOW, Float::INFINITY)
@@ -94,6 +95,9 @@ class IMICRTS
         Zoom: #{@player.camera.zoom}
         Window Mouse X: #{window.mouse.x}
         Window Mouse Y: #{window.mouse.y}
+
+        Camera Position X: #{@player.camera.position.x}
+        Camera Position Y: #{@player.camera.position.y}
 
         World Mouse X: #{mouse.x}
         World Mouse Y: #{mouse.y}

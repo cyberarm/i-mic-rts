@@ -20,7 +20,6 @@ class IMICRTS
     def draw(&block)
       if block
         Gosu.clip_to(@viewport.min.x, @viewport.min.y, @viewport.max.x, @viewport.max.y) do
-          center_point = center
           Gosu.transform(*worldspace.elements) do
             block.call
           end
@@ -39,7 +38,13 @@ class IMICRTS
     end
 
     def pick(vector)
-      inverse = (vector - @position) / @zoom
+      neg_center = CyberarmEngine::Vector.new(-center.x, -center.y)
+
+      scaled_position = ((vector - (@position)) / @zoom)
+      scaled_translation = (neg_center / @zoom + center)
+      # TODO: Fix error caused when @position != 0
+
+      inverse = (scaled_position + scaled_translation)
       inverse.x = inverse.x.floor
       inverse.y = inverse.y.floor
 
@@ -47,7 +52,7 @@ class IMICRTS
     end
 
     def center
-      (CyberarmEngine::Vector.new(window.width / 2, window.height / 2) - @position)
+      CyberarmEngine::Vector.new(window.width / 2, window.height / 2)
     end
 
     def center_around(vector, factor)
@@ -57,9 +62,9 @@ class IMICRTS
 
     def worldspace
       zoom_vector = CyberarmEngine::Vector.new(@zoom, @zoom)
-      position_matrix = CyberarmEngine::Matrix.translate(@position)
+      position_matrix = CyberarmEngine::Transform.translate(@position)
 
-      CyberarmEngine::Matrix.concat(CyberarmEngine::Matrix.scale(zoom_vector, center), position_matrix)
+      CyberarmEngine::Transform.concat(CyberarmEngine::Transform.scale(zoom_vector, center - @position), position_matrix)
     end
 
     def visible?(object)
