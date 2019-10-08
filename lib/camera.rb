@@ -22,6 +22,8 @@ class IMICRTS
         Gosu.clip_to(@viewport.min.x, @viewport.min.y, @viewport.max.x, @viewport.max.y) do
           Gosu.transform(*worldspace.elements) do
             block.call
+
+            Gosu.draw_line(@drag_start.x, @drag_start.y, Gosu::Color::RED, window.mouse.x, window.mouse_x, Gosu::Color::RED, Float::INFINITY) if @drag_start
           end
         end
       end
@@ -37,14 +39,14 @@ class IMICRTS
       @viewport.max.y = window.height
     end
 
-    def pick(vector)
+    def transform(vector)
       neg_center = CyberarmEngine::Vector.new(-center.x, -center.y)
 
-      scaled_position = ((vector - (@position)) / @zoom)
+      scaled_position = (vector) / @zoom
       scaled_translation = (neg_center / @zoom + center)
-      # TODO: Fix error caused when @position != 0
 
-      inverse = (scaled_position + scaled_translation)
+      inverse = (scaled_position + scaled_translation) - @position
+
       inverse.x = inverse.x.floor
       inverse.y = inverse.y.floor
 
@@ -84,14 +86,14 @@ class IMICRTS
     end
 
     def move
-      @velocity.x += @scroll_speed * window.dt if Gosu.button_down?(Gosu::KB_LEFT)  || window.mouse_x < 15
-      @velocity.x -= @scroll_speed * window.dt if Gosu.button_down?(Gosu::KB_RIGHT) || window.mouse_x > window.width - 15
-      @velocity.y += @scroll_speed * window.dt if Gosu.button_down?(Gosu::KB_UP)    || window.mouse_y < 15
-      @velocity.y -= @scroll_speed * window.dt if Gosu.button_down?(Gosu::KB_DOWN)  || window.mouse_y > window.height - 15
+      @velocity.x += (@scroll_speed / @zoom) * window.dt if Gosu.button_down?(Gosu::KB_LEFT)  || window.mouse_x < 15
+      @velocity.x -= (@scroll_speed / @zoom) * window.dt if Gosu.button_down?(Gosu::KB_RIGHT) || window.mouse_x > window.width - 15
+      @velocity.y += (@scroll_speed / @zoom) * window.dt if Gosu.button_down?(Gosu::KB_UP)    || window.mouse_y < 15
+      @velocity.y -= (@scroll_speed / @zoom) * window.dt if Gosu.button_down?(Gosu::KB_DOWN)  || window.mouse_y > window.height - 15
 
       if @drag_start
         @velocity *= 0.0
-        @position = @position.lerp(@drag_start - CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y), @grab_drag)
+        @position = @position.lerp(@drag_start - window.mouse.clone, @grab_drag / @zoom)
       end
     end
 
@@ -105,7 +107,7 @@ class IMICRTS
       when Gosu::MS_WHEEL_DOWN
         @zoom = (@zoom - 0.25).clamp(@min_zoom, @max_zoom)
       when Gosu::MS_MIDDLE
-        @drag_start = pick(CyberarmEngine::Vector.new(window.mouse_x, window.mouse_y))
+        @drag_start = transform(window.mouse)
       end
     end
 

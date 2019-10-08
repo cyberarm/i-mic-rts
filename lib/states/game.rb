@@ -63,7 +63,7 @@ class IMICRTS
         center = @player.camera.center - @player.camera.position
         draw_rect(center.x - 10, center.y - 10, 20, 20, Gosu::Color::RED, Float::INFINITY)
 
-        mouse = @player.camera.pick(window.mouse)
+        mouse = @player.camera.transform(window.mouse)
         draw_rect(mouse.x - 10, mouse.y - 10, 20, 20, Gosu::Color::YELLOW, Float::INFINITY)
 
         draw_rect(@goal.x - 10, @goal.y - 10, 20, 20, Gosu::Color::WHITE, Float::INFINITY) if @goal
@@ -88,7 +88,7 @@ class IMICRTS
         select_entities
       end
 
-      mouse = @player.camera.pick(window.mouse)
+      mouse = @player.camera.transform(window.mouse)
       @debug_info.text = %(
         FPS: #{Gosu.fps}
         Aspect Ratio: #{@player.camera.aspect_ratio}
@@ -96,8 +96,8 @@ class IMICRTS
         Window Mouse X: #{window.mouse.x}
         Window Mouse Y: #{window.mouse.y}
 
-        Camera Position X: #{@player.camera.position.x}
-        Camera Position Y: #{@player.camera.position.y}
+        Camera Position X: #{@player.camera.position.x / @player.camera.zoom}
+        Camera Position Y: #{@player.camera.position.y / @player.camera.zoom}
 
         World Mouse X: #{mouse.x}
         World Mouse Y: #{mouse.y}
@@ -114,7 +114,7 @@ class IMICRTS
       case id
       when Gosu::MS_LEFT
         unless @sidebar.hit?(window.mouse_x, window.mouse_y)
-          @selection_start = @player.camera.pick(window.mouse)
+          @selection_start = @player.camera.transform(window.mouse)
         end
       when Gosu::MS_RIGHT
         @anchor = nil
@@ -127,7 +127,7 @@ class IMICRTS
 
       case id
       when Gosu::MS_RIGHT
-        @goal = @player.camera.pick(window.mouse)
+        @goal = @player.camera.transform(window.mouse)
       when Gosu::MS_LEFT
         @box = nil
         @selection_start = nil
@@ -139,7 +139,7 @@ class IMICRTS
     end
 
     def select_entities
-      @box = CyberarmEngine::BoundingBox.new(@selection_start, @player.camera.pick(window.mouse))
+      @box = CyberarmEngine::BoundingBox.new(@selection_start, @player.camera.transform(window.mouse))
 
       selected_entities = @player.entities.select do |ent|
         @box.point?(ent.position - ent.radius) ||

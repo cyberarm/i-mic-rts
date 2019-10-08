@@ -1,6 +1,6 @@
 class IMICRTS
   class Map
-    Tile = Struct.new(:position, :color, :image)
+    Tile = Struct.new(:position, :color, :image, :state)
 
     def initialize(width:, height:, tile_size: 32)
       @width, @height = width, height
@@ -16,7 +16,9 @@ class IMICRTS
             Tile.new(
               CyberarmEngine::Vector.new(x * @tile_size, y * @tile_size, ZOrder::TILE),
               Gosu::Color.rgb(rand(25), rand(150..200), rand(25)),
-              @tileset.sample
+              @tileset.sample,
+              # :unexplored
+              :visible
             )
           )
         end
@@ -50,7 +52,7 @@ class IMICRTS
           next if _y < 0 || _y > @height
 
           if tile = tile_at(_x, _y)
-            _tiles.push(tile)
+            _tiles.push(tile) if tile.state != :unexplored
           end
         end
       end
