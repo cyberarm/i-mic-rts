@@ -60,13 +60,14 @@ class IMICRTS
         @director.entities.each(&:draw)
         @selected_entities.each(&:selected_draw)
 
-        center = @player.camera.center - @player.camera.position
-        draw_rect(center.x - 10, center.y - 10, 20, 20, Gosu::Color::RED, Float::INFINITY)
+        # center = @player.camera.center - @player.camera.position
+        # draw_rect(center.x - 10, center.y - 10, 20, 20, Gosu::Color::RED, Float::INFINITY)
 
-        mouse = @player.camera.transform(window.mouse)
-        draw_rect(mouse.x - 10, mouse.y - 10, 20, 20, Gosu::Color::YELLOW, Float::INFINITY)
+        # mouse = @player.camera.transform(window.mouse)
+        # draw_rect(mouse.x - 10, mouse.y - 10, 20, 20, Gosu::Color::YELLOW, Float::INFINITY)
 
-        draw_rect(@goal.x - 10, @goal.y - 10, 20, 20, Gosu::Color::WHITE, Float::INFINITY) if @goal
+        # Goal
+        # draw_rect(@goal.x - 10, @goal.y - 10, 20, 20, Gosu::Color::WHITE, Float::INFINITY) if @goal
 
         Gosu.draw_rect(@box.min.x, @box.min.y, @box.width, @box.height, Gosu::Color.rgba(50, 50, 50, 150), Float::INFINITY) if @box
       end

@@ -93,7 +93,8 @@ class IMICRTS
 
       if @drag_start
         @velocity *= 0.0
-        @position = @position.lerp(@drag_start - window.mouse.clone, @grab_drag / @zoom)
+
+        @position = window.mouse - @drag_start
       end
     end
 
@@ -107,7 +108,7 @@ class IMICRTS
       when Gosu::MS_WHEEL_DOWN
         @zoom = (@zoom - 0.25).clamp(@min_zoom, @max_zoom)
       when Gosu::MS_MIDDLE
-        @drag_start = transform(window.mouse)
+        @drag_start = window.mouse - @position
       end
     end
 
