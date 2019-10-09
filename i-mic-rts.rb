@@ -5,6 +5,7 @@ rescue LoadError
 end
 
 require_relative "lib/version"
+require_relative "lib/errors"
 require_relative "lib/window"
 require_relative "lib/camera"
 

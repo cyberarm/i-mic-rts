@@ -8,7 +8,7 @@ class IMICRTS
       :BUILDING,
       :AIR_VEHICLE,
 
-      :ENTITY_BOUNDING_BOX,
+      :ENTITY_RADIUS,
       :ENTITY_GIZMOS, # Health bar and the like
     ]
 

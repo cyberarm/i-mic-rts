@@ -16,7 +16,19 @@ class IMICRTS
       @@orders[order_id] = IMICRTS::Order.new(id: order_id, arguments: arguments, &handler)
     end
 
-    attr_reader :id
+    def self.define_serializer(order_id, &handler)
+      get(order_id).define_singleton_method(:serialize) do |order, director|
+        handler.call(order, director)
+      end
+    end
+
+    def self.define_deserializer(order_id, &handler)
+      get(order_id).define_singleton_method(:deserialize) do |string, director|
+        handler.call(string, director)
+      end
+    end
+
+    attr_reader :id, :arguments
     def initialize(id:, arguments:, &handler)
       @id = id
       @arguments = arguments
@@ -24,10 +36,11 @@ class IMICRTS
     end
 
     def execute(director, *arguments)
-      @handler.call(arguments(arguments), director)
+      pp Order.order_name(self.id)
+      @handler.call(struct(arguments), director)
     end
 
-    def arguments(args)
+    def struct(args)
       raise "Did not receive correct number of arguments: got #{args.size} expected #{@arguments.size}." unless @arguments.size == args.size
 
       hash = FriendlyHash.new
@@ -38,16 +51,15 @@ class IMICRTS
       return hash
     end
 
-    def serialize
+    def serialize(order, director)
     end
 
-    def deserialize
+    def deserialize(string, director)
     end
   end
 
   orders = [
-    :CAMERA_MOVED,
-    :CAMERA_ZOOMED,
+    :CAMERA_MOVE,
 
     :ENTITY_SELECTED,
     :ENTITY_DESELECTED,

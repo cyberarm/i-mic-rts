@@ -8,8 +8,8 @@ class IMICRTS
       @velocity = CyberarmEngine::Vector.new(0.0, 0.0)
 
       @zoom = 1.0
-      @min_zoom = 0.25
-      @max_zoom = 4.0
+      @min_zoom = 0.50
+      @max_zoom = 5.0
 
       @drag = 0.8 # Used to arrest velocity
       @grab_drag = 0.5 # Used when camera is panned using middle mouse button
@@ -22,8 +22,6 @@ class IMICRTS
         Gosu.clip_to(@viewport.min.x, @viewport.min.y, @viewport.max.x, @viewport.max.y) do
           Gosu.transform(*worldspace.elements) do
             block.call
-
-            Gosu.draw_line(@drag_start.x, @drag_start.y, Gosu::Color::RED, window.mouse.x, window.mouse_x, Gosu::Color::RED, Float::INFINITY) if @drag_start
           end
         end
       end
@@ -98,6 +96,11 @@ class IMICRTS
       end
     end
 
+    def move_to(x, y, zoom)
+      @position.x, @position.y = x, y
+      @zoom = zoom
+    end
+
     def button_down(id)
       case id
       when Gosu::KB_H
@@ -117,6 +120,10 @@ class IMICRTS
       when Gosu::MS_MIDDLE
         @drag_start = nil
       end
+    end
+
+    def to_a
+      [@position.x, @position.y, @zoom]
     end
   end
 end

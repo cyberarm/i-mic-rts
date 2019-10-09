@@ -19,6 +19,7 @@ class IMICRTS
           @buttons = stack(width: 75) do
             @h = button("Harvester", width: 1.0) do
               @player.entities << Entity.new(
+                player: @player,
                 id: @player.next_entity_id,
                 images: Gosu::Image.new("#{ASSETS_PATH}/vehicles/harvester/images/harvester.png", retro: true),
                 position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
@@ -27,6 +28,7 @@ class IMICRTS
             end
             @c = button("Construction Worker", width: 1.0) do
               @player.entities << Entity.new(
+                player: @player,
                 id: @player.next_entity_id,
                 images: Gosu::Image.new("#{ASSETS_PATH}/vehicles/construction_worker/images/construction_worker.png", retro: true),
                 position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
@@ -81,10 +83,6 @@ class IMICRTS
       @director.update
       @player.camera.update
 
-      @player.selected_entities.each do |ent|
-        ent.rotate_towards(@goal) if @goal
-      end
-
       if @selection_start
         select_entities
       end
@@ -113,13 +111,17 @@ class IMICRTS
       super
 
       case id
+      when Gosu::KB_S
+        @director.schedule_order(Order::STOP, @player.id)
+
       when Gosu::MS_LEFT
         unless @sidebar.hit?(window.mouse_x, window.mouse_y)
           @selection_start = @player.camera.transform(window.mouse)
         end
       when Gosu::MS_RIGHT
-        @anchor = nil
+        @director.schedule_order(Order::MOVE, @player.id, @player.camera.transform(window.mouse))
       end
+
       @player.camera.button_down(id) unless @sidebar.hit?(window.mouse_x, window.mouse_y)
     end
 
@@ -128,12 +130,14 @@ class IMICRTS
 
       case id
       when Gosu::MS_RIGHT
-        @goal = @player.camera.transform(window.mouse)
       when Gosu::MS_LEFT
         @box = nil
         @selection_start = nil
 
-        @director.issue_order(Order::SELECTED_UNITS, @player.id, @selected_entities)
+        diff = (@player.selected_entities - @selected_entities)
+
+        @director.schedule_order(Order::DESELECTED_UNITS, @player.id, diff)
+        @director.schedule_order(Order::SELECTED_UNITS, @player.id, @selected_entities)
       end
 
       @player.camera.button_up(id)
