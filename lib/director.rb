@@ -61,7 +61,9 @@ class IMICRTS
       if order = Order.get(order_id)
         struct = order.struct(args)
 
-        player(struct.player_id).orders.push(Player::ScheduledOrder.new( order_id, @current_tick + 1, order.serialize(struct, self) ))
+        scheduled_order = Player::ScheduledOrder.new( order_id, @current_tick + 1, order.serialize(struct, self) )
+        @connection.add_order(scheduled_order)
+        player(struct.player_id).orders.push(scheduled_order)
       else
         raise "Undefined order: #{Order.order_name(order_id)}"
       end
@@ -73,7 +75,9 @@ class IMICRTS
 
         pp Order.order_name(order_id)
 
-        player(struct.player_id).orders.push(Player::ScheduledOrder.new( order_id, @current_tick + 2, order.serialize(struct, self) ))
+        scheduled_order = Player::ScheduledOrder.new( order_id, @current_tick + 2, order.serialize(struct, self) )
+        @connection.add_order(scheduled_order)
+        player(struct.player_id).orders.push(scheduled_order)
       else
         raise "Undefined order: #{Order.order_name(order_id)}"
       end

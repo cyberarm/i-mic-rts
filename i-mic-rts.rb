@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 begin
   require_relative "../cyberarm_engine/lib/cyberarm_engine"
 rescue LoadError
