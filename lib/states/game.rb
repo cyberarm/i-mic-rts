@@ -4,7 +4,7 @@ class IMICRTS
       window.show_cursor = true
 
       @player = Player.new(id: 0)
-      @director = Director.new(map: Map.new(width: 256, height: 256), players: [@player])
+      @director = Director.new(map: Map.new(map_file: "maps/test_map.tmx"), players: [@player])
 
       @selected_entities = []
 

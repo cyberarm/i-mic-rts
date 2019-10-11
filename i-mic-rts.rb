@@ -6,6 +6,8 @@ rescue LoadError
   require "cyberarm_engine"
 end
 
+require "nokogiri"
+
 require_relative "lib/version"
 require_relative "lib/errors"
 require_relative "lib/window"
@@ -26,6 +28,7 @@ require_relative "lib/zorder"
 require_relative "lib/entity"
 # require_relative "lib/entities/"
 require_relative "lib/map"
+require_relative "lib/tiled_map"
 
 require_relative "lib/order"
 require_relative "lib/friendly_hash"

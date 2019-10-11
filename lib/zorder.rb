@@ -3,6 +3,7 @@ class IMICRTS
     base_z = 5
     enum = [
       :TILE,
+      :ORE,
       :DECORATION,
       :GROUND_VEHICLE,
       :BUILDING,
