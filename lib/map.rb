@@ -2,7 +2,7 @@ class IMICRTS
   class Map
     Tile = Struct.new(:position, :color, :image, :state, :type)
 
-    attr_reader :tiles, :ores
+    attr_reader :tile_size, :tiles, :ores
     def initialize(map_file:)
       @tiled_map = TiledMap.new(map_file)
 

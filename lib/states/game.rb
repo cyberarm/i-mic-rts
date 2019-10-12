@@ -90,6 +90,7 @@ class IMICRTS
       end
 
       mouse = @player.camera.transform(window.mouse)
+      tile  = @director.map.tile_at(mouse.x / @director.map.tile_size, mouse.y / @director.map.tile_size)
       @debug_info.text = %(
         FPS: #{Gosu.fps}
         Aspect Ratio: #{@player.camera.aspect_ratio}
@@ -104,6 +105,7 @@ class IMICRTS
         World Mouse Y: #{mouse.y}
 
         Director Tick: #{@director.current_tick}
+        Tile: X: #{tile.position.x} Y: #{tile.position.y} Type: #{tile.type}
       ).lines.map { |line| line.strip }.join("\n")
 
       @debug_info.x = @sidebar.width + 20
