@@ -1,11 +1,27 @@
 class IMICRTS
   class Entity
-    attr_reader :player, :id, :position, :angle, :radius, :target, :state
-    def initialize(player:, id:, manifest: nil, images:, position:, angle:)
+    Stub = Struct.new(:name, :type, :cost, :description, :setup)
+    @entities = {}
+
+    def self.get(name)
+      @entities.dig(name)
+    end
+
+    def self.define_entity(name, type, cost, description, &block)
+      if entity = get(name)
+        raise "#{name.inspect} is already defined!"
+      else
+        @entities[name] = Stub.new(name, type, cost, description, block)
+      end
+    end
+
+    attr_reader :player, :id, :name, :type
+    attr_accessor :position, :angle, :radius, :target, :state,
+                  :movement, :health, :max_health,
+                  :turret
+    def initialize(name:, player:, id:, position:, angle:, director:)
       @player = player
       @id = id
-      @manifest = manifest
-      @images = images
       @position = position
       @angle = angle
 
@@ -13,7 +29,14 @@ class IMICRTS
       @target = nil
       @state  = :idle
 
-      # process_manifest
+      if entity = Entity.get(name)
+        @name = entity.name
+        @type = entity.type
+
+        entity.setup.call(self, director)
+      else
+        raise "Failed to find entity #{name.inspect} definition"
+      end
 
       @goal_color   = Gosu::Color.argb(175, 25, 200, 25)
       @target_color = Gosu::Color.argb(175, 200, 25, 25)
@@ -23,6 +46,22 @@ class IMICRTS
     end
 
     def deserialize
+    end
+
+    def body_image=(image)
+      @body_image = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
+    end
+
+    def shell_image=(image)
+      @shell_image = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
+    end
+
+    def turret_body_image=(image)
+      @turret_body_image = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
+    end
+
+    def turret_shell_image=(image)
+      @turret_shell_image = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
     end
 
     def target=(entity)
@@ -42,11 +81,20 @@ class IMICRTS
     end
 
     def draw
-      @images.draw_rot(@position.x, @position.y, @position.z, @angle)
+      @body_image.draw_rot(@position.x, @position.y, @position.z, @angle)
+      @shell_image.draw_rot(@position.x, @position.y, @position.z, @angle, 0.5, 0.5, 1, 1, @player.color)
     end
 
     def update
-      rotate_towards(@target) if @target
+      rotate_towards(@target) if @target && @movement
+    end
+
+    def tick(tick_id)
+      @on_tick.call if @on_tick
+    end
+
+    def on_tick(&block)
+      @on_tick = block
     end
 
     def selected_draw
@@ -84,4 +132,8 @@ class IMICRTS
       @angle %= 360.0
     end
   end
+end
+
+Dir.glob("#{IMICRTS::GAME_ROOT_PATH}/lib/entities/*.rb").each do |entity|
+  require_relative entity
 end

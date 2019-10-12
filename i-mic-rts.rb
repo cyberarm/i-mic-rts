@@ -26,7 +26,6 @@ require_relative "lib/states/menus/multiplayer_lobby_menu"
 
 require_relative "lib/zorder"
 require_relative "lib/entity"
-# require_relative "lib/entities/"
 require_relative "lib/map"
 require_relative "lib/tiled_map"
 

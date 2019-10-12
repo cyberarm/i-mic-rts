@@ -2,6 +2,7 @@ class IMICRTS
   class Map
     Tile = Struct.new(:position, :color, :image, :state, :type)
 
+    attr_reader :tiles, :ores
     def initialize(map_file:)
       @tiled_map = TiledMap.new(map_file)
 
@@ -19,6 +20,9 @@ class IMICRTS
           end
         end
       end
+
+      @tiles.freeze
+      @ores.freeze
     end
 
     def add_terrain(x, y, tile_id)

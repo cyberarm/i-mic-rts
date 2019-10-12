@@ -17,6 +17,7 @@ class IMICRTS
     end
 
     def tick(tick_id)
+      @entities.each { |ent| ent.tick(tick_id) }
     end
 
     def update

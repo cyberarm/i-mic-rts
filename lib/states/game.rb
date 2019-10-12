@@ -8,7 +8,7 @@ class IMICRTS
 
       @selected_entities = []
 
-      @debug_info = CyberarmEngine::Text.new("", y: 10, z: Float::INFINITY)
+      @debug_info = CyberarmEngine::Text.new("", y: 10, z: Float::INFINITY, shadow_color: Gosu::Color.rgba(0, 0, 0, 200))
 
       @sidebar = stack(height: 1.0) do
         background [0x55555555, 0x55666666]
@@ -19,18 +19,20 @@ class IMICRTS
           @buttons = stack(width: 75) do
             @h = button("Harvester", width: 1.0) do
               @player.entities << Entity.new(
+                name: :harvester,
+                director: @director,
                 player: @player,
                 id: @player.next_entity_id,
-                images: Gosu::Image.new("#{ASSETS_PATH}/vehicles/harvester/images/harvester.png", retro: true),
                 position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
                 angle: rand(360)
               )
             end
             @c = button("Construction Worker", width: 1.0) do
               @player.entities << Entity.new(
+                name: :construction_worker,
+                director: @director,
                 player: @player,
                 id: @player.next_entity_id,
-                images: Gosu::Image.new("#{ASSETS_PATH}/vehicles/construction_worker/images/construction_worker.png", retro: true),
                 position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
                 angle: rand(360)
               )
