@@ -15,9 +15,69 @@
    version="1.1"
    id="svg134"
    sodipodi:docname="barracks.svg"
-   inkscape:version="0.92.4 5da689c313, 2019-01-14">
+   inkscape:version="0.92.4 5da689c313, 2019-01-14"
+   inkscape:export-filename="/home/cyberarm/Code/i-mic-rts/assets/buildings/barracks/barracks.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
   <defs
-     id="defs128" />
+     id="defs128">
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Greyscale"
+       id="filter9425">
+      <feColorMatrix
+         values="0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0 0 0 1 0 "
+         id="feColorMatrix9423" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Greyscale"
+       id="filter9429">
+      <feColorMatrix
+         values="0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0 0 0 1 0 "
+         id="feColorMatrix9427" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Greyscale"
+       id="filter9433">
+      <feColorMatrix
+         values="0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0 0 0 1 0 "
+         id="feColorMatrix9431" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Greyscale"
+       id="filter9437">
+      <feColorMatrix
+         values="0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0 0 0 1 0 "
+         id="feColorMatrix9435" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Greyscale"
+       id="filter9441">
+      <feColorMatrix
+         values="0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0 0 0 1 0 "
+         id="feColorMatrix9439" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Greyscale"
+       id="filter9445">
+      <feColorMatrix
+         values="0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0 0 0 1 0 "
+         id="feColorMatrix9443" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Greyscale"
+       id="filter9449">
+      <feColorMatrix
+         values="0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0 0 0 1 0 "
+         id="feColorMatrix9447" />
+    </filter>
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -26,8 +86,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.6"
-     inkscape:cx="32.400703"
-     inkscape:cy="35.610975"
+     inkscape:cx="8.2935601"
+     inkscape:cy="42.575261"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -181,41 +241,41 @@
      id="layer1"
      transform="translate(0,-271.60001)">
     <rect
-       style="fill:#fcaf3e;stroke:#000000;stroke-width:0.34263074"
+       style="fill:#fcaf3e;stroke:#000000;stroke-width:0.34263074;filter:url(#filter9449)"
        id="rect1173"
        width="6.9617586"
        height="21.872913"
        x="1.6926695"
        y="273.36829" />
     <rect
-       style="fill:#fcaf3e;stroke:#000000;stroke-width:0.34263074"
+       style="fill:#fcaf3e;stroke:#000000;stroke-width:0.34263074;filter:url(#filter9445)"
        id="rect1173-1"
        width="6.9617586"
        height="21.872913"
        x="16.745571"
        y="273.36829" />
     <path
-       style="fill:#fcaf3e;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#fcaf3e;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter9441)"
        d="m 14.816666,273.18751 h -4.233333 l -1.9289049,2.64583 v 16.93334 l 1.9289049,2.64583 h 4.233333 l 1.928905,-2.64583 v -16.93334 z"
        id="path889"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:#f57900;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#f57900;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter9437)"
        d="m 20.22645,273.36829 v 21.87291 l 3.480879,1e-5 v -21.87292 z"
        id="path897"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:#f57900;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#f57900;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter9433)"
        d="m 5.173549,273.36829 v 21.87291 l -3.4808795,1e-5 v -21.87292 z"
        id="path899"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:#f57900;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#f57900;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter9429)"
        d="m 14.816666,275.83334 h -4.233333 l -1.9289049,2.64584 v 11.64166 l 1.9289049,2.64584 h 4.233333 l 1.928905,-2.64584 v -11.64166 z"
        id="path905"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:#ce5c00;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#ce5c00;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter9425)"
        d="m 14.816666,278.47918 h -4.233333 l -1.9289049,2.64583 v 6.35 l 1.9289049,2.64583 h 4.233333 l 1.928905,-2.64583 v -6.35 z"
        id="path911"
        inkscape:connector-curvature="0" />

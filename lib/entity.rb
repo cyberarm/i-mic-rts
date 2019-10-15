@@ -81,8 +81,13 @@ class IMICRTS
     end
 
     def draw
-      @body_image.draw_rot(@position.x, @position.y, @position.z, @angle)
+      @body_image.draw_rot(@position.x, @position.y, @position.z, @angle) if @body_image
       @shell_image.draw_rot(@position.x, @position.y, @position.z, @angle, 0.5, 0.5, 1, 1, @player.color)
+      @overlay_image.draw_rot(@position.x, @position.y, @position.z, @angle, 0.5, 0.5, 1, 1) if @overlay_image
+
+      @turret_body_image.draw_rot(@position.x, @position.y, @position.z, @angle, 0.5, 0.5, 1, 1) if @turret_body_image
+      @turret_shell_image.draw_rot(@position.x, @position.y, @position.z, @angle, 0.5, 0.5, 1, 1, @player.color) if @turret_shell_image
+      @turret_overlay_image.draw_rot(@position.x, @position.y, @position.z, @angle, 0.5, 0.5, 1, 1) if @turret_overlay_image
     end
 
     def update

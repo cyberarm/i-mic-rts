@@ -37,6 +37,16 @@ class IMICRTS
                 angle: rand(360)
               )
             end
+            @t = button("Tank", width: 1.0) do
+              @player.entities << Entity.new(
+                name: :tank,
+                director: @director,
+                player: @player,
+                id: @player.next_entity_id,
+                position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
+                angle: rand(360)
+              )
+            end
           end
 
           stack(width: 0.25, height: 1.0) do
@@ -51,7 +61,7 @@ class IMICRTS
         end
       end
 
-      100.times { |i| [@c, @h].sample.instance_variable_get("@block").call }
+      100.times { |i| [@c, @h, @t].sample.instance_variable_get("@block").call }
     end
 
     def draw

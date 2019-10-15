@@ -15,9 +15,29 @@
    version="1.1"
    id="svg134"
    sodipodi:docname="helipad.svg"
-   inkscape:version="0.92.4 5da689c313, 2019-01-14">
+   inkscape:version="0.92.4 5da689c313, 2019-01-14"
+   inkscape:export-filename="/home/cyberarm/Code/i-mic-rts/assets/buildings/helipad/helipad_overlay.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
   <defs
-     id="defs128" />
+     id="defs128">
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Greyscale"
+       id="filter8581">
+      <feColorMatrix
+         values="0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0 0 0 1 0 "
+         id="feColorMatrix8579" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Greyscale"
+       id="filter8585">
+      <feColorMatrix
+         values="0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0.21 0.72 0.072 0 0 0 0 0 1 0 "
+         id="feColorMatrix8583" />
+    </filter>
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -26,7 +46,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.6"
-     inkscape:cx="36.329274"
+     inkscape:cx="-2.420726"
      inkscape:cy="46.325261"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -50,8 +70,8 @@
      inkscape:snap-page="true"
      inkscape:snap-object-midpoints="true"
      inkscape:snap-center="true"
-     inkscape:window-width="1600"
-     inkscape:window-height="834"
+     inkscape:window-width="1920"
+     inkscape:window-height="1006"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1" />
@@ -63,7 +83,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -73,14 +93,14 @@
      id="layer1"
      transform="translate(0,-271.60001)">
     <path
-       style="fill:#ce5c00;stroke:#000000;stroke-width:1"
+       style="fill:#ce5c00;stroke:#000000;stroke-width:1;filter:url(#filter8585)"
        d="m 46.25,18.892578 c -4.250756,-4.75e-4 -7.696999,5.485118 -7.697266,9.785156 9.34e-4,0.432665 0.03752,0.864499 0.109375,1.291016 -6.793419,2.331344 -12.139333,7.654215 -14.5,14.4375 -0.430703,-0.0778 -0.867179,-0.118316 -1.304687,-0.121094 -4.251511,-4.76e-4 -9.698066,3.486309 -9.697266,7.78711 2.67e-4,4.300038 5.44651,7.785631 9.697266,7.785156 0.443213,1.74e-4 0.885613,-0.03838 1.322266,-0.115234 2.356686,6.782948 7.698048,12.107748 14.488281,14.443359 -0.07318,0.422493 -0.111725,0.850382 -0.115235,1.279297 2.67e-4,4.300038 3.44651,9.785631 7.697266,9.785156 4.250756,4.75e-4 7.696999,-5.485118 7.697266,-9.785156 -0.001,-0.435982 -0.03828,-0.871106 -0.111328,-1.300782 6.787242,-2.332729 12.128066,-7.651954 14.488281,-14.429687 0.435143,0.07925 0.876228,0.120415 1.318359,0.123047 4.250756,4.76e-4 9.696999,-3.485118 9.697266,-7.785156 8e-4,-4.300801 -5.445755,-7.787586 -9.697266,-7.78711 -0.443269,4.71e-4 -0.885669,0.03968 -1.322266,0.117188 -2.356182,-6.783693 -7.69762,-12.10929 -14.488281,-14.445313 0.07318,-0.422493 0.111725,-0.850382 0.115235,-1.279297 -2.67e-4,-4.300038 -3.44651,-9.785631 -7.697266,-9.785156 z"
        transform="matrix(0.26458332,0,0,0.26458332,0,271.60001)"
        id="path140"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccccccccccccccccccc" />
     <circle
-       style="fill:#fcaf3e;stroke:#000000;stroke-width:0.26458332"
+       style="fill:#fcaf3e;stroke:#000000;stroke-width:0.26458332;filter:url(#filter8581)"
        id="path1045"
        cx="12.376776"
        cy="285.23511"

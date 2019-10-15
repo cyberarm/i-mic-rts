@@ -4,7 +4,7 @@ IMICRTS::Entity.define_entity(:harvester, :unit, 1400, "Harvests ore") do |entit
   entity.max_health = 100.0
 
   entity.body_image = "vehicles/harvester/images/harvester.png"
-  entity.shell_image = "vehicles/harvester/images/harvester.png"
+  entity.shell_image = "vehicles/harvester/images/harvester_shell.png"
 
   @capacity = 10.0
   @bed = 0.0
