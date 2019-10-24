@@ -15,8 +15,8 @@ class IMICRTS
 
         label "SIDEBAR", text_size: 78, margin_bottom: 20
 
-        flow do
-          @buttons = stack(width: 75) do
+        flow(width: 1.0) do
+          @buttons = stack(width: 0.9) do
             @h = button("Harvester", width: 1.0) do
               @player.entities << Entity.new(
                 name: :harvester,
@@ -49,7 +49,8 @@ class IMICRTS
             end
           end
 
-          stack(width: 0.25, height: 1.0) do
+          # Power meter
+          stack(width: 0.1, height: 1.0, align: :bottom) do
             background Gosu::Color::GREEN
           end
         end

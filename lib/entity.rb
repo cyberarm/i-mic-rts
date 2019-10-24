@@ -139,6 +139,6 @@ class IMICRTS
   end
 end
 
-Dir.glob("#{IMICRTS::GAME_ROOT_PATH}/lib/entities/*.rb").each do |entity|
+Dir.glob("#{IMICRTS::GAME_ROOT_PATH}/lib/entities/**/*.rb").each do |entity|
   require_relative entity
 end
