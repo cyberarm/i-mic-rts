@@ -127,6 +127,22 @@ class IMICRTS
 
         # TODO: Add diagonal nodes, if requested
         if @allow_diagonal
+          # LEFT-UP
+          if node_above? && node_above_left?
+            add_node create_node(@current_node.tile.grid_position.x - 1, @current_node.tile.grid_position.y - 1, @current_node)
+          end
+          # LEFT-DOWN
+          if node_below? && node_below_left?
+            add_node create_node(@current_node.tile.grid_position.x - 1, @current_node.tile.grid_position.y + 1, @current_node)
+          end
+          # RIGHT-UP
+          if node_above? && node_above_right?
+            add_node create_node(@current_node.tile.grid_position.x + 1, @current_node.tile.grid_position.y - 1, @current_node)
+          end
+          # RIGHT-DOWN
+          if node_below? && node_below_right?
+            add_node create_node(@current_node.tile.grid_position.x + 1, @current_node.tile.grid_position.y + 1, @current_node)
+          end
         end
 
         @current_node = next_node
@@ -183,6 +199,30 @@ class IMICRTS
         end
 
         return fittest
+      end
+
+      def node_above?(node = @current_node)
+        node && @map.tiles.dig(node.tile.grid_position.x, node.tile.grid_position.y - 1)
+      end
+
+      def node_below?(node = @current_node)
+        node && @map.tiles.dig(node.tile.grid_position.x, node.tile.grid_position.y + 1)
+      end
+
+      def node_above_left?(node = @current_node)
+        node && @map.tiles.dig(node.tile.grid_position.x - 1, node.tile.grid_position.y - 1)
+      end
+
+      def node_above_right?(node = @current_node)
+        node && @map.tiles.dig(node.tile.grid_position.x + 1, node.tile.grid_position.y - 1)
+      end
+
+      def node_below_left?(node = @current_node)
+        node && @map.tiles.dig(node.tile.grid_position.x - 1, node.tile.grid_position.y + 1)
+      end
+
+      def node_below_right?(node = @current_node)
+        node && @map.tiles.dig(node.tile.grid_position.x + 1, node.tile.grid_position.y + 1)
       end
     end
   end
