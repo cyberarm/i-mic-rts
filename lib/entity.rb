@@ -24,6 +24,7 @@ class IMICRTS
       @id = id
       @position = position
       @angle = angle
+      @director = director
 
       @radius = 32 / 2
       @target = nil
@@ -66,6 +67,7 @@ class IMICRTS
 
     def target=(entity)
       @target = entity
+      @path = @director.find_path(player: @player, entity: self, goal: @target)
     end
 
     def hit?(x_or_vector, y = nil)
@@ -92,6 +94,9 @@ class IMICRTS
 
     def update
       rotate_towards(@target) if @target && @movement
+
+      if @movement
+      end
     end
 
     def tick(tick_id)
@@ -113,6 +118,15 @@ class IMICRTS
 
     def draw_gizmos
       Gosu.draw_rect(@position.x - @radius, @position.y - (@radius + 2), @radius * 2, 2, Gosu::Color::GREEN, ZOrder::ENTITY_GIZMOS)
+
+      if @path
+        @path.path.each_with_index do |node, i|
+          next_node = @path.path.dig(i + 1)
+          if next_node
+            Gosu.draw_line(node.tile.position.x, node.tile.position.y, Gosu::Color::RED, next_node.tile.position.x, next_node.tile.position.y, Gosu::Color::RED, ZOrder::ENTITY_GIZMOS)
+          end
+        end
+      end
 
       if @target.is_a?(IMICRTS::Entity)
         Gosu.draw_line(@position.x, @position.y, @target_color, @target.position.x, @target.position.y, @target_color, ZOrder::ENTITY_GIZMOS) if @target

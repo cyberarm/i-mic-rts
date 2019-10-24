@@ -57,6 +57,15 @@ class IMICRTS
       @players.find { |player| player.id == id }
     end
 
+    def find_path(player:, entity:, goal:, travels_along: :ground, allow_diagonal: false, klass: IMICRTS::Pathfinder::BasePathfinder)
+      if klass.cached_path(entity, goal, travels_along)
+        puts "using a cached path!" if true#Setting.enabled?(:debug_mode)
+        return klass.cached_path(entity, goal, travels_along)
+      end
+
+      klass.new(director: self, entity: entity, goal: goal, travels_along: travels_along, allow_diagonal: allow_diagonal)
+    end
+
     def record_order(order_id, *args)
       if order = Order.get(order_id)
         struct = order.struct(args)

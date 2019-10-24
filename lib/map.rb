@@ -1,7 +1,5 @@
 class IMICRTS
   class Map
-    Tile = Struct.new(:position, :color, :image, :state, :type)
-
     attr_reader :tile_size, :tiles, :ores
     def initialize(map_file:)
       @tiled_map = TiledMap.new(map_file)
@@ -9,8 +7,8 @@ class IMICRTS
       @width, @height = @tiled_map.width, @tiled_map.height
       @tile_size = @tiled_map.tile_size
 
-      @tiles = []
-      @ores  = []
+      @tiles = {}
+      @ores  = {}
 
       @tiled_map.layers.each do |layer|
         layer.height.times do |y|
@@ -27,13 +25,16 @@ class IMICRTS
 
     def add_terrain(x, y, tile_id)
       if tile = @tiled_map.get_tile(tile_id - 1)
-        @tiles << Tile.new(
-          CyberarmEngine::Vector.new(x * @tile_size, y * @tile_size, ZOrder::TILE),
-          nil,
-          tile.image,
-          :yes,
-          tile.data.type
+        _tile = Tile.new(
+          position: CyberarmEngine::Vector.new(x * @tile_size, y * @tile_size, ZOrder::TILE),
+          image: tile.image,
+          visible: true,
+          type: tile.data.type.to_sym,
+          tile_size: @tile_size
         )
+
+        @tiles[x] ||= {}
+        @tiles[x][y] = _tile
       else
         raise "No such tile!"
       end
@@ -41,15 +42,16 @@ class IMICRTS
 
     def add_ore(x, y, tile_id)
       if tile = @tiled_map.get_tile(tile_id - 1)
-        @ores << Tile.new(
-          CyberarmEngine::Vector.new(x * @tile_size, y * @tile_size, ZOrder::ORE),
-          nil,
-          tile.image,
-          :yes,
-          nil
+        _ore = Tile.new(
+          position: CyberarmEngine::Vector.new(x * @tile_size, y * @tile_size, ZOrder::ORE),
+          image: tile.image,
+          visible: true,
+          type: nil,
+          tile_size: @tile_size
         )
-      else
-        @ores << nil
+
+        @ores[x] ||= {}
+        @ores[x][y] = _ore
       end
     end
 
@@ -80,11 +82,11 @@ class IMICRTS
           next if _y < 0 || _y > @height
 
           if tile = tile_at(_x, _y)
-            _tiles.push(tile) if tile.state != :unexplored
+            _tiles.push(tile) if tile.visible
           end
 
           if ore = ore_at(_x, _y)
-            _tiles.push(ore) if ore.state != :unexplored
+            _tiles.push(ore) if ore.visible
           end
         end
       end
@@ -93,11 +95,26 @@ class IMICRTS
     end
 
     def tile_at(x, y)
-      @tiles[x + y * @width]
+      @tiles.dig(x, y)
     end
 
     def ore_at(x, y)
-      @ores[x + y * @width]
+      @ores.dig(x, y)
+    end
+
+    class Tile
+      attr_accessor :position, :grid_position, :image, :visible, :entity, :type
+      def initialize(position:, image:, visible:, type:, tile_size:)
+        @position = position
+        @grid_position = position.clone
+        @grid_position /= tile_size
+        @grid_position.x, @grid_position.y = @grid_position.x.floor, @grid_position.y.floor
+
+        @image = image
+        @visible = visible
+        @entity = nil
+        @type = type
+      end
     end
   end
 end

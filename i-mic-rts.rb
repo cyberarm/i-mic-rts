@@ -28,6 +28,7 @@ require_relative "lib/zorder"
 require_relative "lib/entity"
 require_relative "lib/map"
 require_relative "lib/tiled_map"
+require_relative "lib/pathfinder"
 
 require_relative "lib/order"
 require_relative "lib/friendly_hash"

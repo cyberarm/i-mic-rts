@@ -18,11 +18,11 @@ IMICRTS::Entity.define_entity(:harvester, :unit, 1400, "Harvests ore") do |entit
   end
 
   entity.define_singleton_method(:seek_ore) do
-    ore = director.map.ores.compact.sort_by { |ore| next unless ore; ore.position.distance(entity.position) }.first
+    # ore = director.map.ores.compact.sort_by { |ore| next unless ore; ore.position.distance(entity.position) }.first
 
-    n = (ore.position - entity.position).normalized
-    n.z = 0
-    entity.position += n * 3
+    # n = (ore.position - entity.position).normalized
+    # n.z = 0
+    # entity.position += n * 3
   end
 
   entity.define_singleton_method(:seek_refinery) do

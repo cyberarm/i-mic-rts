@@ -116,7 +116,7 @@ class IMICRTS
         World Mouse Y: #{mouse.y}
 
         Director Tick: #{@director.current_tick}
-        Tile: X: #{tile.position.x} Y: #{tile.position.y} Type: #{tile.type}
+        #{ tile ? "Tile: X: #{tile.position.x} Y: #{tile.position.y} Type: #{tile.type}" : ""}
       ).lines.map { |line| line.strip }.join("\n")
 
       @debug_info.x = @sidebar.width + 20
