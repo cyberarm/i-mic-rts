@@ -18,7 +18,7 @@ class IMICRTS
                 stack do
                   case elements[index]
                   when :edit_line
-                    edit_line "Novice"
+                    edit_line Setting.get(:player_name)
                   when :button
                     button item
                   when :toggle_button

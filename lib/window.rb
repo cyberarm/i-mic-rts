@@ -6,10 +6,10 @@ class IMICRTS
       @mouse = CyberarmEngine::Vector.new
 
       self.caption = "#{IMICRTS::NAME} (#{IMICRTS::VERSION} #{IMICRTS::VERSION_NAME})"
-      if ARGV.join.include?("--fast")
-        push_state(MainMenu)
-      elsif ARGV.join.include?("--debug")
+      if ARGV.join.include?("--debug-game")
         push_state(Game)
+      elsif Setting.enabled?(:skip_intro)
+        push_state(MainMenu)
       else
         push_state(Boot)
       end

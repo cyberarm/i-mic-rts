@@ -4,8 +4,8 @@ class IMICRTS
       Node = Struct.new(:tile, :parent, :distance, :cost)
       CACHE = {}
 
-      def self.cached_path(source, goal, travels_along)
-        found_path = CACHE.dig(travels_along, source, goal)
+      def self.cached_path(entity, goal, travels_along)
+        found_path = CACHE.dig(travels_along, entity, goal)
         if found_path
           found_path = nil unless found_path.valid?
         end
@@ -55,7 +55,7 @@ class IMICRTS
 
         @current_node = create_node(position.x, position.y)
         unless @current_node
-          puts "Failed to find path!" if true
+          puts "Failed to find path!" if Setting.enabled?(:debug_mode)
           return
         end
 
@@ -65,7 +65,7 @@ class IMICRTS
 
         find
 
-        Pathfinder.cache_path(self) if @path.size > 0 && false#Setting.enabled?(:cache_paths)
+        self.class.cache_path(self) if @path.size > 0 && true#Setting.enabled?(:debug_cache_paths)
       end
 
       # Checks if Map still has all of paths required tiles
@@ -87,7 +87,7 @@ class IMICRTS
         end
 
         if @depth >= @max_depth
-          puts "Failed to find path from: #{@source.x}:#{@source.y} (#{@map.grid.dig(@source.x,@source.y).element.class}) to: #{@goal.position.x}:#{@goal.position.y} (#{@goal.element.class}) [#{@depth}/#{@max_depth} depth]" if true#Setting.enabled?(:debug_mode)
+          puts "Failed to find path from: #{@source.x}:#{@source.y} (#{@map.grid.dig(@source.x,@source.y).element.class}) to: #{@goal.position.x}:#{@goal.position.y} (#{@goal.element.class}) [#{@depth}/#{@max_depth} depth]" if Setting.enabled?(:debug_mode)
         end
       end
 
@@ -112,7 +112,7 @@ class IMICRTS
           @path.reverse!
 
           @seeking = false
-          puts "Generated path with #{@path.size} steps, #{@created_nodes} nodes created. [#{@depth}/#{@max_depth} depth]" if true#Setting.enabled?(:debug_mode)
+          puts "Generated path with #{@path.size} steps, #{@created_nodes} nodes created. [#{@depth}/#{@max_depth} depth]" if Setting.enabled?(:debug_mode)
           return
         end
 

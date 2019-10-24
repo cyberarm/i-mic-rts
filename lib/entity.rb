@@ -67,7 +67,7 @@ class IMICRTS
 
     def target=(entity)
       @target = entity
-      @path = @director.find_path(player: @player, entity: self, goal: @target)
+      @pathfinder = @director.find_path(player: @player, entity: self, goal: @target)
     end
 
     def hit?(x_or_vector, y = nil)
@@ -119,11 +119,21 @@ class IMICRTS
     def draw_gizmos
       Gosu.draw_rect(@position.x - @radius, @position.y - (@radius + 2), @radius * 2, 2, Gosu::Color::GREEN, ZOrder::ENTITY_GIZMOS)
 
-      if @path
-        @path.path.each_with_index do |node, i|
-          next_node = @path.path.dig(i + 1)
+      if @pathfinder && Setting.enabled?(:debug_pathfinding) && @pathfinder.path.first
+        Gosu.draw_line(
+          @position.x, @position.y, Gosu::Color::RED,
+          @pathfinder.path.first.tile.position.x, @pathfinder.path.first.tile.position.y, Gosu::Color::RED,
+          ZOrder::ENTITY_GIZMOS
+        )
+
+        @pathfinder.path.each_with_index do |node, i|
+          next_node = @pathfinder.path.dig(i + 1)
           if next_node
-            Gosu.draw_line(node.tile.position.x, node.tile.position.y, Gosu::Color::RED, next_node.tile.position.x, next_node.tile.position.y, Gosu::Color::RED, ZOrder::ENTITY_GIZMOS)
+            Gosu.draw_line(
+              node.tile.position.x, node.tile.position.y, Gosu::Color::RED,
+              next_node.tile.position.x, next_node.tile.position.y, Gosu::Color::RED,
+              ZOrder::ENTITY_GIZMOS
+            )
           end
         end
       end

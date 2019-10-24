@@ -57,9 +57,9 @@ class IMICRTS
       @players.find { |player| player.id == id }
     end
 
-    def find_path(player:, entity:, goal:, travels_along: :ground, allow_diagonal: true, klass: IMICRTS::Pathfinder::BasePathfinder)
+    def find_path(player:, entity:, goal:, travels_along: :ground, allow_diagonal: Setting.enabled?(:debug_pathfinding_allow_diagonal), klass: IMICRTS::Pathfinder::BasePathfinder)
       if klass.cached_path(entity, goal, travels_along)
-        puts "using a cached path!" if true#Setting.enabled?(:debug_mode)
+        puts "using a cached path!" if Setting.enabled?(:debug_mode)
         return klass.cached_path(entity, goal, travels_along)
       end
 

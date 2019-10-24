@@ -11,5 +11,4 @@ Building a Command & Conquer style RTS in Ruby
 * `ruby i-mic-rts.rb`
 
 ### Options
-* `--debug` Jump straight to Game
-* `--fast` Skip intro
+* `--debug-game` Jump straight to Game

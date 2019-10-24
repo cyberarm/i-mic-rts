@@ -8,10 +8,13 @@ end
 
 require "nokogiri"
 
+require "json"
+
 require_relative "lib/version"
 require_relative "lib/errors"
 require_relative "lib/window"
 require_relative "lib/camera"
+require_relative "lib/setting"
 
 require_relative "lib/states/boot"
 require_relative "lib/states/game"
@@ -35,5 +38,7 @@ require_relative "lib/friendly_hash"
 require_relative "lib/director"
 require_relative "lib/player"
 require_relative "lib/connection"
+
+IMICRTS::Setting.setup
 
 IMICRTS::Window.new(width: Gosu.screen_width / 4 * 3, height: Gosu.screen_height / 4 * 3, fullscreen: false, resizable: true).show
