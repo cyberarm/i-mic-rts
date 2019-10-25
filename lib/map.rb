@@ -1,6 +1,6 @@
 class IMICRTS
   class Map
-    attr_reader :tile_size, :tiles, :ores
+    attr_reader :tile_size, :tiles, :ores, :width, :height
     def initialize(map_file:)
       @tiled_map = TiledMap.new(map_file)
 

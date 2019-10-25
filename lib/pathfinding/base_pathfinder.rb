@@ -39,23 +39,25 @@ class IMICRTS
         @created_nodes = 0
         @nodes = []
         @path  = []
-        @tiles = @map.tiles.values.map { |columns| columns.values }.flatten.select { |tile| tile }
+        @tiles = @map.tiles
 
         @visited = Hash.new do |hash, value|
           hash[value] = Hash.new {|h, v| h[v] = false}
         end
 
         @depth = 0
-        @max_depth = @tiles.size
+        @max_depth = @map.width * @map.height
         @seeking = true
 
-        position = entity.position.clone
-        position.x, position.y = position.x.floor, position.y.floor
-        position /= @map.tile_size
+        @position = entity.position.clone
+        @position.x, @position.y = @position.x.floor, @position.y.floor
+        @position /= @map.tile_size
 
-        @current_node = create_node(position.x, position.y, nil)
+        @path_current_node = 0
+
+        @current_node = create_node(@position.x, @position.y, nil, 0)
         unless @current_node
-          puts "Failed to find path!" if Setting.enabled?(:debug_mode)
+          puts "Unable to find path as position is not a traversable tile for :#{@entity.name}!" if Setting.enabled?(:debug_mode)
           return
         end
 
@@ -66,6 +68,22 @@ class IMICRTS
         find
 
         self.class.cache_path(self) if @path.size > 0 && true#Setting.enabled?(:debug_cache_paths)
+      end
+
+      def path_current_node
+        @path[@path_current_node]
+      end
+
+      def path_next_node
+        @path_current_node += 1
+      end
+
+      def at_current_path_node?(position)
+        if node = path_current_node
+          position.distance(node.tile.position) < @map.tile_size / 2
+        else
+          true
+        end
       end
 
       # Checks if Map still has all of paths required tiles
@@ -86,8 +104,8 @@ class IMICRTS
           seek
         end
 
-        if @depth >= @max_depth
-          puts "Failed to find path from: #{@source.x}:#{@source.y} (#{@map.grid.dig(@source.x,@source.y).element.class}) to: #{@goal.position.x}:#{@goal.position.y} (#{@goal.element.class}) [#{@depth}/#{@max_depth} depth]" if Setting.enabled?(:debug_mode)
+        if @depth >= @max_depth || (@path.size == 0 && @depth < 0)
+          puts "Failed to find path from: #{@position.x}:#{@position.y} to: #{@goal.x}:#{@goal.y} [#{@depth}/#{@max_depth} depth]" if Setting.enabled?(:debug_mode)
         end
       end
 
@@ -96,7 +114,7 @@ class IMICRTS
       end
 
       def seek
-        unless @current_node && @map.tiles.dig(@goal.x, @goal.y)
+        unless @current_node && @tiles.dig(@goal.x, @goal.y)
           @seeking = false
           return
         end
@@ -161,7 +179,7 @@ class IMICRTS
       end
 
       def create_node(x, y, parent, cost = 1.0)
-        return unless tile = @map.tiles.dig(x, y)
+        return unless tile = @tiles.dig(x, y)
         return unless tile.type == @travels_along
         return if tile.entity
         return if @visited.dig(x, y)
@@ -200,27 +218,27 @@ class IMICRTS
       end
 
       def node_above?(node = @current_node)
-        node && @map.tiles.dig(node.tile.grid_position.x, node.tile.grid_position.y - 1)
+        node && @tiles.dig(node.tile.grid_position.x, node.tile.grid_position.y - 1)
       end
 
       def node_below?(node = @current_node)
-        node && @map.tiles.dig(node.tile.grid_position.x, node.tile.grid_position.y + 1)
+        node && @tiles.dig(node.tile.grid_position.x, node.tile.grid_position.y + 1)
       end
 
       def node_above_left?(node = @current_node)
-        node && @map.tiles.dig(node.tile.grid_position.x - 1, node.tile.grid_position.y - 1)
+        node && @tiles.dig(node.tile.grid_position.x - 1, node.tile.grid_position.y - 1)
       end
 
       def node_above_right?(node = @current_node)
-        node && @map.tiles.dig(node.tile.grid_position.x + 1, node.tile.grid_position.y - 1)
+        node && @tiles.dig(node.tile.grid_position.x + 1, node.tile.grid_position.y - 1)
       end
 
       def node_below_left?(node = @current_node)
-        node && @map.tiles.dig(node.tile.grid_position.x - 1, node.tile.grid_position.y + 1)
+        node && @tiles.dig(node.tile.grid_position.x - 1, node.tile.grid_position.y + 1)
       end
 
       def node_below_right?(node = @current_node)
-        node && @map.tiles.dig(node.tile.grid_position.x + 1, node.tile.grid_position.y + 1)
+        node && @tiles.dig(node.tile.grid_position.x + 1, node.tile.grid_position.y + 1)
       end
     end
   end

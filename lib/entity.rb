@@ -25,6 +25,7 @@ class IMICRTS
       @position = position
       @angle = angle
       @director = director
+      @speed = 0.5
 
       @radius = 32 / 2
       @target = nil
@@ -41,6 +42,8 @@ class IMICRTS
 
       @goal_color   = Gosu::Color.argb(175, 25, 200, 25)
       @target_color = Gosu::Color.argb(175, 200, 25, 25)
+
+      @orders = []
     end
 
     def serialize
@@ -96,6 +99,7 @@ class IMICRTS
       rotate_towards(@target) if @target && @movement
 
       if @movement
+        follow_path
       end
     end
 
@@ -105,6 +109,13 @@ class IMICRTS
 
     def on_tick(&block)
       @on_tick = block
+    end
+
+    def follow_path
+      if @pathfinder && node = @pathfinder.path_current_node
+        @pathfinder.path_next_node if @pathfinder.at_current_path_node?(@position)
+        @position -= (@position.xy - node.tile.position.xy).normalized * @speed
+      end
     end
 
     def selected_draw
