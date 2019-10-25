@@ -53,7 +53,7 @@ class IMICRTS
         position.x, position.y = position.x.floor, position.y.floor
         position /= @map.tile_size
 
-        @current_node = create_node(position.x, position.y)
+        @current_node = create_node(position.x, position.y, nil)
         unless @current_node
           puts "Failed to find path!" if Setting.enabled?(:debug_mode)
           return
@@ -129,19 +129,19 @@ class IMICRTS
         if @allow_diagonal
           # LEFT-UP
           if node_above? && node_above_left?
-            add_node create_node(@current_node.tile.grid_position.x - 1, @current_node.tile.grid_position.y - 1, @current_node)
+            add_node create_node(@current_node.tile.grid_position.x - 1, @current_node.tile.grid_position.y - 1, @current_node, 1.4)
           end
           # LEFT-DOWN
           if node_below? && node_below_left?
-            add_node create_node(@current_node.tile.grid_position.x - 1, @current_node.tile.grid_position.y + 1, @current_node)
+            add_node create_node(@current_node.tile.grid_position.x - 1, @current_node.tile.grid_position.y + 1, @current_node, 1.4)
           end
           # RIGHT-UP
           if node_above? && node_above_right?
-            add_node create_node(@current_node.tile.grid_position.x + 1, @current_node.tile.grid_position.y - 1, @current_node)
+            add_node create_node(@current_node.tile.grid_position.x + 1, @current_node.tile.grid_position.y - 1, @current_node, 1.4)
           end
           # RIGHT-DOWN
           if node_below? && node_below_right?
-            add_node create_node(@current_node.tile.grid_position.x + 1, @current_node.tile.grid_position.y + 1, @current_node)
+            add_node create_node(@current_node.tile.grid_position.x + 1, @current_node.tile.grid_position.y + 1, @current_node, 1.4)
           end
         end
 
@@ -160,7 +160,7 @@ class IMICRTS
         return node
       end
 
-      def create_node(x, y, parent = nil)
+      def create_node(x, y, parent, cost = 1.0)
         return unless tile = @map.tiles.dig(x, y)
         return unless tile.type == @travels_along
         return if tile.entity
@@ -180,21 +180,19 @@ class IMICRTS
       def next_node
         fittest = nil
         fittest_distance = Float::INFINITY
+        fittest_cost = Float::INFINITY
 
         distance = nil
         @nodes.each do |node|
           next if node == @current_node
 
           distance = node.tile.grid_position.distance(@goal)
+          cost = node.cost
 
-          if distance < fittest_distance
-            if fittest && (node.distance + node.cost) < (fittest.distance + fittest.cost)
-              fittest = node
-              fittest_distance = distance
-            else
-              fittest = node
-              fittest_distance = distance
-            end
+          if distance < fittest_distance && cost < fittest_cost
+            fittest = node
+            fittest_distance = distance
+            fittest_cost = cost
           end
         end
 
