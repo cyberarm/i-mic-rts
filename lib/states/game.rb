@@ -87,7 +87,7 @@ class IMICRTS
         Gosu.draw_rect(@box.min.x, @box.min.y, @box.width, @box.height, Gosu::Color.rgba(50, 50, 50, 150), Float::INFINITY) if @box
       end
 
-      @debug_info.draw
+      @debug_info.draw if Setting.enabled?(:debug_info_bar)
     end
 
     def update

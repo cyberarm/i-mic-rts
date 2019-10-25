@@ -127,13 +127,13 @@ class IMICRTS
     end
 
     def draw_radius
-      Gosu.draw_circle(@position.x, @position.y, @radius, ZOrder::ENTITY_RADIUS, @player.color)
+      Gosu.draw_circle(@position.x, @position.y, @radius, ZOrder::ENTITY_RADIUS, @player.color, 360 / 18)
     end
 
     def draw_gizmos
       Gosu.draw_rect(@position.x - @radius, @position.y - (@radius + 2), @radius * 2, 2, Gosu::Color::GREEN, ZOrder::ENTITY_GIZMOS)
 
-      if @pathfinder && @pathfinder.path_current_node && Setting.enabled?(:debug_pathfinding) && @pathfinder.path.first
+      if Setting.enabled?(:debug_pathfinding) && @pathfinder && @pathfinder.path_current_node
         Gosu.draw_line(
           @position.x, @position.y, Gosu::Color::RED,
           @pathfinder.path_current_node.tile.position.x, @pathfinder.path_current_node.tile.position.y, Gosu::Color::RED,

@@ -114,7 +114,7 @@ class IMICRTS
       end
 
       def at_goal?
-        @current_node.tile.grid_position.distance(@goal) < 1.1
+        @current_node.tile.grid_position.distance(@goal) <= 0.9
       end
 
       def seek
@@ -211,7 +211,7 @@ class IMICRTS
           distance = node.tile.grid_position.distance(@goal)
           cost = node.cost
 
-          if distance < fittest_distance && cost < fittest_cost
+          if distance + cost < fittest_distance + fittest_cost
             fittest = node
             fittest_distance = distance
             fittest_cost = cost
