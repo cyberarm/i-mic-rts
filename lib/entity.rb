@@ -96,7 +96,10 @@ class IMICRTS
     end
 
     def update
-      rotate_towards(@target) if @target && @movement
+      if @movement
+        # rotate_towards(@target) if @target
+        rotate_towards(@pathfinder.path_current_node.tile.position) if @pathfinder && @pathfinder.path_current_node
+      end
 
       if @movement
         follow_path
@@ -113,7 +116,7 @@ class IMICRTS
 
     def follow_path
       if @pathfinder && node = @pathfinder.path_current_node
-        @pathfinder.path_next_node if @pathfinder.at_current_path_node?(@position)
+        @pathfinder.path_next_node if @pathfinder.at_current_path_node?(self)
         @position -= (@position.xy - node.tile.position.xy).normalized * @speed
       end
     end
@@ -130,21 +133,23 @@ class IMICRTS
     def draw_gizmos
       Gosu.draw_rect(@position.x - @radius, @position.y - (@radius + 2), @radius * 2, 2, Gosu::Color::GREEN, ZOrder::ENTITY_GIZMOS)
 
-      if @pathfinder && Setting.enabled?(:debug_pathfinding) && @pathfinder.path.first
+      if @pathfinder && @pathfinder.path_current_node && Setting.enabled?(:debug_pathfinding) && @pathfinder.path.first
         Gosu.draw_line(
           @position.x, @position.y, Gosu::Color::RED,
-          @pathfinder.path.first.tile.position.x, @pathfinder.path.first.tile.position.y, Gosu::Color::RED,
+          @pathfinder.path_current_node.tile.position.x, @pathfinder.path_current_node.tile.position.y, Gosu::Color::RED,
           ZOrder::ENTITY_GIZMOS
         )
 
-        @pathfinder.path.each_with_index do |node, i|
-          next_node = @pathfinder.path.dig(i + 1)
-          if next_node
+        node = @pathfinder.path_current_node
+        @pathfinder.path[@pathfinder.path_current_node_index..@pathfinder.path.size - 1].each do |next_node|
+          if node
             Gosu.draw_line(
               node.tile.position.x, node.tile.position.y, Gosu::Color::RED,
               next_node.tile.position.x, next_node.tile.position.y, Gosu::Color::RED,
               ZOrder::ENTITY_GIZMOS
             )
+
+            node = next_node
           end
         end
       end
