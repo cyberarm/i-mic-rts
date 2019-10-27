@@ -11,6 +11,9 @@ class IMICRTS
 
       :ENTITY_RADIUS,
       :ENTITY_GIZMOS, # Health bar and the like
+
+      :OVERLAY,
+      :SELECTION_BOX,
     ]
 
     enum.each_with_index do |constant, index|

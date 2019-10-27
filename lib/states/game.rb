@@ -1,5 +1,6 @@
 class IMICRTS
   class Game < CyberarmEngine::GuiState
+    Overlay = Struct.new(:image, :position, :angle, :alpha)
     def setup
       window.show_cursor = true
 
@@ -7,6 +8,7 @@ class IMICRTS
       @director = Director.new(map: Map.new(map_file: "maps/test_map.tmx"), players: [@player])
 
       @selected_entities = []
+      @overlays = []
 
       @debug_info = CyberarmEngine::Text.new("", y: 10, z: Float::INFINITY, shadow_color: Gosu::Color.rgba(0, 0, 0, 200))
 
@@ -75,16 +77,15 @@ class IMICRTS
         @director.entities.each(&:draw)
         @selected_entities.each(&:selected_draw)
 
-        # center = @player.camera.center - @player.camera.position
-        # draw_rect(center.x - 10, center.y - 10, 20, 20, Gosu::Color::RED, Float::INFINITY)
+        @overlays.each do |overlay|
+          overlay.image.draw_rot(overlay.position.x, overlay.position.y, overlay.position.z, overlay.angle, 0.5, 0.5, 1, 1, Gosu::Color.rgba(255, 255, 255, overlay.alpha))
+          overlay.angle += 3.0
+          overlay.alpha -= 5.0
 
-        # mouse = @player.camera.transform(window.mouse)
-        # draw_rect(mouse.x - 10, mouse.y - 10, 20, 20, Gosu::Color::YELLOW, Float::INFINITY)
+          @overlays.delete(overlay) if overlay.alpha <= 0
+        end
 
-        # Goal
-        # draw_rect(@goal.x - 10, @goal.y - 10, 20, 20, Gosu::Color::WHITE, Float::INFINITY) if @goal
-
-        Gosu.draw_rect(@box.min.x, @box.min.y, @box.width, @box.height, Gosu::Color.rgba(50, 50, 50, 150), Float::INFINITY) if @box
+        Gosu.draw_rect(@box.min.x, @box.min.y, @box.width, @box.height, Gosu::Color.rgba(50, 50, 50, 150), ZOrder::SELECTION_BOX) if @box
       end
 
       @debug_info.draw if Setting.enabled?(:debug_info_bar)
@@ -135,6 +136,9 @@ class IMICRTS
         end
       when Gosu::MS_RIGHT
         @director.schedule_order(Order::MOVE, @player.id, @player.camera.transform(window.mouse))
+
+        @overlays << Overlay.new(Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/cursors/move.png"), @player.camera.transform(window.mouse), 0, 255)
+        @overlays.last.position.z = ZOrder::OVERLAY
       end
 
       @player.camera.button_down(id) unless @sidebar.hit?(window.mouse_x, window.mouse_y)
