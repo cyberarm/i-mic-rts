@@ -33,12 +33,12 @@ class IMICRTS
           end
         end
 
-        flow do
-          button("Accept", width: 0.4) do
+        flow(width: 1.0) do
+          button("Accept", width: 0.5) do
             push_state(Game)
           end
 
-          button("Back", width: 0.4, margin_left: 20) do
+          button("Back", align: :right) do
             push_state(MainMenu)
           end
         end

@@ -4,6 +4,7 @@ class IMICRTS
     def setup
       @last_update_time = Gosu.milliseconds
       @mouse = CyberarmEngine::Vector.new
+      @cursor = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/cursors/pointer.png")
 
       self.caption = "#{IMICRTS::NAME} (#{IMICRTS::VERSION} #{IMICRTS::VERSION_NAME})"
       if ARGV.join.include?("--debug-game")
@@ -15,11 +16,21 @@ class IMICRTS
       end
     end
 
+    def draw
+      @cursor.draw(mouse_x, mouse_y, Float::INFINITY)
+
+      super
+    end
+
     def update
       @mouse.x, @mouse.y = self.mouse_x, self.mouse_y
       super
 
       @last_update_time = Gosu.milliseconds
+    end
+
+    def needs_cursor?
+      return false
     end
 
     def close
