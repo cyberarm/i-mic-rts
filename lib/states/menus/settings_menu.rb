@@ -8,6 +8,8 @@ class IMICRTS
 
         label "Settings", text_size: 78, margin: 20
 
+        @skip_intro = check_box "Skip Intro", checked: Setting.enabled?(:skip_intro)
+
         stack(width: 1.0) do
           background 0xff030303
 
@@ -37,6 +39,7 @@ class IMICRTS
     end
 
     def save_settings
+      Setting.set(:skip_intro, @skip_intro.value)
       Setting.set(:debug_mode, @debug_mode.value)
       Setting.set(:debug_info_bar, @debug_info_bar.value)
       Setting.set(:debug_pathfinding, @debug_pathfinding.value)

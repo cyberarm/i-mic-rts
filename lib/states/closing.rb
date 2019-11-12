@@ -21,7 +21,7 @@ class IMICRTS
       window.close! if Gosu.milliseconds - @started_at >= @close_time
     end
 
-    def button_up(id)
+    def button_down(id)
       window.close!
     end
   end
