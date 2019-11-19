@@ -33,7 +33,7 @@ class IMICRTS
     end
 
     class ScheduledOrder
-      attr_reader :tick_id, :serialized_order
+      attr_reader :order_id, :tick_id, :serialized_order
       def initialize(order_id, tick_id, serialized_order)
         @order_id = order_id
         @tick_id, @serialized_order = tick_id, serialized_order

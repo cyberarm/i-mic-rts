@@ -3,9 +3,10 @@ class IMICRTS
     Overlay = Struct.new(:image, :position, :angle, :alpha)
     def setup
       window.show_cursor = true
+      @options[:networking_mode] ||= :host
 
       @player = Player.new(id: 0)
-      @director = Director.new(map: Map.new(map_file: "maps/test_map.tmx"), players: [@player])
+      @director = Director.new(map: Map.new(map_file: "maps/test_map.tmx"), networking_mode: @options[:networking_mode], players: [@player])
 
       @selected_entities = []
       @overlays = []
@@ -178,7 +179,7 @@ class IMICRTS
     end
 
     def finalize
-      # TODO: Release bound objects/remove self from Window.states array
+      @director.finalize
     end
   end
 end

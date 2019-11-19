@@ -44,5 +44,12 @@ class IMICRTS
     def dt
       delta_time / 1000.0
     end
+
+    # Override CyberarmEngine::Window#push_state to only ever have 1 state
+    def push_state(*args)
+      @states.clear
+
+      super(*args)
+    end
   end
 end

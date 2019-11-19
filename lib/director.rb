@@ -1,7 +1,7 @@
 class IMICRTS
   class Director
     attr_reader :current_tick, :map
-    def initialize(map:, players:, networking_mode: :virtual, tick_rate: 10)
+    def initialize(map:, players:, networking_mode:, tick_rate: 10)
       @map = map
       @players = players
       @connection = IMICRTS::Connection.new(director: self, mode: networking_mode)
@@ -103,6 +103,10 @@ class IMICRTS
 
     def entities
       @players.map { |player| player.entities }.flatten
+    end
+
+    def finalize
+      @connection.finalize
     end
   end
 end

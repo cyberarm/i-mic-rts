@@ -18,7 +18,7 @@ class IMICRTS
                 stack do
                   case elements[index]
                   when :edit_line
-                    edit_line Setting.get(:player_name)
+                    @player_name = edit_line Setting.get(:player_name)
                   when :button
                     button item
                   when :toggle_button
@@ -35,7 +35,8 @@ class IMICRTS
 
         flow(width: 1.0) do
           button("Accept", width: 0.5) do
-            push_state(Game)
+            Setting.set(:player_name, @player_name.value)
+            push_state(Game, networking_mode: :virtual)
           end
 
           button("Back", align: :right) do

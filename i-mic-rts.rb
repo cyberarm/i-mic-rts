@@ -9,6 +9,7 @@ end
 require "nokogiri"
 
 require "json"
+require "socket"
 
 require_relative "lib/version"
 require_relative "lib/errors"
@@ -38,6 +39,12 @@ require_relative "lib/friendly_hash"
 require_relative "lib/director"
 require_relative "lib/player"
 require_relative "lib/connection"
+
+require_relative "lib/networking/protocol"
+require_relative "lib/networking/packet"
+require_relative "lib/networking/server"
+require_relative "lib/networking/client"
+require_relative "lib/networking/connection"
 
 IMICRTS::Setting.setup
 
