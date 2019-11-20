@@ -18,7 +18,7 @@ class IMICRTS
     attr_reader :player, :id, :name, :type, :speed
     attr_accessor :position, :angle, :radius, :target, :state,
                   :movement, :health, :max_health,
-                  :turret
+                  :turret, :center
     def initialize(name:, player:, id:, position:, angle:, director:)
       @player = player
       @id = id
@@ -30,6 +30,7 @@ class IMICRTS
       @radius = 32 / 2
       @target = nil
       @state  = :idle
+      @center = CyberarmEngine::Vector.new(0.5, 0.5)
 
       @components = {}
 
@@ -109,7 +110,7 @@ class IMICRTS
 
     def draw
       render unless @render
-      @render.draw_rot(@position.x, @position.y, @position.z, @angle)
+      @render.draw_rot(@position.x, @position.y, @position.z, @angle, @center.x, @center.y)
 
       component(:turret).draw if component(:turret)
     end

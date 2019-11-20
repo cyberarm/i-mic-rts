@@ -31,7 +31,7 @@ class IMICRTS
     def draw
       render unless @render
       @angle += 0.1
-      @render.draw_rot(@parent.position.x + @center.x, @parent.position.y + @center.y, @parent.position.z, @angle)
+      @render.draw_rot(@parent.position.x, @parent.position.y, @parent.position.z, @angle, @center.x, @center.y)
     end
   end
 end

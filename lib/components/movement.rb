@@ -10,8 +10,8 @@ class IMICRTS
       a = (360.0 + (_angle - @parent.angle)) % 360.0
 
       # FIXME: Fails if vector is directly behind entity
-      if @parent.angle.between?(_angle - 3, _angle + 3)
-        @parent.angle = _angle
+      if a.round == 180
+        @parent.angle = (_angle + 180.0) % 360.0
       elsif a < 180
         @parent.angle -= 1.0
       else
