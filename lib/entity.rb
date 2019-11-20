@@ -15,7 +15,7 @@ class IMICRTS
       end
     end
 
-    attr_reader :player, :id, :name, :type
+    attr_reader :player, :id, :name, :type, :speed
     attr_accessor :position, :angle, :radius, :target, :state,
                   :movement, :health, :max_health,
                   :turret
@@ -31,6 +31,8 @@ class IMICRTS
       @target = nil
       @state  = :idle
 
+      @components = {}
+
       if entity = Entity.get(name)
         @name = entity.name
         @type = entity.type
@@ -39,6 +41,8 @@ class IMICRTS
       else
         raise "Failed to find entity #{name.inspect} definition"
       end
+
+      component(:turret).angle = @angle if component(:turret)
 
       @goal_color   = Gosu::Color.argb(175, 25, 200, 25)
       @target_color = Gosu::Color.argb(175, 200, 25, 25)
@@ -52,6 +56,20 @@ class IMICRTS
     def deserialize
     end
 
+    def has(symbol)
+      component = Component.get(symbol)
+
+      if component
+        @components[symbol] = component.new(parent: self)
+      else
+        raise "Unknown component: #{component.inspect}"
+      end
+    end
+
+    def component(symbol)
+      @components.dig(symbol)
+    end
+
     def body_image=(image)
       @body_image = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
     end
@@ -60,17 +78,13 @@ class IMICRTS
       @shell_image = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
     end
 
-    def turret_body_image=(image)
-      @turret_body_image = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
-    end
-
-    def turret_shell_image=(image)
-      @turret_shell_image = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
+    def overlay_image=(image)
+      @overlay_image = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
     end
 
     def target=(entity)
       @target = entity
-      @pathfinder = @director.find_path(player: @player, entity: self, goal: @target)
+      component(:movement).pathfinder = @director.find_path(player: @player, entity: self, goal: @target) if component(:movement)
     end
 
     def hit?(x_or_vector, y = nil)
@@ -85,24 +99,28 @@ class IMICRTS
       @position.distance(vector) < @radius + 1
     end
 
-    def draw
-      @body_image.draw_rot(@position.x, @position.y, @position.z, @angle) if @body_image
-      @shell_image.draw_rot(@position.x, @position.y, @position.z, @angle, 0.5, 0.5, 1, 1, @player.color)
-      @overlay_image.draw_rot(@position.x, @position.y, @position.z, @angle, 0.5, 0.5, 1, 1) if @overlay_image
+    def render
+      @render = Gosu.render(32, 32, retro: true) do
+        @body_image.draw(0, 0, 0) if @body_image
+        @shell_image.draw(0, 0, 0, 1, 1, @player.color)
+        @overlay_image.draw(0, 0, 0) if @overlay_image
+      end
+    end
 
-      @turret_body_image.draw_rot(@position.x, @position.y, @position.z, @angle, 0.5, 0.5, 1, 1) if @turret_body_image
-      @turret_shell_image.draw_rot(@position.x, @position.y, @position.z, @angle, 0.5, 0.5, 1, 1, @player.color) if @turret_shell_image
-      @turret_overlay_image.draw_rot(@position.x, @position.y, @position.z, @angle, 0.5, 0.5, 1, 1) if @turret_overlay_image
+    def draw
+      render unless @render
+      @render.draw_rot(@position.x, @position.y, @position.z, @angle)
+
+      component(:turret).draw if component(:turret)
     end
 
     def update
-      if @movement
-        # rotate_towards(@target) if @target
-        rotate_towards(@pathfinder.path_current_node.tile.position) if @pathfinder && @pathfinder.path_current_node
-      end
+      if component(:movement)
+        if component(:movement).pathfinder && component(:movement).pathfinder.path_current_node
+          component(:movement).rotate_towards(component(:movement).pathfinder.path_current_node.tile.position)
+        end
 
-      if @movement
-        follow_path
+        component(:movement).follow_path
       end
     end
 
@@ -112,13 +130,6 @@ class IMICRTS
 
     def on_tick(&block)
       @on_tick = block
-    end
-
-    def follow_path
-      if @pathfinder && node = @pathfinder.path_current_node
-        @pathfinder.path_next_node if @pathfinder.at_current_path_node?(self)
-        @position -= (@position.xy - node.tile.position.xy).normalized * @speed
-      end
     end
 
     def selected_draw
@@ -133,15 +144,15 @@ class IMICRTS
     def draw_gizmos
       Gosu.draw_rect(@position.x - @radius, @position.y - (@radius + 2), @radius * 2, 2, Gosu::Color::GREEN, ZOrder::ENTITY_GIZMOS)
 
-      if Setting.enabled?(:debug_pathfinding) && @pathfinder && @pathfinder.path_current_node
+      if Setting.enabled?(:debug_pathfinding) && component(:movement) && component(:movement).pathfinder && component(:movement).pathfinder.path_current_node
         Gosu.draw_line(
           @position.x, @position.y, Gosu::Color::RED,
-          @pathfinder.path_current_node.tile.position.x, @pathfinder.path_current_node.tile.position.y, Gosu::Color::RED,
+          component(:movement).pathfinder.path_current_node.tile.position.x, component(:movement).pathfinder.path_current_node.tile.position.y, Gosu::Color::RED,
           ZOrder::ENTITY_GIZMOS
         )
 
-        node = @pathfinder.path_current_node
-        @pathfinder.path[@pathfinder.path_current_node_index..@pathfinder.path.size - 1].each do |next_node|
+        node = component(:movement).pathfinder.path_current_node
+        component(:movement).pathfinder.path[component(:movement).pathfinder.path_current_node_index..component(:movement).pathfinder.path.size - 1].each do |next_node|
           if node
             Gosu.draw_line(
               node.tile.position.x, node.tile.position.y, Gosu::Color::RED,
@@ -159,22 +170,6 @@ class IMICRTS
       else
         Gosu.draw_line(@position.x, @position.y, @goal_color, @target.x, @target.y, @goal_color, ZOrder::ENTITY_GIZMOS) if @target
       end
-    end
-
-    def rotate_towards(vector)
-      _angle = Gosu.angle(@position.x, @position.y, vector.x, vector.y)
-      a = (360.0 + (_angle - @angle)) % 360.0
-
-      # Fails if vector is directly behind entity
-      if @angle.between?(_angle - 3, _angle + 3)
-        @angle = _angle
-      elsif a < 180
-        @angle -= 1.0
-      else
-        @angle += 1.0
-      end
-
-      @angle %= 360.0
     end
   end
 end

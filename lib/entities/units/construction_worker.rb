@@ -1,4 +1,6 @@
 IMICRTS::Entity.define_entity(:construction_worker, :unit, 1000, "Constructs buildings") do |entity|
+  entity.has(:movement)
+
   entity.radius = 14
   entity.movement = :ground
   entity.max_health = 100.0

@@ -1,4 +1,6 @@
 IMICRTS::Entity.define_entity(:harvester, :unit, 1400, "Harvests ore") do |entity, director|
+  entity.has(:movement)
+
   entity.radius = 10
   entity.movement = :ground
   entity.max_health = 100.0
@@ -28,7 +30,7 @@ IMICRTS::Entity.define_entity(:harvester, :unit, 1400, "Harvests ore") do |entit
   entity.define_singleton_method(:seek_refinery) do
   end
 
-  entity.define_singleton_method(:rotate_towards) do |target|
+  entity.component(:movement).define_singleton_method(:rotate_towards) do |target|
     entity.angle = Gosu.angle(target.x, target.y, entity.position.x, entity.position.y)
   end
 end
