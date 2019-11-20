@@ -1,6 +1,6 @@
 class IMICRTS
   class Map
-    attr_reader :tile_size, :tiles, :ores, :width, :height
+    attr_reader :tile_size, :tiles, :ores, :spawnpoints, :width, :height
     def initialize(map_file:)
       @tiled_map = TiledMap.new(map_file)
 
@@ -9,6 +9,7 @@ class IMICRTS
 
       @tiles = {}
       @ores  = {}
+      @spawnpoints = @tiled_map.spawnpoints.freeze
 
       @tiled_map.layers.each do |layer|
         layer.height.times do |y|

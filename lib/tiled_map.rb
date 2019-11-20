@@ -1,7 +1,7 @@
 class IMICRTS
   class TiledMap
     attr_reader :width, :height, :tile_size
-    attr_reader :layers, :tilesets
+    attr_reader :layers, :tilesets, :spawnpoints
     def initialize(map_file)
       @xml = Nokogiri::XML(File.read("#{IMICRTS::ASSETS_PATH}/#{map_file}"))
 
@@ -10,6 +10,7 @@ class IMICRTS
 
       @layers = []
       @tilesets = []
+      @spawnpoints = []
 
       @tiles = []
 
@@ -32,6 +33,15 @@ class IMICRTS
 
       @xml.search("//layer").each do |layer|
         @layers << Layer.new(layer)
+      end
+
+      @xml.search("//objectgroup").each do |objectgroup|
+        if objectgroup.attr("name") == "spawns"
+          objectgroup.children.each do |object|
+            next unless object.attr("name") && object.attr("name").downcase.strip == "spawn"
+            @spawnpoints << SpawnPoint.new(object)
+          end
+        end
       end
     end
 
@@ -119,6 +129,15 @@ class IMICRTS
 
           @tiles << tile
         end
+      end
+    end
+
+
+
+    class SpawnPoint
+      attr_reader :x, :y
+      def initialize(xml_object)
+        @x, @y = Integer(xml_object.attr("x")), Integer(xml_object.attr("y"))
       end
     end
   end

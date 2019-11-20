@@ -30,6 +30,7 @@ require_relative "lib/states/menus/multiplayer_lobby_menu"
 
 require_relative "lib/zorder"
 require_relative "lib/component"
+require_relative "lib/particle_emitter"
 require_relative "lib/entity"
 require_relative "lib/map"
 require_relative "lib/tiled_map"

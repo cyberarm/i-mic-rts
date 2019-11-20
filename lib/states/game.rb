@@ -65,7 +65,24 @@ class IMICRTS
         end
       end
 
-      100.times { |i| [@c, @h, @t].sample.instance_variable_get("@block").call }
+      # 100.times { |i| [@c, @h, @t].sample.instance_variable_get("@block").call }
+      spawnpoint = @director.map.spawnpoints.last
+      @player.entities << Entity.new(
+                name: :construction_yard,
+                director: @director,
+                player: @player,
+                id: @player.next_entity_id,
+                position: CyberarmEngine::Vector.new(spawnpoint.x, spawnpoint.y, ZOrder::BUILDING),
+                angle: 0
+              )
+      @player.entities << Entity.new(
+                name: :construction_worker,
+                director: @director,
+                player: @player,
+                id: @player.next_entity_id,
+                position: CyberarmEngine::Vector.new(spawnpoint.x - 64, spawnpoint.y + 64, ZOrder::GROUND_VEHICLE),
+                angle: 0
+              )
     end
 
     def draw
