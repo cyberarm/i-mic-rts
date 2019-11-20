@@ -107,6 +107,22 @@ class IMICRTS
                 position: CyberarmEngine::Vector.new(spawnpoint.x + 130, spawnpoint.y - 64, ZOrder::BUILDING),
                 angle: 0
               )
+      @player.entities << Entity.new(
+                name: :helipad,
+                director: @director,
+                player: @player,
+                id: @player.next_entity_id,
+                position: CyberarmEngine::Vector.new(spawnpoint.x - 32, spawnpoint.y - 96, ZOrder::BUILDING),
+                angle: 0
+              )
+      @player.entities << Entity.new(
+                name: :barracks,
+                director: @director,
+                player: @player,
+                id: @player.next_entity_id,
+                position: CyberarmEngine::Vector.new(spawnpoint.x - 32, spawnpoint.y + 128, ZOrder::BUILDING),
+                angle: 0
+              )
     end
 
     def draw

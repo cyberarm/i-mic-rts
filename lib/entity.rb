@@ -46,6 +46,7 @@ class IMICRTS
         raise "Failed to find entity #{name.inspect} definition"
       end
 
+      @boid_radius = @radius + 8
       component(:turret).angle = @angle if component(:turret)
 
       @goal_color   = Gosu::Color.argb(175, 25, 200, 25)
@@ -149,6 +150,7 @@ class IMICRTS
 
     def draw_radius
       Gosu.draw_circle(@position.x, @position.y, @radius, ZOrder::ENTITY_RADIUS, @player.color, 360 / 18)
+      Gosu.draw_circle(@position.x, @position.y, @boid_radius, ZOrder::ENTITY_RADIUS, @player.color, 360 / 18)
     end
 
     def draw_gizmos
