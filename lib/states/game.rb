@@ -83,6 +83,30 @@ class IMICRTS
                 position: CyberarmEngine::Vector.new(spawnpoint.x - 64, spawnpoint.y + 64, ZOrder::GROUND_VEHICLE),
                 angle: 0
               )
+      @player.entities << Entity.new(
+                name: :power_plant,
+                director: @director,
+                player: @player,
+                id: @player.next_entity_id,
+                position: CyberarmEngine::Vector.new(spawnpoint.x + 64, spawnpoint.y + 64, ZOrder::BUILDING),
+                angle: 0
+              )
+      @player.entities << Entity.new(
+                name: :refinery,
+                director: @director,
+                player: @player,
+                id: @player.next_entity_id,
+                position: CyberarmEngine::Vector.new(spawnpoint.x + 130, spawnpoint.y + 64, ZOrder::BUILDING),
+                angle: 0
+              )
+      @player.entities << Entity.new(
+                name: :war_factory,
+                director: @director,
+                player: @player,
+                id: @player.next_entity_id,
+                position: CyberarmEngine::Vector.new(spawnpoint.x + 130, spawnpoint.y - 64, ZOrder::BUILDING),
+                angle: 0
+              )
     end
 
     def draw
