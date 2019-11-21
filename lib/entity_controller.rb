@@ -46,10 +46,12 @@ class IMICRTS
           @selection_start = @player.camera.transform(@game.window.mouse)
         end
       when Gosu::MS_RIGHT
-        @director.schedule_order(Order::MOVE, @player.id, @player.camera.transform(@game.window.mouse))
+        if @selected_entities.size > 0
+          @director.schedule_order(Order::MOVE, @player.id, @player.camera.transform(@game.window.mouse))
 
-        @game.overlays << Game::Overlay.new(Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/cursors/move.png"), @player.camera.transform(@game.window.mouse), 0, 255)
-        @game.overlays.last.position.z = ZOrder::OVERLAY
+          @game.overlays << Game::Overlay.new(Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/cursors/move.png"), @player.camera.transform(@game.window.mouse), 0, 255)
+          @game.overlays.last.position.z = ZOrder::OVERLAY
+        end
       end
     end
 
@@ -62,7 +64,24 @@ class IMICRTS
 
         diff = (@player.selected_entities - @selected_entities)
 
-        @director.schedule_order(Order::DESELECTED_UNITS, @player.id, diff)
+        @director.schedule_order(Order::DESELECTED_UNITS, @player.id, diff) if diff.size > 0
+        if @selected_entities.size > 0
+          @director.schedule_order(Order::SELECTED_UNITS, @player.id, @selected_entities)
+        else
+          pick_entity
+        end
+      end
+    end
+
+    def pick_entity
+      transform = @player.camera.transform(@game.window.mouse)
+
+      found = @player.entities.find do |ent|
+        transform.distance(ent.position) <= ent.radius
+      end
+
+      if found
+        @selected_entities = [found]
         @director.schedule_order(Order::SELECTED_UNITS, @player.id, @selected_entities)
       end
     end
