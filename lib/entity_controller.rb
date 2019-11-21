@@ -74,7 +74,7 @@ class IMICRTS
 
             @game.sidebar_actions.clear do |stack|
               ent.component(:sidebar_actions).actions.each do |action|
-                stack.button action.label, tip: action.description do
+                stack.button action.label, tip: action.description, width: 1.0 do
                   action.block.call if action.block
                 end
               end

@@ -14,7 +14,7 @@ class IMICRTS
       when :add_to_build_queue
         action = Action.new
         ent = IMICRTS::Entity.get(args.first)
-        action.label = ent.name.to_s
+        action.label = ent.name.to_s.split("_").map{ |s| s.capitalize }.join(" ")
         action.description = "Cost: #{ent.cost}\n#{ent.description}"
         action.block = proc { @parent.component(:build_queue).add(args.first) }
 
