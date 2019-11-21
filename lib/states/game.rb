@@ -1,14 +1,16 @@
 class IMICRTS
   class Game < CyberarmEngine::GuiState
     Overlay = Struct.new(:image, :position, :angle, :alpha)
+
+    attr_reader :sidebar, :overlays
     def setup
       window.show_cursor = true
       @options[:networking_mode] ||= :host
 
       @player = Player.new(id: 0)
       @director = Director.new(map: Map.new(map_file: "maps/test_map.tmx"), networking_mode: @options[:networking_mode], players: [@player])
+      @entity_controller = EntityController.new(game: self, director: @director, player: @player)
 
-      @selected_entities = []
       @overlays = []
 
       @debug_info = CyberarmEngine::Text.new("", y: 10, z: Float::INFINITY, shadow_color: Gosu::Color.rgba(0, 0, 0, 200))
@@ -67,62 +69,40 @@ class IMICRTS
 
       # 100.times { |i| [@c, @h, @t].sample.instance_variable_get("@block").call }
       spawnpoint = @director.map.spawnpoints.last
-      @player.entities << Entity.new(
-                name: :construction_yard,
-                director: @director,
-                player: @player,
-                id: @player.next_entity_id,
-                position: CyberarmEngine::Vector.new(spawnpoint.x, spawnpoint.y, ZOrder::BUILDING),
-                angle: 0
-              )
-      @player.entities << Entity.new(
-                name: :construction_worker,
-                director: @director,
-                player: @player,
-                id: @player.next_entity_id,
-                position: CyberarmEngine::Vector.new(spawnpoint.x - 64, spawnpoint.y + 64, ZOrder::GROUND_VEHICLE),
-                angle: 0
-              )
-      @player.entities << Entity.new(
-                name: :power_plant,
-                director: @director,
-                player: @player,
-                id: @player.next_entity_id,
-                position: CyberarmEngine::Vector.new(spawnpoint.x + 64, spawnpoint.y + 64, ZOrder::BUILDING),
-                angle: 0
-              )
-      @player.entities << Entity.new(
-                name: :refinery,
-                director: @director,
-                player: @player,
-                id: @player.next_entity_id,
-                position: CyberarmEngine::Vector.new(spawnpoint.x + 130, spawnpoint.y + 64, ZOrder::BUILDING),
-                angle: 0
-              )
-      @player.entities << Entity.new(
-                name: :war_factory,
-                director: @director,
-                player: @player,
-                id: @player.next_entity_id,
-                position: CyberarmEngine::Vector.new(spawnpoint.x + 130, spawnpoint.y - 64, ZOrder::BUILDING),
-                angle: 0
-              )
-      @player.entities << Entity.new(
-                name: :helipad,
-                director: @director,
-                player: @player,
-                id: @player.next_entity_id,
-                position: CyberarmEngine::Vector.new(spawnpoint.x - 32, spawnpoint.y - 96, ZOrder::BUILDING),
-                angle: 0
-              )
-      @player.entities << Entity.new(
-                name: :barracks,
-                director: @director,
-                player: @player,
-                id: @player.next_entity_id,
-                position: CyberarmEngine::Vector.new(spawnpoint.x - 32, spawnpoint.y + 128, ZOrder::BUILDING),
-                angle: 0
-              )
+      @director.spawn_entity(
+        player_id: @player.id, name: :construction_yard,
+        position: CyberarmEngine::Vector.new(spawnpoint.x, spawnpoint.y, ZOrder::BUILDING)
+      )
+
+      @director.spawn_entity(
+        player_id: @player.id, name: :construction_worker,
+        position: CyberarmEngine::Vector.new(spawnpoint.x - 64, spawnpoint.y + 64, ZOrder::GROUND_VEHICLE)
+      )
+
+      @director.spawn_entity(
+        player_id: @player.id, name: :power_plant,
+        position: CyberarmEngine::Vector.new(spawnpoint.x + 64, spawnpoint.y + 64, ZOrder::BUILDING)
+      )
+
+      @director.spawn_entity(
+        player_id: @player.id, name: :refinery,
+        position: CyberarmEngine::Vector.new(spawnpoint.x + 130, spawnpoint.y + 64, ZOrder::BUILDING)
+      )
+
+      @director.spawn_entity(
+        player_id: @player.id, name: :war_factory,
+        position: CyberarmEngine::Vector.new(spawnpoint.x + 130, spawnpoint.y - 64, ZOrder::BUILDING)
+      )
+
+      @director.spawn_entity(
+        player_id: @player.id, name: :helipad,
+        position: CyberarmEngine::Vector.new(spawnpoint.x - 32, spawnpoint.y - 96, ZOrder::BUILDING)
+      )
+
+      @director.spawn_entity(
+        player_id: @player.id, name: :barracks,
+        position: CyberarmEngine::Vector.new(spawnpoint.x - 32, spawnpoint.y + 128, ZOrder::BUILDING)
+      )
     end
 
     def draw
@@ -133,7 +113,7 @@ class IMICRTS
       @player.camera.draw do
         @director.map.draw(@player.camera)
         @director.entities.each(&:draw)
-        @selected_entities.each(&:selected_draw)
+        @entity_controller.selected_entities.each(&:selected_draw)
 
         @overlays.each do |overlay|
           overlay.image.draw_rot(overlay.position.x, overlay.position.y, overlay.position.z, overlay.angle, 0.5, 0.5, 1, 1, Gosu::Color.rgba(255, 255, 255, overlay.alpha))
@@ -143,7 +123,7 @@ class IMICRTS
           @overlays.delete(overlay) if overlay.alpha <= 0
         end
 
-        Gosu.draw_rect(@box.min.x, @box.min.y, @box.width, @box.height, Gosu::Color.rgba(50, 50, 50, 150), ZOrder::SELECTION_BOX) if @box
+        @entity_controller.draw
       end
 
       @debug_info.draw if Setting.enabled?(:debug_info_bar)
@@ -154,10 +134,7 @@ class IMICRTS
 
       @director.update
       @player.camera.update
-
-      if @selection_start
-        select_entities
-      end
+      @entity_controller.update
 
       mouse = @player.camera.transform(window.mouse)
       tile  = @director.map.tile_at(mouse.x / @director.map.tile_size, mouse.y / @director.map.tile_size)
@@ -184,55 +161,15 @@ class IMICRTS
     def button_down(id)
       super
 
-      case id
-      when Gosu::KB_S
-        @director.schedule_order(Order::STOP, @player.id)
-
-      when Gosu::MS_LEFT
-        unless @sidebar.hit?(window.mouse_x, window.mouse_y)
-          @selection_start = @player.camera.transform(window.mouse)
-        end
-      when Gosu::MS_RIGHT
-        @director.schedule_order(Order::MOVE, @player.id, @player.camera.transform(window.mouse))
-
-        @overlays << Overlay.new(Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/cursors/move.png"), @player.camera.transform(window.mouse), 0, 255)
-        @overlays.last.position.z = ZOrder::OVERLAY
-      end
-
+      @entity_controller.button_down(id)
       @player.camera.button_down(id) unless @sidebar.hit?(window.mouse_x, window.mouse_y)
     end
 
     def button_up(id)
       super
 
-      case id
-      when Gosu::MS_RIGHT
-      when Gosu::MS_LEFT
-        @box = nil
-        @selection_start = nil
-
-        diff = (@player.selected_entities - @selected_entities)
-
-        @director.schedule_order(Order::DESELECTED_UNITS, @player.id, diff)
-        @director.schedule_order(Order::SELECTED_UNITS, @player.id, @selected_entities)
-      end
-
+      @entity_controller.button_up(id)
       @player.camera.button_up(id)
-    end
-
-    def select_entities
-      @box = CyberarmEngine::BoundingBox.new(@selection_start, @player.camera.transform(window.mouse))
-
-      selected_entities = @player.entities.select do |ent|
-        @box.point?(ent.position - ent.radius) ||
-        @box.point?(ent.position + ent.radius)
-      end
-
-      if Gosu.button_down?(Gosu::KB_LEFT_SHIFT) || Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
-        @selected_entities = @selected_entities.union(selected_entities)
-      else
-        @selected_entities = selected_entities
-      end
     end
 
     def finalize

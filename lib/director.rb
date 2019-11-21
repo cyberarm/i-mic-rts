@@ -100,6 +100,18 @@ class IMICRTS
       end
     end
 
+    def spawn_entity(player_id:, name:, position:)
+      _player = player(player_id)
+      _player.entities << Entity.new(
+                name: name,
+                director: self,
+                player: _player,
+                id: _player.next_entity_id,
+                position: position,
+                angle: 0
+              )
+    end
+
 
     def entities
       @players.map { |player| player.entities }.flatten

@@ -88,6 +88,5 @@ class IMICRTS
 end
 
 Dir.glob("#{IMICRTS::GAME_ROOT_PATH}/lib/particle_emitters/**/*.rb").each do |emitter|
-  p emitter
   require_relative emitter
 end

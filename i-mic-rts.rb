@@ -40,6 +40,7 @@ require_relative "lib/order"
 require_relative "lib/friendly_hash"
 require_relative "lib/director"
 require_relative "lib/player"
+require_relative "lib/entity_controller"
 require_relative "lib/connection"
 
 require_relative "lib/networking/protocol"

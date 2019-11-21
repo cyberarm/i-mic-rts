@@ -97,15 +97,13 @@ class IMICRTS
     end
 
     def move_to(x, y, zoom)
+      @velocity *= 0.0
       @position.x, @position.y = x, y
       @zoom = zoom
     end
 
     def button_down(id)
       case id
-      when Gosu::KB_H
-        @position.x, @position.y = 0.0, 0.0
-        @velocity *= 0.0
       when Gosu::MS_WHEEL_UP
         @zoom = (@zoom + 0.25).clamp(@min_zoom, @max_zoom)
       when Gosu::MS_WHEEL_DOWN
