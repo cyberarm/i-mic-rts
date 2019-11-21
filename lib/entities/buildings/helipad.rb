@@ -1,4 +1,8 @@
 IMICRTS::Entity.define_entity(:helipad, :building, 1_000, "Builds and rearms helicopters") do |entity|
+  entity.has(:build_queue)
+  entity.has(:sidebar_actions)
+  entity.component(:sidebar_actions).add(:add_to_build_queue, :helicopter)
+
   entity.radius = 26
   entity.max_health = 100.0
 

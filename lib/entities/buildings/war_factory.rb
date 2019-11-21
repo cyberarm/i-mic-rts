@@ -1,4 +1,10 @@
-IMICRTS::Entity.define_entity(:war_factory, :building, 2_000, "Generates credits") do |entity|
+IMICRTS::Entity.define_entity(:war_factory, :building, 2_000, "Builds units") do |entity|
+  entity.has(:build_queue)
+  entity.has(:sidebar_actions)
+  entity.component(:sidebar_actions).add(:add_to_build_queue, :jeep)
+  entity.component(:sidebar_actions).add(:add_to_build_queue, :tank)
+  entity.component(:sidebar_actions).add(:add_to_build_queue, :harvester)
+
   entity.radius = 48
   entity.max_health = 100.0
 

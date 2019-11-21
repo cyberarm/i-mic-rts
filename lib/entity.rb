@@ -67,7 +67,7 @@ class IMICRTS
       if component
         @components[symbol] = component.new(parent: self)
       else
-        raise "Unknown component: #{component.inspect}"
+        raise "Unknown component: #{symbol.inspect}"
       end
     end
 

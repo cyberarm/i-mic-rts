@@ -69,6 +69,17 @@ class IMICRTS
           @director.schedule_order(Order::SELECTED_UNITS, @player.id, @selected_entities)
         else
           pick_entity
+          if ent = @selected_entities.first
+            return unless ent.component(:sidebar_actions)
+
+            @game.sidebar_actions.clear do |stack|
+              ent.component(:sidebar_actions).actions.each do |action|
+                stack.button action.label, tip: action.description do
+                  action.block.call if action.block
+                end
+              end
+            end
+          end
         end
       end
     end

@@ -2,7 +2,7 @@ class IMICRTS
   class Game < CyberarmEngine::GuiState
     Overlay = Struct.new(:image, :position, :angle, :alpha)
 
-    attr_reader :sidebar, :overlays
+    attr_reader :sidebar, :sidebar_actions, :overlays
     def setup
       window.show_cursor = true
       @options[:networking_mode] ||= :host
@@ -21,8 +21,8 @@ class IMICRTS
         label "SIDEBAR", text_size: 78, margin_bottom: 20
 
         flow(width: 1.0) do
-          @buttons = stack(width: 0.9) do
-            @h = button("Harvester", width: 1.0) do
+          @sidebar_actions = stack(width: 0.9) do
+            button("Harvester", width: 1.0) do
               @player.entities << Entity.new(
                 name: :harvester,
                 director: @director,
@@ -32,7 +32,7 @@ class IMICRTS
                 angle: rand(360)
               )
             end
-            @c = button("Construction Worker", width: 1.0) do
+            button("Construction Worker", width: 1.0) do
               @player.entities << Entity.new(
                 name: :construction_worker,
                 director: @director,
@@ -42,7 +42,7 @@ class IMICRTS
                 angle: rand(360)
               )
             end
-            @t = button("Tank", width: 1.0) do
+            button("Tank", width: 1.0) do
               @player.entities << Entity.new(
                 name: :tank,
                 director: @director,

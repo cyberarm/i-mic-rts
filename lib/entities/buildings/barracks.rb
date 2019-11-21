@@ -1,4 +1,6 @@
 IMICRTS::Entity.define_entity(:barracks, :building, 400, "Builds and soldiers") do |entity|
+  entity.has(:build_queue)
+
   entity.radius = 44
   entity.max_health = 100.0
 
