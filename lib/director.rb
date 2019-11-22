@@ -1,7 +1,8 @@
 class IMICRTS
   class Director
-    attr_reader :current_tick, :map
-    def initialize(map:, players:, networking_mode:, tick_rate: 10)
+    attr_reader :current_tick, :map, :game
+    def initialize(game:, map:, players:, networking_mode:, tick_rate: 10)
+      @game = game
       @map = map
       @players = players
       @connection = IMICRTS::Connection.new(director: self, mode: networking_mode)

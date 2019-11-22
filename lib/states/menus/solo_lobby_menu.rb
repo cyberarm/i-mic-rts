@@ -35,15 +35,22 @@ class IMICRTS
 
         flow(width: 1.0) do
           button("Accept", width: 0.5) do
-            Setting.set(:player_name, @player_name.value)
+            save_playerdata
             push_state(Game, networking_mode: :virtual)
           end
 
           button("Back", align: :right) do
+            save_playerdata
             push_state(MainMenu)
           end
         end
       end
+    end
+
+    def save_playerdata
+      Setting.set(:player_name, @player_name.value)
+
+      Setting.save!
     end
   end
 end

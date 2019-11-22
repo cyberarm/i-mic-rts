@@ -8,7 +8,7 @@ class IMICRTS
       @options[:networking_mode] ||= :host
 
       @player = Player.new(id: 0)
-      @director = Director.new(map: Map.new(map_file: "maps/test_map.tmx"), networking_mode: @options[:networking_mode], players: [@player])
+      @director = Director.new(game: self, map: Map.new(map_file: "maps/test_map.tmx"), networking_mode: @options[:networking_mode], players: [@player])
       @entity_controller = EntityController.new(game: self, director: @director, player: @player)
 
       @overlays = []
@@ -170,6 +170,10 @@ class IMICRTS
 
       @entity_controller.button_up(id)
       @player.camera.button_up(id)
+    end
+
+    def set_tool(tool, *args)
+      pp tool, args
     end
 
     def finalize

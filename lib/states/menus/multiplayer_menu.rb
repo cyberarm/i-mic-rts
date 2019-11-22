@@ -12,7 +12,7 @@ class IMICRTS
         end
         flow do
           button("Refresh") do
-            # refresh_games
+            refresh_games
           end
           button("Host Game")
           button("Join Game")
@@ -25,8 +25,8 @@ class IMICRTS
     end
 
     def refresh_games
-      @games_list.clear do
-        label "No games found..."
+      @games_list.clear do |stack|
+        stack.label "No games found..."
       end
     end
   end

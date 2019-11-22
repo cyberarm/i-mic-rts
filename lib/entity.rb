@@ -15,7 +15,7 @@ class IMICRTS
       end
     end
 
-    attr_reader :player, :id, :name, :type, :speed
+    attr_reader :director, :player, :id, :name, :type, :speed
     attr_accessor :position, :angle, :radius, :target, :state,
                   :movement, :health, :max_health,
                   :turret, :center, :particle_emitters
