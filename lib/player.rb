@@ -1,9 +1,10 @@
 class IMICRTS
   class Player
-    attr_reader :id, :name, :color, :team, :entities, :orders, :camera
+    attr_reader :id, :name, :color, :team, :entities, :orders, :camera, :spawnpoint
     attr_reader :selected_entities
-    def initialize(id:, name: nil, color: Gosu::Color.rgb(rand(150..200), rand(100..200), rand(150..200)), team: nil)
+    def initialize(id:, spawnpoint:, name: nil, color: Gosu::Color.rgb(rand(150..200), rand(100..200), rand(150..200)), team: nil)
       @id = id
+      @spawnpoint = spawnpoint
       @name = name ? name : "Novice-#{id}"
       @color = color
       @team = team

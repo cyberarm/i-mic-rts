@@ -3,7 +3,7 @@ IMICRTS::Entity.define_entity(:construction_worker, :unit, 1000, "Constructs bui
   entity.has(:build_queue)
   entity.has(:sidebar_actions)
   [:power_plant, :refinery, :barracks, :war_factory, :helipad, :construction_yard].each do |ent|
-    entity.component(:sidebar_actions).add(:set_build_tool, :place_building, ent)
+    entity.component(:sidebar_actions).add(:set_tool, {tool: :place_entity, entity: ent, construction_worker: entity})
   end
 
   entity.radius = 14

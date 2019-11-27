@@ -9,28 +9,28 @@ class IMICRTS
       @actions = []
     end
 
-    def add(type, *args)
+    def add(type, data = {})
       action = Action.new
 
       case type
       when :add_to_build_queue
-        ent = IMICRTS::Entity.get(args.first)
-        raise "Failed to find entity: #{args.first.inspect}" unless ent
+        ent = IMICRTS::Entity.get(data[:entity])
+        raise "Failed to find entity: #{data[:entity].inspect}" unless ent
 
         action.label = ent.name.to_s.split("_").map{ |s| s.capitalize }.join(" ")
         action.description = "Cost: #{ent.cost}\n#{ent.description}"
-        action.block = proc { @parent.component(:build_queue).add(args.first) }
+        action.block = proc { @parent.component(:build_queue).add(data[:entity]) }
 
-      when :set_build_tool
-        ent = IMICRTS::Entity.get(args[1])
-        raise "Failed to find entity: #{args[1].inspect}" unless ent
+      when :set_tool
+        ent = IMICRTS::Entity.get(data[:entity])
+        raise "Failed to find entity: #{data[:entity].inspect}" unless ent
 
         action.label = ent.name.to_s.split("_").map { |s| s.capitalize }.join(" ")
         action.description = "Cost: #{ent.cost}\n#{ent.description}"
-        action.block = proc { @parent.director.game.set_tool(:building, ent) }
+        action.block = proc { @parent.director.game.set_tool(data[:tool], data) }
 
       else
-        raise "Unhandled sidebar action: #{action.inspect}"
+        raise "Unhandled sidebar action: #{type.inspect}"
       end
 
       @actions << action

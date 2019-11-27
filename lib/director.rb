@@ -1,7 +1,7 @@
 class IMICRTS
   class Director
     attr_reader :current_tick, :map, :game
-    def initialize(game:, map:, players:, networking_mode:, tick_rate: 10)
+    def initialize(game:, map:, players: [], networking_mode:, tick_rate: 10)
       @game = game
       @map = map
       @players = players
@@ -12,6 +12,10 @@ class IMICRTS
       @last_tick_at = Gosu.milliseconds
       @tick_time = 1000.0 / @tick_rate
       @current_tick = 0
+    end
+
+    def add_player(player)
+      @players << player
     end
 
     def update

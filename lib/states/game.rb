@@ -3,14 +3,17 @@ class IMICRTS
     Overlay = Struct.new(:image, :position, :angle, :alpha)
 
     attr_reader :sidebar, :sidebar_actions, :overlays
+    attr_accessor :selected_entities
     def setup
       window.show_cursor = true
       @options[:networking_mode] ||= :host
 
-      @player = Player.new(id: 0)
-      @director = Director.new(game: self, map: Map.new(map_file: "maps/test_map.tmx"), networking_mode: @options[:networking_mode], players: [@player])
-      @entity_controller = EntityController.new(game: self, director: @director, player: @player)
+      @director = Director.new(game: self, map: Map.new(map_file: "maps/test_map.tmx"), networking_mode: @options[:networking_mode])
+      @player = Player.new(id: 0, spawnpoint: @director.map.spawnpoints.last)
+      @director.add_player(@player)
 
+      @selected_entities = []
+      @tool = set_tool(:entity_controller)
       @overlays = []
 
       @debug_info = CyberarmEngine::Text.new("", y: 10, z: Float::INFINITY, shadow_color: Gosu::Color.rgba(0, 0, 0, 200))
@@ -20,38 +23,8 @@ class IMICRTS
 
         label "SIDEBAR", text_size: 78, margin_bottom: 20
 
-        flow(width: 1.0) do
+        flow(width: 1.0, height: 1.0) do
           @sidebar_actions = stack(width: 0.9) do
-            button("Harvester", width: 1.0) do
-              @player.entities << Entity.new(
-                name: :harvester,
-                director: @director,
-                player: @player,
-                id: @player.next_entity_id,
-                position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
-                angle: rand(360)
-              )
-            end
-            button("Construction Worker", width: 1.0) do
-              @player.entities << Entity.new(
-                name: :construction_worker,
-                director: @director,
-                player: @player,
-                id: @player.next_entity_id,
-                position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
-                angle: rand(360)
-              )
-            end
-            button("Tank", width: 1.0) do
-              @player.entities << Entity.new(
-                name: :tank,
-                director: @director,
-                player: @player,
-                id: @player.next_entity_id,
-                position: CyberarmEngine::Vector.new(rand(window.width), rand(window.height), ZOrder::GROUND_VEHICLE),
-                angle: rand(360)
-              )
-            end
           end
 
           # Power meter
@@ -59,49 +32,17 @@ class IMICRTS
             background Gosu::Color::GREEN
           end
         end
-
-
-        button("Leave", width: 1.0, margin_top: 20) do
-          finalize
-          push_state(MainMenu)
-        end
       end
 
-      # 100.times { |i| [@c, @h, @t].sample.instance_variable_get("@block").call }
-      spawnpoint = @director.map.spawnpoints.last
+      # TODO: implement tools
       @director.spawn_entity(
         player_id: @player.id, name: :construction_yard,
-        position: CyberarmEngine::Vector.new(spawnpoint.x, spawnpoint.y, ZOrder::BUILDING)
+        position: CyberarmEngine::Vector.new(@player.spawnpoint.x, @player.spawnpoint.y, ZOrder::BUILDING)
       )
 
       @director.spawn_entity(
         player_id: @player.id, name: :construction_worker,
-        position: CyberarmEngine::Vector.new(spawnpoint.x - 64, spawnpoint.y + 64, ZOrder::GROUND_VEHICLE)
-      )
-
-      @director.spawn_entity(
-        player_id: @player.id, name: :power_plant,
-        position: CyberarmEngine::Vector.new(spawnpoint.x + 64, spawnpoint.y + 64, ZOrder::BUILDING)
-      )
-
-      @director.spawn_entity(
-        player_id: @player.id, name: :refinery,
-        position: CyberarmEngine::Vector.new(spawnpoint.x + 130, spawnpoint.y + 64, ZOrder::BUILDING)
-      )
-
-      @director.spawn_entity(
-        player_id: @player.id, name: :war_factory,
-        position: CyberarmEngine::Vector.new(spawnpoint.x + 130, spawnpoint.y - 64, ZOrder::BUILDING)
-      )
-
-      @director.spawn_entity(
-        player_id: @player.id, name: :helipad,
-        position: CyberarmEngine::Vector.new(spawnpoint.x - 32, spawnpoint.y - 96, ZOrder::BUILDING)
-      )
-
-      @director.spawn_entity(
-        player_id: @player.id, name: :barracks,
-        position: CyberarmEngine::Vector.new(spawnpoint.x - 32, spawnpoint.y + 128, ZOrder::BUILDING)
+        position: CyberarmEngine::Vector.new(@player.spawnpoint.x - 64, @player.spawnpoint.y + 64, ZOrder::GROUND_VEHICLE)
       )
     end
 
@@ -113,7 +54,7 @@ class IMICRTS
       @player.camera.draw do
         @director.map.draw(@player.camera)
         @director.entities.each(&:draw)
-        @entity_controller.selected_entities.each(&:selected_draw)
+        @selected_entities.each(&:selected_draw)
 
         @overlays.each do |overlay|
           overlay.image.draw_rot(overlay.position.x, overlay.position.y, overlay.position.z, overlay.angle, 0.5, 0.5, 1, 1, Gosu::Color.rgba(255, 255, 255, overlay.alpha))
@@ -123,7 +64,7 @@ class IMICRTS
           @overlays.delete(overlay) if overlay.alpha <= 0
         end
 
-        @entity_controller.draw
+        @tool.draw if @tool
       end
 
       @debug_info.draw if Setting.enabled?(:debug_info_bar)
@@ -134,7 +75,7 @@ class IMICRTS
 
       @director.update
       @player.camera.update
-      @entity_controller.update
+      @tool.update if @tool
 
       mouse = @player.camera.transform(window.mouse)
       tile  = @director.map.tile_at(mouse.x / @director.map.tile_size, mouse.y / @director.map.tile_size)
@@ -161,19 +102,23 @@ class IMICRTS
     def button_down(id)
       super
 
-      @entity_controller.button_down(id)
+      @tool.button_down(id) if @tool
       @player.camera.button_down(id) unless @sidebar.hit?(window.mouse_x, window.mouse_y)
     end
 
     def button_up(id)
       super
 
-      @entity_controller.button_up(id)
+      @tool.button_up(id) if @tool
       @player.camera.button_up(id)
     end
 
-    def set_tool(tool, *args)
-      pp tool, args
+    def set_tool(tool, data = {})
+      unless tool
+        set_tool(:entity_controller)
+      else
+        @tool = Tool.get(tool).new(data, game: self, director: @director, player: @player)
+      end
     end
 
     def finalize

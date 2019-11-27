@@ -11,6 +11,8 @@ require "nokogiri"
 require "json"
 require "socket"
 
+require_relative "lib/exts/string"
+
 require_relative "lib/version"
 require_relative "lib/errors"
 require_relative "lib/window"
@@ -40,8 +42,9 @@ require_relative "lib/order"
 require_relative "lib/friendly_hash"
 require_relative "lib/director"
 require_relative "lib/player"
-require_relative "lib/entity_controller"
+require_relative "lib/tool"
 require_relative "lib/connection"
+
 
 require_relative "lib/networking/protocol"
 require_relative "lib/networking/packet"

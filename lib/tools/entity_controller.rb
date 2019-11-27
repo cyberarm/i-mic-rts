@@ -1,14 +1,8 @@
 class IMICRTS
-  # Handles entity de/selection and order manipulation
-  class EntityController
-    attr_reader :selected_entities
-    def initialize(game:, director:, player:)
-      @game = game
-      @director = director
-      @player = player
-
+  # Handles entity de/selection and basic move order
+  class EntityController < Tool
+    def setup
       @drag_start = CyberarmEngine::Vector.new
-      @selected_entities = []
     end
 
     def draw
@@ -46,7 +40,7 @@ class IMICRTS
           @selection_start = @player.camera.transform(@game.window.mouse)
         end
       when Gosu::MS_RIGHT
-        if @selected_entities.size > 0
+        if @game.selected_entities.size > 0
           @director.schedule_order(Order::MOVE, @player.id, @player.camera.transform(@game.window.mouse))
 
           @game.overlays << Game::Overlay.new(Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/cursors/move.png"), @player.camera.transform(@game.window.mouse), 0, 255)
@@ -62,14 +56,14 @@ class IMICRTS
         @box = nil
         @selection_start = nil
 
-        diff = (@player.selected_entities - @selected_entities)
+        diff = (@player.selected_entities - @game.selected_entities)
 
         @director.schedule_order(Order::DESELECTED_UNITS, @player.id, diff) if diff.size > 0
-        if @selected_entities.size > 0
-          @director.schedule_order(Order::SELECTED_UNITS, @player.id, @selected_entities)
+        if @game.selected_entities.size > 0
+          @director.schedule_order(Order::SELECTED_UNITS, @player.id, @game.selected_entities)
         else
           pick_entity
-          if ent = @selected_entities.first
+          if ent = @game.selected_entities.first
             return unless ent.component(:sidebar_actions)
 
             @game.sidebar_actions.clear do |stack|
@@ -92,8 +86,8 @@ class IMICRTS
       end
 
       if found
-        @selected_entities = [found]
-        @director.schedule_order(Order::SELECTED_UNITS, @player.id, @selected_entities)
+        @game.selected_entities = [found]
+        @director.schedule_order(Order::SELECTED_UNITS, @player.id, @game.selected_entities)
       end
     end
 
@@ -107,9 +101,9 @@ class IMICRTS
       end
 
       if Gosu.button_down?(Gosu::KB_LEFT_SHIFT) || Gosu.button_down?(Gosu::KB_RIGHT_SHIFT)
-        @selected_entities = @selected_entities.union(selected_entities)
+        @game.selected_entities = @game.selected_entities.union(selected_entities)
       else
-        @selected_entities = selected_entities
+        @game.selected_entities = selected_entities
       end
     end
   end

@@ -7,7 +7,7 @@ class IMICRTS
     end
 
     def self.inherited(klass)
-      name = klass.to_s.split("::").last.gsub(/([^A-Z])([A-Z]+)/,'\1_\2').downcase.to_sym
+      name = klass.to_s.to_snakecase
 
       if get(name)
         raise "#{klass.inspect} is already defined!"

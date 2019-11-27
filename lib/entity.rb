@@ -18,7 +18,7 @@ class IMICRTS
     attr_reader :director, :player, :id, :name, :type, :speed
     attr_accessor :position, :angle, :radius, :target, :state,
                   :movement, :health, :max_health,
-                  :turret, :center, :particle_emitters
+                  :turret, :center, :particle_emitters, :color
     def initialize(name:, player:, id:, position:, angle:, director:)
       @player = player
       @id = id
@@ -26,6 +26,7 @@ class IMICRTS
       @angle = angle
       @director = director
       @speed = 0.5
+      @color = Gosu::Color.rgba(255, 255, 255, 255)
 
       @sight_radius = 5 # tiles
       @range_radius = 3 # tiles
@@ -104,6 +105,14 @@ class IMICRTS
       @position.distance(vector) < @radius + 1
     end
 
+    def die?
+      if @health
+        @health <= 0
+      else
+        false
+      end
+    end
+
     def render
       @render = Gosu.render(@shell_image.width, @shell_image.height, retro: true) do
         @body_image.draw(0, 0, 0) if @body_image
@@ -114,7 +123,7 @@ class IMICRTS
 
     def draw
       render unless @render
-      @render.draw_rot(@position.x, @position.y, @position.z, @angle, @center.x, @center.y)
+      @render.draw_rot(@position.x, @position.y, @position.z, @angle, @center.x, @center.y, 1, 1, @color)
 
       component(:turret).draw if component(:turret)
       @particle_emitters.each(&:draw)

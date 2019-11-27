@@ -1,7 +1,7 @@
 IMICRTS::Entity.define_entity(:construction_yard, :building, 2_000, "Provides radar and builds construction workers") do |entity|
   entity.has(:build_queue)
   entity.has(:sidebar_actions)
-  entity.component(:sidebar_actions).add(:add_to_build_queue, :construction_worker)
+  entity.component(:sidebar_actions).add(:add_to_build_queue, {entity: :construction_worker})
 
   entity.radius = 40
   entity.max_health = 100.0
