@@ -133,23 +133,23 @@
      id="layer1"
      transform="translate(0,-271.59998)">
     <path
-       style="fill:#f57900;stroke:#000000;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3280)"
+       style="fill:#f57900;stroke:#000000;stroke-width:0.3031894;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3280)"
        d="m 8.069726,275.4363 h 9.260548 v 6.74701 H 8.069726 Z"
        id="path4574"
        inkscape:connector-curvature="0"
-       transform="matrix(0.74201702,0,0,0.99813151,3.2763836,0.53121706)" />
+       transform="matrix(0.76378826,0,0,0.9970661,2.9998888,0.83411169)" />
     <path
-       style="fill:#f57900;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter3280)"
+       style="fill:#f57900;stroke:#000000;stroke-width:0.3031894;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3280)"
        d="m 17.330274,286.41665 c 0,0 0,6.747 0,6.747 H 8.069726 v -6.747 z"
        id="path4576"
        inkscape:connector-curvature="0"
-       transform="matrix(0.74201702,0,0,0.99813151,3.2763836,0.53121706)" />
+       transform="matrix(0.76378826,0,0,0.9970661,2.9998888,0.83411169)" />
     <path
-       style="fill:#fcaf3e;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter3280)"
+       style="fill:#fcaf3e;stroke:#000000;stroke-width:0.3031894;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3280)"
        d="m 17.330274,286.41665 v -4.23334 H 8.069726 v 4.23334 z"
        id="path4578"
        inkscape:connector-curvature="0"
-       transform="matrix(0.74201702,0,0,0.99813151,3.2763836,0.53121706)" />
+       transform="matrix(0.76378826,0,0,0.9970661,2.9998888,0.83411169)" />
     <circle
        style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.79374999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter3280)"
        id="path4584"
