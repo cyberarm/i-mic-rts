@@ -41,6 +41,20 @@ class IMICRTS
     def cancel_tool
       @game.set_tool(nil)
     end
+
+    def use_tool(vector, options = {})
+    end
+
+    def can_use?(vector)
+    end
+
+    def vector_to_grid(vector)
+      temp = @player.camera.transform(vector)
+      temp.x = (temp.x / @director.map.tile_size).floor
+      temp.y = (temp.y / @director.map.tile_size).floor
+
+      return temp
+    end
   end
 end
 

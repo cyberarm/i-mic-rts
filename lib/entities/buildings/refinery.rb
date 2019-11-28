@@ -1,4 +1,12 @@
-IMICRTS::Entity.define_entity(:refinery, :building, 1_400, "Generates credits") do |entity|
+tiles = [
+  [false, false, false, false, false],
+  [false, true,  true,  true,  false],
+  [false, true,  true,  true,  false],
+  [false, true,  true,  true,  false],
+  [false, true,  true,  true,  false],
+]
+
+IMICRTS::Entity.define_entity(:refinery, :building, 1_400, "Generates credits", tiles) do |entity|
   entity.radius = 44
   entity.max_health = 100.0
 

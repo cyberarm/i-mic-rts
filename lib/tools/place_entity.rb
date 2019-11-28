@@ -17,10 +17,31 @@ class IMICRTS
     def update
       # TODO: ensure that construction worker is alive
       cancel_tool if @construction_worker.die?
-      @preview.position = @player.camera.transform(@game.window.mouse)
-      @preview.position.z = ZOrder::OVERLAY
+      vector = vector_to_grid(@game.window.mouse)
+      if tile = @director.map.tile_at(vector.x, vector.y)
+        position = tile.position.clone
+        @preview.position = position
+        @preview.position.z = ZOrder::OVERLAY
+      else
+        @preview.position.z = -10
+      end
 
       @preview.color.alpha = 150
+    end
+
+    def use_tool(vector)
+      return if @game.sidebar.hit?(@game.window.mouse_x, @game.window.mouse_y)
+
+      tile = @director.map.tile_at(vector.x, vector.y)
+      return unless tile
+      position = tile.position.clone
+
+      @director.spawn_entity(
+        player_id: @player.id, name: @entity,
+        position: CyberarmEngine::Vector.new(position.x, position.y, ZOrder::BUILDING)
+      )
+
+      cancel_tool
     end
 
     def button_down(id)
@@ -33,16 +54,7 @@ class IMICRTS
     def button_up(id)
       case id
       when Gosu::MsLeft
-        return if @game.sidebar.hit?(@game.window.mouse_x, @game.window.mouse_y)
-
-        transform = @player.camera.transform(@game.window.mouse)
-
-        @director.spawn_entity(
-          player_id: @player.id, name: @entity,
-          position: CyberarmEngine::Vector.new(transform.x, transform.y, ZOrder::BUILDING)
-        )
-
-        cancel_tool
+        use_tool(vector_to_grid(@game.window.mouse))
       end
     end
   end

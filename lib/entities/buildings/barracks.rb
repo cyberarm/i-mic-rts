@@ -1,4 +1,12 @@
-IMICRTS::Entity.define_entity(:barracks, :building, 400, "Builds and soldiers") do |entity|
+tiles = [
+  [false, false, false, false, false],
+  [false, true,  true,  true,  false],
+  [false, true,  true,  true,  false],
+  [false, true,  true,  true,  false],
+  [false, true,  true,  true,  false],
+]
+
+IMICRTS::Entity.define_entity(:barracks, :building, 400, "Builds and soldiers", tiles) do |entity|
   entity.has(:build_queue)
 
   entity.radius = 44

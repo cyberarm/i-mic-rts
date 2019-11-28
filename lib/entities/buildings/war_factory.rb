@@ -1,4 +1,12 @@
-IMICRTS::Entity.define_entity(:war_factory, :building, 2_000, "Builds units") do |entity|
+tiles = [
+  [false, false, false, false, false],
+  [false, true,  true,  true, false],
+  [false, true,  true,  true, false],
+  [false, true,  true,  true, false],
+  [false, true,  true,  true, false],
+]
+
+IMICRTS::Entity.define_entity(:war_factory, :building, 2_000, "Builds units", tiles) do |entity|
   entity.has(:build_queue)
   entity.has(:sidebar_actions)
   entity.component(:sidebar_actions).add(:add_to_build_queue, {entity: :jeep})

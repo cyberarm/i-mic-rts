@@ -1,4 +1,12 @@
-IMICRTS::Entity.define_entity(:construction_yard, :building, 2_000, "Provides radar and builds construction workers") do |entity|
+tiles = [
+  [false, false, false, false, false],
+  [false, true,  true,  true, false],
+  [false, true,  true,  true, false],
+  [false, true,  true,  true, false],
+  [false, true,  true,  true, false],
+]
+
+IMICRTS::Entity.define_entity(:construction_yard, :building, 2_000, "Provides radar and builds construction workers", tiles) do |entity|
   entity.has(:build_queue)
   entity.has(:sidebar_actions)
   entity.component(:sidebar_actions).add(:add_to_build_queue, {entity: :construction_worker})

@@ -1,17 +1,17 @@
 class IMICRTS
   class Entity
-    Stub = Struct.new(:name, :type, :cost, :description, :setup)
+    Stub = Struct.new(:name, :type, :cost, :description, :tiles, :setup)
     @entities = {}
 
     def self.get(name)
       @entities.dig(name)
     end
 
-    def self.define_entity(name, type, cost, description, &block)
+    def self.define_entity(name, type, cost, description, tiles = [[]], &block)
       if entity = get(name)
         raise "#{name.inspect} is already defined!"
       else
-        @entities[name] = Stub.new(name, type, cost, description, block)
+        @entities[name] = Stub.new(name, type, cost, description, tiles, block)
       end
     end
 
