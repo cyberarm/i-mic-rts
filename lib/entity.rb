@@ -132,7 +132,7 @@ class IMICRTS
     def update
       if component(:movement)
         if component(:movement).pathfinder && component(:movement).pathfinder.path_current_node
-          component(:movement).rotate_towards(component(:movement).pathfinder.path_current_node.tile.position)
+          component(:movement).rotate_towards(component(:movement).pathfinder.path_current_node.tile.position + @director.map.tile_size / 2)
         end
 
         component(:movement).follow_path
@@ -163,21 +163,25 @@ class IMICRTS
     end
 
     def draw_gizmos
+      # healthbar
       Gosu.draw_rect(@position.x - @radius, @position.y - (@radius + 2), @radius * 2, 2, Gosu::Color::GREEN, ZOrder::ENTITY_GIZMOS)
 
       if Setting.enabled?(:debug_pathfinding) && component(:movement) && component(:movement).pathfinder && component(:movement).pathfinder.path_current_node
+        current_node = component(:movement).pathfinder.path_current_node.tile.position + @director.map.tile_size / 2
         Gosu.draw_line(
           @position.x, @position.y, Gosu::Color::RED,
-          component(:movement).pathfinder.path_current_node.tile.position.x, component(:movement).pathfinder.path_current_node.tile.position.y, Gosu::Color::RED,
+          current_node.x, current_node.y, Gosu::Color::RED,
           ZOrder::ENTITY_GIZMOS
         )
 
-        node = component(:movement).pathfinder.path_current_node
+        node = component(:movement).pathfinder.path_current_node.tile.position + @director.map.tile_size / 2
         component(:movement).pathfinder.path[component(:movement).pathfinder.path_current_node_index..component(:movement).pathfinder.path.size - 1].each do |next_node|
           if node
+            next_node = next_node.tile.position + @director.map.tile_size / 2
+
             Gosu.draw_line(
-              node.tile.position.x, node.tile.position.y, Gosu::Color::RED,
-              next_node.tile.position.x, next_node.tile.position.y, Gosu::Color::RED,
+              node.x, node.y, Gosu::Color::RED,
+              next_node.x, next_node.y, Gosu::Color::RED,
               ZOrder::ENTITY_GIZMOS
             )
 

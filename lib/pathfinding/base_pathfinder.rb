@@ -84,7 +84,7 @@ class IMICRTS
 
       def at_current_path_node?(entity)
         if node = path_current_node
-          entity.position.distance(node.tile.position) <= @entity.radius
+          entity.position.distance((node.tile.position + @map.tile_size / 2).xy) <= @entity.radius
         else
           true
         end

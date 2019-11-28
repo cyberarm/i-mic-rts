@@ -24,7 +24,7 @@ class IMICRTS
     def follow_path
       if @pathfinder && node = @pathfinder.path_current_node
         @pathfinder.path_next_node if @pathfinder.at_current_path_node?(@parent)
-        @parent.position -= (@parent.position.xy - node.tile.position.xy).normalized * @parent.speed
+        @parent.position -= (@parent.position.xy - (node.tile.position + @parent.director.map.tile_size / 2).xy).normalized * @parent.speed
       end
     end
   end
