@@ -107,7 +107,7 @@ class IMICRTS
 
     def spawn_entity(player_id:, name:, position:)
       _player = player(player_id)
-      _player.entities << Entity.new(
+      ent = Entity.new(
                 name: name,
                 director: self,
                 player: _player,
@@ -115,6 +115,9 @@ class IMICRTS
                 position: position,
                 angle: 0
               )
+      _player.entities << ent
+
+      return ent
     end
 
 
