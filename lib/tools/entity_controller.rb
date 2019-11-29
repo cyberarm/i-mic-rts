@@ -57,20 +57,22 @@ class IMICRTS
         @selection_start = nil
 
         diff = (@player.selected_entities - @game.selected_entities)
+        @game.sidebar_actions.clear
 
         @director.schedule_order(Order::DESELECTED_UNITS, @player.id, diff) if diff.size > 0
         if @game.selected_entities.size > 0
           @director.schedule_order(Order::SELECTED_UNITS, @player.id, @game.selected_entities)
         else
           pick_entity
-          if ent = @game.selected_entities.first
-            return unless ent.component(:sidebar_actions)
+        end
 
-            @game.sidebar_actions.clear do |stack|
-              ent.component(:sidebar_actions).actions.each do |action|
-                stack.button action.label, tip: action.description, width: 1.0 do
-                  action.block.call if action.block
-                end
+        if @game.selected_entities.size < 2 && ent = @game.selected_entities.first
+          return unless ent.component(:sidebar_actions)
+
+          @game.sidebar_actions.clear do |stack|
+            ent.component(:sidebar_actions).actions.each do |action|
+              stack.button action.label, tip: action.description, width: 1.0 do
+                action.block.call if action.block
               end
             end
           end
