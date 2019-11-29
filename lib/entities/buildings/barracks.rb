@@ -3,7 +3,7 @@ tiles = [
   [false, true,  true,  true,  false],
   [false, true,  true,  true,  false],
   [false, true,  true,  true,  false],
-  [false, true,  true,  true,  false],
+  [false, :path, :path, :path, false],
 ]
 
 IMICRTS::Entity.define_entity(:barracks, :building, 400, "Builds and soldiers", tiles) do |entity|

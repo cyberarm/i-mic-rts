@@ -3,7 +3,7 @@ tiles = [
   [false, true,  true,  false, false],
   [false, true,  true,  true,  false],
   [false, true,  true,  true,  false],
-  [false, false, true,  true,  false],
+  [false, false, :path, :path, false],
 ]
 
 IMICRTS::Entity.define_entity(:refinery, :building, 1_400, "Generates credits", tiles) do |entity|

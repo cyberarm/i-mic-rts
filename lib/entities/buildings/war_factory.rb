@@ -1,9 +1,9 @@
 tiles = [
   [false, false, false, false, false],
-  [false, true,  true,  true, false],
-  [false, true,  true,  true, false],
-  [false, true,  true,  true, false],
-  [false, true,  true,  true, false],
+  [false, true,  true,  true,  false],
+  [false, true,  true,  true,  false],
+  [false, true,  true,  true,  false],
+  [false, :path, :path, :path, false],
 ]
 
 IMICRTS::Entity.define_entity(:war_factory, :building, 2_000, "Builds units", tiles) do |entity|

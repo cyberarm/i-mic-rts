@@ -104,7 +104,7 @@ class IMICRTS
     end
 
     class Tile
-      attr_accessor :position, :grid_position, :image, :visible, :entity, :type
+      attr_accessor :position, :grid_position, :image, :visible, :entity, :reserved, :type
       def initialize(position:, image:, visible:, type:, tile_size:)
         @position = position
         @grid_position = position.clone
@@ -114,6 +114,7 @@ class IMICRTS
         @image = image
         @visible = visible
         @entity = nil
+        @reserved = nil
         @type = type
       end
     end

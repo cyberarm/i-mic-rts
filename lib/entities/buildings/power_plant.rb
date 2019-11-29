@@ -3,7 +3,7 @@ tiles = [
   [false, false, true,  false, false],
   [false, false, true,  false, false],
   [false, false, true,  false, false],
-  [false, false, true,  false, false],
+  [false, false, :path, false, false],
 ]
 
 IMICRTS::Entity.define_entity(:power_plant, :building, 800, "Generates power", tiles) do |entity|

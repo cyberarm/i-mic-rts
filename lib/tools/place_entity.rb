@@ -10,8 +10,8 @@ class IMICRTS
     end
 
     def draw
-      each_tile(vector_to_grid(@game.window.mouse)) do |x, y, tile|
-        if tile.entity || tile.type != :ground || @director.map.ore_at(x, y) # tile unavailable
+      each_tile(vector_to_grid(@game.window.mouse)) do |tile, _data, x, y|
+        if tile.entity || tile.reserved || tile.type != :ground || @director.map.ore_at(x, y) # tile unavailable
           Gosu.draw_rect(
             tile.position.x + 2, tile.position.y + 2,
             @director.map.tile_size - 4, @director.map.tile_size - 4,
@@ -57,8 +57,12 @@ class IMICRTS
         position: CyberarmEngine::Vector.new(position.x, position.y, ZOrder::BUILDING)
       )
 
-      each_tile(vector) do |x, y, tile|
-        tile.entity = ent
+      each_tile(vector) do |tile, space_required|
+        if space_required == true
+          tile.entity = ent
+        else
+          tile.reserved = ent
+        end
       end
 
       cancel_tool
@@ -73,8 +77,8 @@ class IMICRTS
         ent = Entity.get(@entity)
         origin = (tile.grid_position - 2)
 
-        each_tile(vector) do |x, y, tile|
-          if tile.entity || tile.type != :ground || @director.map.ore_at(x, y)
+        each_tile(vector) do |tile, _data, x, y|
+          if tile.entity || tile.reserved || tile.type != :ground || @director.map.ore_at(x, y)
             useable = false
             break
           end
@@ -97,7 +101,7 @@ class IMICRTS
 
             other_tile = @director.map.tile_at(origin.x + x, origin.y + y)
             if other_tile
-              block.call(origin.x + x, origin.y + y, other_tile)
+              block.call(other_tile, space_required, origin.x + x, origin.y + y)
             end
           end
         end

@@ -1,9 +1,9 @@
 tiles = [
   [false, false, false, false, false],
-  [false, true,  true,  true, false],
-  [false, true,  true,  true, false],
-  [false, true,  true,  true, false],
-  [false, true,  true,  true, false],
+  [false, true,  true,  true,  false],
+  [false, true,  true,  true,  false],
+  [false, true,  true,  true,  false],
+  [false, :path, :path, :path, false],
 ]
 
 IMICRTS::Entity.define_entity(:construction_yard, :building, 2_000, "Provides radar and builds construction workers", tiles) do |entity|
