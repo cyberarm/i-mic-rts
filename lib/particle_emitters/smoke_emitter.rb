@@ -3,7 +3,7 @@ class IMICRTS
     def setup
       @time_to_live = Float::INFINITY
       @particle_time_to_live = 2_500
-      @frequency = 10.0
+      @frequency = 4.0
       @color = Gosu::Color.rgba(255, 255, 255, 255.0 * 0.4)
       @direction = CyberarmEngine::Vector.up
       @direction.y = 4.5
