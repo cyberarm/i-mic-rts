@@ -7,6 +7,7 @@ tiles = [
 ]
 
 IMICRTS::Entity.define_entity(:barracks, :building, 400, "Builds and soldiers", tiles) do |entity|
+  entity.has(:building)
   entity.has(:build_queue)
 
   entity.radius = 44

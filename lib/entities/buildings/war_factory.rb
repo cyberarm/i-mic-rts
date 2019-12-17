@@ -7,6 +7,7 @@ tiles = [
 ]
 
 IMICRTS::Entity.define_entity(:war_factory, :building, 2_000, "Builds units", tiles) do |entity|
+  entity.has(:building)
   entity.has(:build_queue)
   entity.has(:sidebar_actions)
   entity.component(:sidebar_actions).add(:add_to_build_queue, {entity: :jeep})

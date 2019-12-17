@@ -1,9 +1,7 @@
 class IMICRTS
   class BuildQueue < Component
     Item = Struct.new(:entity, :progress)
-    def initialize(parent:)
-      @parent = parent
-
+    def setup
       @queue = []
     end
 

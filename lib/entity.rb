@@ -15,16 +15,20 @@ class IMICRTS
       end
     end
 
-    attr_reader :director, :player, :id, :name, :type, :speed
+    attr_reader :director, :player, :id, :name, :type, :speed, :data
     attr_accessor :position, :angle, :radius, :target, :state,
                   :movement, :health, :max_health,
                   :turret, :center, :particle_emitters, :color
-    def initialize(name:, player:, id:, position:, angle:, director:)
+    def initialize(name:, player:, id:, position:, angle:, director:, proto_entity: false)
       @player = player
       @id = id
       @position = position
       @angle = angle
       @director = director
+      @proto_entity = proto_entity
+
+      @data = FriendlyHash.new
+
       @speed = 0.5
       @color = Gosu::Color.rgba(255, 255, 255, 255)
 
@@ -125,18 +129,14 @@ class IMICRTS
       render unless @render
       @render.draw_rot(@position.x, @position.y, @position.z, @angle, @center.x, @center.y, 1, 1, @color)
 
-      component(:turret).draw if component(:turret)
-      @particle_emitters.each(&:draw)
+      unless @proto_entity
+        @components.values.each(&:draw)
+        @particle_emitters.each(&:draw)
+      end
     end
 
     def update
-      if component(:movement)
-        if component(:movement).pathfinder && component(:movement).pathfinder.path_current_node
-          component(:movement).rotate_towards(component(:movement).pathfinder.path_current_node.tile.position + @director.map.tile_size / 2)
-        end
-
-        component(:movement).follow_path
-      end
+      @components.values.each(&:update)
 
       @particle_emitters.each do |emitter|
         @particle_emitters.delete(emitter) if emitter.die?
@@ -146,6 +146,7 @@ class IMICRTS
 
     def tick(tick_id)
       @on_tick.call if @on_tick
+      component(:building).construction_work(1) if component(:building)
     end
 
     def on_tick(&block)

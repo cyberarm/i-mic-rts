@@ -12,10 +12,13 @@ class IMICRTS
       @hash[key.to_sym] = value
     end
 
-    def method_missing(method)
+    def method_missing(method, argument = nil)
       if value = @hash.dig(method)
         value
+      elsif argument != nil
+        @hash[method.to_s.sub("=", "").to_sym] = argument
       else
+        return false unless argument # May result in bugginess!
         raise "Unknown value for: #{method}"
       end
     end

@@ -1,8 +1,13 @@
 class IMICRTS
   class Movement < Component
     attr_accessor :pathfinder
-    def initialize(parent:)
-      @parent = parent
+
+    def update
+      if pathfinder && pathfinder.path_current_node
+        rotate_towards(pathfinder.path_current_node.tile.position + @parent.director.map.tile_size / 2)
+      end
+
+      follow_path
     end
 
     def rotate_towards(vector)

@@ -7,6 +7,8 @@ tiles = [
 ]
 
 IMICRTS::Entity.define_entity(:refinery, :building, 1_400, "Generates credits", tiles) do |entity|
+  entity.has(:building)
+
   entity.radius = 44
   entity.max_health = 100.0
 

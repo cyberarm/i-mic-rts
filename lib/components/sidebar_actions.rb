@@ -3,9 +3,7 @@ class IMICRTS
     Action = Struct.new(:label, :image, :description, :block)
 
     attr_reader :actions
-    def initialize(parent:)
-      @parent = parent
-
+    def setup
       @actions = []
     end
 

@@ -7,6 +7,8 @@ tiles = [
 ]
 
 IMICRTS::Entity.define_entity(:power_plant, :building, 800, "Generates power", tiles) do |entity|
+  entity.has(:building)
+
   entity.radius = 24
   entity.max_health = 100.0
 

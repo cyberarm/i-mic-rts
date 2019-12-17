@@ -6,7 +6,7 @@ class IMICRTS
       @entity = @options[:entity]
       @construction_worker = @options[:construction_worker]
 
-      @preview = Entity.new(name: @entity, player: @player, id: 0, position: CyberarmEngine::Vector.new, angle: 0, director: @director)
+      @preview = Entity.new(name: @entity, player: @player, id: 0, position: CyberarmEngine::Vector.new, angle: 0, director: @director, proto_entity: true)
     end
 
     def draw

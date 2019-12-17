@@ -1,9 +1,7 @@
 class IMICRTS
   class Turret < Component
     attr_accessor :angle, :center
-    def initialize(parent:)
-      @parent = parent
-
+    def setup
       @angle = 0
       @center = CyberarmEngine::Vector.new(0.5, 0.5)
     end

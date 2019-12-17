@@ -15,6 +15,33 @@ class IMICRTS
         @@components[name] = klass
       end
     end
+
+    attr_reader :parent
+    def initialize(parent:)
+      @parent = parent
+
+      setup
+    end
+
+    def data
+      @parent.data
+    end
+
+    def data=(key, value)
+      @parent.data[key] = value
+    end
+
+    def setup
+    end
+
+    def draw
+    end
+
+    def update
+    end
+
+    def tick(tick_id)
+    end
   end
 end
 
