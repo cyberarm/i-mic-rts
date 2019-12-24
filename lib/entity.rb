@@ -66,6 +66,14 @@ class IMICRTS
     def deserialize
     end
 
+    def clear_orders
+      @orders.clear
+    end
+
+    def add_order(order)
+      @orders.push(order)
+    end
+
     def has(symbol)
       component = Component.get(symbol)
 

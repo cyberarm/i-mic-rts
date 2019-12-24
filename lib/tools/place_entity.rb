@@ -10,7 +10,7 @@ class IMICRTS
     end
 
     def draw
-      each_tile(vector_to_grid(@game.window.mouse)) do |tile, _data, x, y|
+      @director.each_tile(vector_to_grid(@game.window.mouse), @entity) do |tile, _data, x, y|
         if tile.entity || tile.reserved || tile.type != :ground || @director.map.ore_at(x, y) # tile unavailable
           Gosu.draw_rect(
             tile.position.x + 2, tile.position.y + 2,
@@ -49,21 +49,24 @@ class IMICRTS
       return if @game.sidebar.hit?(@game.window.mouse_x, @game.window.mouse_y)
 
       tile = @director.map.tile_at(vector.x, vector.y)
+      pp vector
       return unless tile
       position = tile.position + @director.map.tile_size / 2
 
-      ent = @director.spawn_entity(
-        player_id: @player.id, name: @entity,
-        position: CyberarmEngine::Vector.new(position.x, position.y, ZOrder::BUILDING)
-      )
+      # ent = @director.spawn_entity(
+      #   player_id: @player.id, name: @entity,
+      #   position: CyberarmEngine::Vector.new(position.x, position.y, ZOrder::BUILDING)
+      # )
 
-      each_tile(vector) do |tile, space_required|
-        if space_required == true
-          tile.entity = ent
-        else
-          tile.reserved = ent
-        end
-      end
+      @director.schedule_order(Order::BUILD_ORDER, @player.id, vector, @entity)
+
+      # each_tile(vector) do |tile, space_required|
+      #   if space_required == true
+      #     tile.entity = ent
+      #   else
+      #     tile.reserved = ent
+      #   end
+      # end
 
       cancel_tool
     end
@@ -77,7 +80,7 @@ class IMICRTS
         ent = Entity.get(@entity)
         origin = (tile.grid_position - 2)
 
-        each_tile(vector) do |tile, _data, x, y|
+        @director.each_tile(vector, @entity) do |tile, _data, x, y|
           if tile.entity || tile.reserved || tile.type != :ground || @director.map.ore_at(x, y)
             useable = false
             break
@@ -87,24 +90,6 @@ class IMICRTS
         return useable
       else
         return false
-      end
-    end
-
-    def each_tile(vector, &block)
-      if tile = @director.map.tile_at(vector.x, vector.y)
-        ent = Entity.get(@entity)
-        origin = (tile.grid_position - 2)
-
-        ent.tiles.each_with_index do |array, y|
-          array.each_with_index do |space_required, x|
-            next unless space_required
-
-            other_tile = @director.map.tile_at(origin.x + x, origin.y + y)
-            if other_tile
-              block.call(other_tile, space_required, origin.x + x, origin.y + y)
-            end
-          end
-        end
       end
     end
 

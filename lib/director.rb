@@ -105,6 +105,24 @@ class IMICRTS
       end
     end
 
+    def each_tile(vector, entity, &block)
+      if tile = @map.tile_at(vector.x, vector.y)
+        ent = Entity.get(entity)
+        origin = (tile.grid_position - 2)
+
+        ent.tiles.each_with_index do |array, y|
+          array.each_with_index do |space_required, x|
+            next unless space_required
+
+            other_tile = @map.tile_at(origin.x + x, origin.y + y)
+            if other_tile
+              block.call(other_tile, space_required, origin.x + x, origin.y + y)
+            end
+          end
+        end
+      end
+    end
+
     def spawn_entity(player_id:, name:, position:)
       _player = player(player_id)
       ent = Entity.new(
