@@ -69,9 +69,9 @@ class IMICRTS
         if @game.selected_entities.size < 2 && ent = @game.selected_entities.first
           return unless ent.component(:sidebar_actions)
 
-          @game.sidebar_actions.clear do |stack|
+          @game.sidebar_actions.clear do
             ent.component(:sidebar_actions).actions.each do |action|
-              stack.button action.label, tip: action.description, width: 1.0 do
+              @game.button action.label, tip: action.description, width: 1.0 do
                 action.block.call if action.block
               end
             end
