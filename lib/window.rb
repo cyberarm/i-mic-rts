@@ -1,5 +1,5 @@
 class IMICRTS
-  class Window < CyberarmEngine::Engine
+  class Window < CyberarmEngine::Window
     attr_reader :mouse
     def setup
       @last_update_time = Gosu.milliseconds

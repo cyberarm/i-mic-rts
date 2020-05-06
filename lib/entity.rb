@@ -167,8 +167,8 @@ class IMICRTS
     end
 
     def draw_radius
-      Gosu.draw_circle(@position.x, @position.y, @radius, ZOrder::ENTITY_RADIUS, @player.color, 360 / 18)
-      Gosu.draw_circle(@position.x, @position.y, @boid_radius, ZOrder::ENTITY_RADIUS, @player.color, 360 / 18)
+      Gosu.draw_arc(@position.x, @position.y, @radius, 1.0, 18, 1, @player.color, ZOrder::ENTITY_RADIUS)
+      Gosu.draw_arc(@position.x, @position.y, @boid_radius, 1.0, 18, 1, @player.color, ZOrder::ENTITY_RADIUS)
     end
 
     def draw_gizmos
