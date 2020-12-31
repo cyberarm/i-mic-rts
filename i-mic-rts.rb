@@ -18,6 +18,7 @@ require_relative "lib/errors"
 require_relative "lib/window"
 require_relative "lib/camera"
 require_relative "lib/setting"
+require_relative "lib/team_colors"
 
 require_relative "lib/states/boot"
 require_relative "lib/states/game"
