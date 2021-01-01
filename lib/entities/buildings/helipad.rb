@@ -8,6 +8,8 @@ tiles = [
 
 IMICRTS::Entity.define_entity(:helipad, :building, 1_000, "Builds and rearms helicopters", tiles) do |entity|
   entity.has(:building)
+  entity.has(:waypoint)
+  entity.has(:spawner)
   entity.has(:build_queue)
   entity.has(:sidebar_actions)
   entity.component(:sidebar_actions).add(:add_to_build_queue, {entity: :helicopter})

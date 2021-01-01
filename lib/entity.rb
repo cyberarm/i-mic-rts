@@ -102,7 +102,7 @@ class IMICRTS
 
     def target=(entity)
       @target = entity
-      component(:movement).pathfinder = @director.find_path(player: @player, entity: self, goal: @target) if component(:movement)
+      component(:movement).pathfinder = @director.find_path(player: @player, entity: self, goal: @target) if component(:movement) && @movement == :ground
     end
 
     def hit?(x_or_vector, y = nil)
@@ -153,8 +153,12 @@ class IMICRTS
     end
 
     def tick(tick_id)
+      @components.values.each { |com| com.tick(tick_id) }
+
       @on_tick.call if @on_tick
-      component(:building).construction_work(1) if component(:building)
+      data.assigned_construction_workers ||= 4
+      data.construction_speed ||= 1
+      component(:building).construction_work(data.assigned_construction_workers * data.construction_speed) if component(:building)
     end
 
     def on_tick(&block)

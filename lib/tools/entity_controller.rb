@@ -40,11 +40,18 @@ class IMICRTS
           @selection_start = @player.camera.transform(@game.window.mouse)
         end
       when Gosu::MS_RIGHT
-        if @game.selected_entities.size > 0
-          @director.schedule_order(Order::MOVE, @player.id, @player.camera.transform(@game.window.mouse))
+        if @player.selected_entities.size > 0
+          if @player.selected_entities.any? { |ent| ent.component(:movement) }
+            @director.schedule_order(Order::MOVE, @player.id, @player.camera.transform(@game.window.mouse))
 
-          @game.overlays << Game::Overlay.new(Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/cursors/move.png"), @player.camera.transform(@game.window.mouse), 0, 255)
-          @game.overlays.last.position.z = ZOrder::OVERLAY
+            @game.overlays << Game::Overlay.new(Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/cursors/move.png"), @player.camera.transform(@game.window.mouse), 0, 255)
+            @game.overlays.last.position.z = ZOrder::OVERLAY
+          elsif @player.selected_entities.size == 1 && @player.selected_entities.first.component(:waypoint)
+            @director.schedule_order(Order::BUILDING_SET_WAYPOINT, @player.id, @player.selected_entities.first.id, @player.camera.transform(@game.window.mouse))
+
+            @game.overlays << Game::Overlay.new(Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/cursors/move.png"), @player.camera.transform(@game.window.mouse), 0, 255)
+            @game.overlays.last.position.z = ZOrder::OVERLAY
+          end
         end
       end
     end

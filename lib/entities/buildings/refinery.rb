@@ -23,8 +23,14 @@ IMICRTS::Entity.define_entity(:refinery, :building, 1_400, "Generates credits", 
   p1.x += 2
   p1.y += 12
 
-  entity.particle_emitters << IMICRTS::SmokeEmitter.new(position: p1)
+  entity.particle_emitters << IMICRTS::SmokeEmitter.new(position: p1, emitting: false)
 
   entity.on_tick do
+    if entity.component(:building).data.state == :idle
+
+      entity.particle_emitters.each do |emitter|
+        emitter.emitting = true
+      end
+    end
   end
 end

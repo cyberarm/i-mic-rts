@@ -8,6 +8,8 @@ tiles = [
 
 IMICRTS::Entity.define_entity(:construction_yard, :building, 2_000, "Provides radar and builds construction workers", tiles) do |entity|
   entity.has(:building)
+  entity.has(:waypoint)
+  entity.has(:spawner)
   entity.has(:build_queue)
   entity.has(:sidebar_actions)
   entity.component(:sidebar_actions).add(:add_to_build_queue, {entity: :construction_worker})
@@ -39,9 +41,18 @@ IMICRTS::Entity.define_entity(:construction_yard, :building, 2_000, "Provides ra
 
 
   emitters.each do |pos|
-    entity.particle_emitters << IMICRTS::SmokeEmitter.new(position: pos)
+    entity.particle_emitters << IMICRTS::SmokeEmitter.new(position: pos, emitting: false)
   end
 
   entity.on_tick do
+
+    if entity.component(:building).data.state == :idle
+      item = entity.component(:build_queue).queue.first
+
+      entity.particle_emitters.each_with_index do |emitter, i|
+        emitter.emitting = true
+        emitter.emitting = !!item if i < 2
+      end
+    end
   end
 end

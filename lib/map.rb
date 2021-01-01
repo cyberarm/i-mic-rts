@@ -95,6 +95,10 @@ class IMICRTS
       return _tiles
     end
 
+    def world_to_grid(vector)
+      vector / @tile_size
+    end
+
     def tile_at(x, y)
       @tiles.dig(x, y)
     end

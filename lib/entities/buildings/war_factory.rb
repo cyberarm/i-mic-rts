@@ -8,6 +8,8 @@ tiles = [
 
 IMICRTS::Entity.define_entity(:war_factory, :building, 2_000, "Builds units", tiles) do |entity|
   entity.has(:building)
+  entity.has(:waypoint)
+  entity.has(:spawner)
   entity.has(:build_queue)
   entity.has(:sidebar_actions)
   entity.component(:sidebar_actions).add(:add_to_build_queue, {entity: :jeep})
@@ -29,9 +31,14 @@ IMICRTS::Entity.define_entity(:war_factory, :building, 2_000, "Builds units", ti
   p2 = p1.clone
   p2.y += 31
 
-  entity.particle_emitters << IMICRTS::SmokeEmitter.new(position: p1)
-  entity.particle_emitters << IMICRTS::SmokeEmitter.new(position: p2)
+  entity.particle_emitters << IMICRTS::SmokeEmitter.new(position: p1, emitting: false)
+  entity.particle_emitters << IMICRTS::SmokeEmitter.new(position: p2, emitting: false)
 
   entity.on_tick do
+    item = entity.component(:build_queue).queue.first
+
+    entity.particle_emitters.each do |pe|
+      pe.emitting = !!item
+    end
   end
 end

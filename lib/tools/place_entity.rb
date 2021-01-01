@@ -73,21 +73,14 @@ class IMICRTS
 
     def can_use?(vector)
       return false if @game.sidebar.hit?(@game.window.mouse_x, @game.window.mouse_y)
-      useable = true
-      done  = false
 
       if tile = @director.map.tile_at(vector.x, vector.y)
         ent = Entity.get(@entity)
         origin = (tile.grid_position - 2)
 
         @director.each_tile(vector, @entity) do |tile, _data, x, y|
-          if tile.entity || tile.reserved || tile.type != :ground || @director.map.ore_at(x, y)
-            useable = false
-            break
-          end
+          return false if tile.entity || tile.reserved || tile.type != :ground || @director.map.ore_at(x, y)
         end
-
-        return useable
       else
         return false
       end

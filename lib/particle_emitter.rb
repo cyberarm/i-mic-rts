@@ -1,6 +1,6 @@
 class IMICRTS
   class ParticleEmitter
-    def initialize(position:, direction: CyberarmEngine::Vector.up, time_to_live: 1000, particle_time_to_live: 500, speed: 10.0, max_particles: 128, frequency: 10.0, images: [], color: Gosu::Color::WHITE.dup, jitter: 10.0)
+    def initialize(position:, direction: CyberarmEngine::Vector.up, time_to_live: 1000, particle_time_to_live: 500, speed: 10.0, max_particles: 128, frequency: 10.0, images: [], color: Gosu::Color::WHITE.dup, jitter: 10.0, emitting: true)
       @position = position
       @direction = direction
       @time_to_live = time_to_live
@@ -11,6 +11,7 @@ class IMICRTS
       @images = images
       @color = color
       @jitter = jitter
+      @emitting = emitting
 
       @born_at = Gosu.milliseconds
       @last_emitted_at = 0
@@ -44,13 +45,21 @@ class IMICRTS
 
     def update
       if @particles.count < @max_particles && Gosu.milliseconds >= @last_emitted_at + (1000.0 / @frequency)
-        emit
+        emit if emit?
       end
 
       @particles.each do |particle|
         @particles.delete(particle) if particle.die?
         particle.update
       end
+    end
+
+    def emitting=(boolean)
+      @emitting= !!boolean
+    end
+
+    def emit?
+      @emitting
     end
 
     def die?

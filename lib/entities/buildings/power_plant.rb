@@ -34,6 +34,13 @@ IMICRTS::Entity.define_entity(:power_plant, :building, 800, "Generates power", t
 
   entity.on_tick do
     # entity.produce_power
+
+    if entity.component(:building).data.state == :idle
+
+      entity.particle_emitters.each do |emitter|
+        emitter.emitting = true
+      end
+    end
   end
 
   # define_singleton_method(:produce_power) do

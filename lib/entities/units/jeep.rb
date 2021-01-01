@@ -7,7 +7,7 @@ IMICRTS::Entity.define_entity(:jeep, :unit, 400, "Attacks ground targets") do |e
   entity.max_health = 100.0
 
   entity.body_image = "vehicles/jeep/jeep.png"
-  entity.shell_image = "vehicles/jeep/tank_shell.png"
+  entity.shell_image = "vehicles/jeep/jeep_shell.png"
 
   entity.component(:turret).shell_image = "vehicles/jeep/jeep_turret_shell.png"
   entity.component(:turret).center.y = 0.3125

@@ -3,11 +3,16 @@ class IMICRTS
     attr_accessor :pathfinder
 
     def update
-      if pathfinder && pathfinder.path_current_node
-        rotate_towards(pathfinder.path_current_node.tile.position + @parent.director.map.tile_size / 2)
-      end
+      if @parent.movement == :ground
+        if pathfinder && pathfinder.path_current_node
+          rotate_towards(pathfinder.path_current_node.tile.position + @parent.director.map.tile_size / 2)
+        end
 
-      follow_path
+        follow_path
+      else
+        rotate_towards(@parent.target)
+        @parent.position -= (@parent.position.xy - @parent.target.xy).normalized * @parent.speed
+      end
     end
 
     def rotate_towards(vector)

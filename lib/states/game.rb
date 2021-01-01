@@ -10,7 +10,9 @@ class IMICRTS
 
       @director = Director.new(game: self, map: Map.new(map_file: "maps/test_map.tmx"), networking_mode: @options[:networking_mode])
       @player = Player.new(id: 0, spawnpoint: @director.map.spawnpoints.last)
+      @player2 = Player.new(id: 1, spawnpoint: @director.map.spawnpoints.first)
       @director.add_player(@player)
+      @director.add_player(@player2)
 
       @selected_entities = []
       @tool = set_tool(:entity_controller)
@@ -34,16 +36,25 @@ class IMICRTS
         end
       end
 
-      # TODO: implement tools
-      @director.spawn_entity(
-        player_id: @player.id, name: :construction_yard,
-        position: CyberarmEngine::Vector.new(@player.spawnpoint.x, @player.spawnpoint.y, ZOrder::BUILDING)
-      )
+      @director.players.each do |player|
+        construction_yard = @director.spawn_entity(
+          player_id: player.id, name: :construction_yard,
+          position: CyberarmEngine::Vector.new(player.spawnpoint.x, player.spawnpoint.y, ZOrder::BUILDING)
+        )
+        construction_yard.component(:building).data.construction_progress = 100
+        @director.each_tile(@director.map.world_to_grid(construction_yard.position), construction_yard.name) do |tile, space_required|
+          if space_required == true
+            tile.entity = construction_yard
+          else
+            tile.reserved = construction_yard
+          end
+        end
 
-      @director.spawn_entity(
-        player_id: @player.id, name: :construction_worker,
-        position: CyberarmEngine::Vector.new(@player.spawnpoint.x - 64, @player.spawnpoint.y + 64, ZOrder::GROUND_VEHICLE)
-      )
+        @director.spawn_entity(
+          player_id: player.id, name: :construction_worker,
+          position: CyberarmEngine::Vector.new(player.spawnpoint.x - 64, player.spawnpoint.y + 64, ZOrder::GROUND_VEHICLE)
+        )
+      end
     end
 
     def draw

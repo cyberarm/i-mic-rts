@@ -1,6 +1,5 @@
 IMICRTS::Order.define_handler(IMICRTS::Order::BUILD_ORDER, arguments: [:player_id, :vector, :building]) do |order, director|
   tile = director.map.tile_at(order.vector.x, order.vector.y)
-  p order.vector
   position = tile.position + director.map.tile_size / 2
 
   ent = director.spawn_entity(
