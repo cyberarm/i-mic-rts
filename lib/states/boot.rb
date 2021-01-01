@@ -4,7 +4,7 @@ class IMICRTS
       @title = Gosu::Font.new(56, name: "Noto Sans Display", bold: true)
       @text  = Gosu::Font.new(18, name: "Noto Sans Thaana", bold: true)
       @name = IMICRTS::NAME
-      @logo = Gosu::Image.new("#{ASSETS_PATH}/logo.png")
+      @logo = get_image("#{ASSETS_PATH}/logo.png")
 
       @messages = ["Loading", "Compiling Protons", "Launching Warhead", "git push origin --force"]
       @messages_index = 0

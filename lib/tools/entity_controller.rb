@@ -3,14 +3,17 @@ class IMICRTS
   class EntityController < Tool
     def setup
       @drag_start = CyberarmEngine::Vector.new
+      @box_color = 0xaa99ff99
+      @box_border_size = 2
     end
 
     def draw
-      Gosu.draw_rect(
-        @box.min.x, @box.min.y,
-        @box.width, @box.height,
-        Gosu::Color.rgba(50, 50, 50, 150), ZOrder::SELECTION_BOX
-      ) if @box
+      return unless @box
+
+      Gosu.draw_rect(@box.min.x, @box.min.y, @box.width, @box_border_size, @box_color, ZOrder::SELECTION_BOX)
+      Gosu.draw_rect(@box.min.x + @box.width, @box.min.y, @box_border_size, @box.height, @box_color, ZOrder::SELECTION_BOX)
+      Gosu.draw_rect(@box.min.x, @box.min.y + @box.height, @box.width, @box_border_size, @box_color, ZOrder::SELECTION_BOX)
+      Gosu.draw_rect(@box.min.x, @box.min.y, @box_border_size, @box.height, @box_color, ZOrder::SELECTION_BOX)
     end
 
     def update
@@ -40,16 +43,16 @@ class IMICRTS
           @selection_start = @player.camera.transform(@game.window.mouse)
         end
       when Gosu::MS_RIGHT
-        if @player.selected_entities.size > 0
+        unless @player.selected_entities.empty?
           if @player.selected_entities.any? { |ent| ent.component(:movement) }
             @director.schedule_order(Order::MOVE, @player.id, @player.camera.transform(@game.window.mouse))
 
-            @game.overlays << Game::Overlay.new(Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/cursors/move.png"), @player.camera.transform(@game.window.mouse), 0, 255)
+            @game.overlays << Game::Overlay.new(get_image("#{IMICRTS::ASSETS_PATH}/cursors/move.png"), @player.camera.transform(@game.window.mouse), 0, 255)
             @game.overlays.last.position.z = ZOrder::OVERLAY
           elsif @player.selected_entities.size == 1 && @player.selected_entities.first.component(:waypoint)
             @director.schedule_order(Order::BUILDING_SET_WAYPOINT, @player.id, @player.selected_entities.first.id, @player.camera.transform(@game.window.mouse))
 
-            @game.overlays << Game::Overlay.new(Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/cursors/move.png"), @player.camera.transform(@game.window.mouse), 0, 255)
+            @game.overlays << Game::Overlay.new(get_image("#{IMICRTS::ASSETS_PATH}/cursors/move.png"), @player.camera.transform(@game.window.mouse), 0, 255)
             @game.overlays.last.position.z = ZOrder::OVERLAY
           end
         end
@@ -63,11 +66,13 @@ class IMICRTS
         @box = nil
         @selection_start = nil
 
+        return if @game.sidebar.hit?(@game.window.mouse_x, @game.window.mouse_y)
+
         diff = (@player.selected_entities - @game.selected_entities)
         @game.sidebar_actions.clear
 
-        @director.schedule_order(Order::DESELECTED_UNITS, @player.id, diff) if diff.size > 0
-        if @game.selected_entities.size > 0
+        @director.schedule_order(Order::DESELECTED_UNITS, @player.id, diff) if diff.size.positive?
+        if @game.selected_entities.size.positive?
           @director.schedule_order(Order::SELECTED_UNITS, @player.id, @game.selected_entities)
         else
           pick_entity
@@ -79,7 +84,7 @@ class IMICRTS
           @game.sidebar_actions.clear do
             ent.component(:sidebar_actions).actions.each do |action|
               @game.button action.label, tip: action.description, width: 1.0 do
-                action.block.call if action.block
+                action.block&.call
               end
             end
           end

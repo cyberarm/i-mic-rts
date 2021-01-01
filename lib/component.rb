@@ -1,5 +1,7 @@
 class IMICRTS
   class Component
+    include CyberarmEngine::Common
+
     @@components = {}
 
     def self.get(name)

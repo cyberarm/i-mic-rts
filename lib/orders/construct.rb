@@ -1,4 +1,4 @@
-IMICRTS::Order.define_handler(IMICRTS::Order::BUILD_ORDER, arguments: [:player_id, :vector, :building]) do |order, director|
+IMICRTS::Order.define_handler(IMICRTS::Order::CONSTRUCT, arguments: [:player_id, :vector, :building]) do |order, director|
   tile = director.map.tile_at(order.vector.x, order.vector.y)
   position = tile.position + director.map.tile_size / 2
 
@@ -20,14 +20,14 @@ IMICRTS::Order.define_handler(IMICRTS::Order::BUILD_ORDER, arguments: [:player_i
   end
 end
 
-IMICRTS::Order.define_serializer(IMICRTS::Order::BUILD_ORDER) do |order, director|
+IMICRTS::Order.define_serializer(IMICRTS::Order::CONSTRUCT) do |order, director|
   # Order ID | Player ID | Vector X | Vector Y | Entity Name
   # char     | char      | integer  | integer  | string
 
-  [IMICRTS::Order::BUILD_ORDER, order.player_id, order.vector.x, order.vector.y, order.building.to_s].pack("CCNNA*")
+  [IMICRTS::Order::CONSTRUCT, order.player_id, order.vector.x, order.vector.y, order.building.to_s].pack("CCNNA*")
 end
 
-IMICRTS::Order.define_deserializer(IMICRTS::Order::BUILD_ORDER) do |string, director|
+IMICRTS::Order.define_deserializer(IMICRTS::Order::CONSTRUCT) do |string, director|
   # String fed into deserializer has Order ID removed
   # Player ID | Vector X | Vector Y | Entity Name
   # char      | integer  | integer  | string

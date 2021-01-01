@@ -70,9 +70,9 @@ class IMICRTS
     def visible?(object)
       if object.is_a?(Map::Tile)
         object.position.x - object.size >= @viewport.min.x - @position.x &&
-        object.position.y - object.size >= @viewport.min.y - @position.y &&
-        object.position.x <= @viewport.max.x - @position.x &&
-        object.position.y <= @viewport.max.y - @position.y
+          object.position.y - object.size >= @viewport.min.y - @position.y &&
+          object.position.x <= @viewport.max.x - @position.x &&
+          object.position.y <= @viewport.max.y - @position.y
       else
         pp object.class
         exit

@@ -1,4 +1,4 @@
-IMICRTS::Entity.define_entity(:harvester, :unit, 1400, "Harvests ore") do |entity, director|
+IMICRTS::Entity.define_entity(:harvester, :unit, 1400, 140, "Harvests ore") do |entity, director|
   entity.has(:movement)
 
   entity.radius = 10

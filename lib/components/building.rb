@@ -2,7 +2,7 @@ class IMICRTS
   class Building < Component
     def setup
       data.construction_progress ||= 0
-      data.construction_goal ||= 100
+      data.construction_goal ||= Entity.get(@parent.name).build_steps
 
       @text = CyberarmEngine::Text.new("", y: @parent.position.y, z: Float::INFINITY, size: 12)
       data.state = :construct # deconstruct, building, idle
@@ -48,8 +48,8 @@ class IMICRTS
     end
 
     def draw_construction
-      @fencing ||= Gosu::Image.new(IMICRTS::ASSETS_PATH + "/fencing/fencing.png")
-      @fencing_edge ||= Gosu::Image.new(IMICRTS::ASSETS_PATH + "/fencing/fencing_edge.png")
+      @fencing ||= get_image(IMICRTS::ASSETS_PATH + "/fencing/fencing.png")
+      @fencing_edge ||= get_image(IMICRTS::ASSETS_PATH + "/fencing/fencing_edge.png")
 
       tiles = []
       each_tile(@parent.position / @parent.director.map.tile_size) do |tile, data, x, y|

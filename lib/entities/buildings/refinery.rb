@@ -6,7 +6,7 @@ tiles = [
   [false, false, :path, :path, false],
 ]
 
-IMICRTS::Entity.define_entity(:refinery, :building, 1_400, "Generates credits", tiles) do |entity|
+IMICRTS::Entity.define_entity(:refinery, :building, 1_400, 200, "Generates credits", tiles) do |entity|
   entity.has(:building)
 
   entity.radius = 44

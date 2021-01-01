@@ -147,7 +147,6 @@ class IMICRTS
         # DOWN
         add_node create_node(@current_node.tile.grid_position.x, @current_node.tile.grid_position.y + 1, @current_node)
 
-        # TODO: Add diagonal nodes, if requested
         if @allow_diagonal
           # LEFT-UP
           if node_above? && node_above_left?

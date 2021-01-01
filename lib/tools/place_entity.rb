@@ -30,11 +30,10 @@ class IMICRTS
     end
 
     def update
-      # TODO: ensure that construction worker is alive
-      cancel_tool if @construction_worker.die?
+      cancel_tool unless @construction_worker.player.entity(@construction_worker.id)
       vector = vector_to_grid(@game.window.mouse)
 
-      if tile = @director.map.tile_at(vector.x, vector.y)
+      if (tile = @director.map.tile_at(vector.x, vector.y))
         position = tile.position.clone
         @preview.position = position + @director.map.tile_size / 2
         @preview.position.z = ZOrder::OVERLAY
@@ -58,7 +57,7 @@ class IMICRTS
       #   position: CyberarmEngine::Vector.new(position.x, position.y, ZOrder::BUILDING)
       # )
 
-      @director.schedule_order(Order::BUILD_ORDER, @player.id, vector, @entity)
+      @director.schedule_order(Order::CONSTRUCT, @player.id, vector, @entity)
 
       # each_tile(vector) do |tile, space_required|
       #   if space_required == true

@@ -1,10 +1,11 @@
 class IMICRTS
   class Window < CyberarmEngine::Window
     attr_reader :mouse
+
     def setup
       @last_update_time = Gosu.milliseconds
       @mouse = CyberarmEngine::Vector.new
-      @cursor = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/cursors/pointer.png")
+      @cursor = get_image("#{IMICRTS::ASSETS_PATH}/cursors/pointer.png")
 
       self.caption = "#{IMICRTS::NAME} (#{IMICRTS::VERSION} #{IMICRTS::VERSION_NAME})"
       if ARGV.join.include?("--debug-game")
@@ -14,6 +15,10 @@ class IMICRTS
       else
         push_state(Boot)
       end
+
+      # TODO: Jukebox
+      s = get_song("#{GAME_ROOT_PATH}/assets/audio/music/EmptyCity.ogg")
+      s.play(true)
     end
 
     def draw
@@ -23,14 +28,16 @@ class IMICRTS
     end
 
     def update
-      @mouse.x, @mouse.y = self.mouse_x, self.mouse_y
+      @mouse.x = mouse_x
+      @mouse.y = mouse_y
+
       super
 
       @last_update_time = Gosu.milliseconds
     end
 
     def needs_cursor?
-      return false
+      false
     end
 
     def close

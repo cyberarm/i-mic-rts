@@ -1,21 +1,17 @@
 class IMICRTS
   class Spawner < Component
     def tick(tick_id)
-      # TODO: Ensure that a build order is created before working on entity
-
       item = @parent.component(:build_queue).queue.first
 
-      if item
-        item.progress += 1
+      return unless item
 
-        if item.progress >= 100 # TODO: Define work units required for construction
-          @parent.component(:build_queue).queue.shift
+      item.progress += 1
 
-          spawn_point = @parent.position.clone
-          spawn_point.y += 96 # TODO: Use one of entity's reserved tiles for spawning
+      if item.progress >= item.entity.build_steps
+        unless item.completed
+          item.completed = true
 
-          ent = @parent.director.spawn_entity(player_id: @parent.player.id, name: item.entity.name, position: spawn_point)
-          ent.target = @parent.component(:waypoint).waypoint if @parent.component(:waypoint)
+          @parent.director.schedule_order(IMICRTS::Order::BUILD_UNIT_COMPLETE, @parent.player.id, @parent.id)
         end
       end
     end

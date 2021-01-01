@@ -1,24 +1,23 @@
 class IMICRTS
   class Entity
-    Stub = Struct.new(:name, :type, :cost, :description, :tiles, :setup)
+    include CyberarmEngine::Common
+    Stub = Struct.new(:name, :type, :cost, :build_steps, :description, :tiles, :setup)
     @entities = {}
 
     def self.get(name)
       @entities.dig(name)
     end
 
-    def self.define_entity(name, type, cost, description, tiles = [[]], &block)
-      if entity = get(name)
-        raise "#{name.inspect} is already defined!"
-      else
-        @entities[name] = Stub.new(name, type, cost, description, tiles, block)
-      end
+    def self.define_entity(name, type, cost, build_steps, description, tiles = [[]], &block)
+      raise "#{name.inspect} is already defined!" if get(name)
+
+      @entities[name] = Stub.new(name, type, cost, build_steps, description, tiles, block)
     end
 
-    attr_reader :director, :player, :id, :name, :type, :speed, :data
-    attr_accessor :position, :angle, :radius, :target, :state,
-                  :movement, :health, :max_health,
-                  :turret, :center, :particle_emitters, :color
+    attr_reader :director, :player, :id, :name, :type, :data
+    attr_accessor :position, :angle, :radius, :target, :state, :movement, :health, :max_health,
+                  :speed, :turret, :center, :particle_emitters, :color
+
     def initialize(name:, player:, id:, position:, angle:, director:, proto_entity: false)
       @player = player
       @id = id
@@ -77,11 +76,9 @@ class IMICRTS
     def has(symbol)
       component = Component.get(symbol)
 
-      if component
-        @components[symbol] = component.new(parent: self)
-      else
-        raise "Unknown component: #{symbol.inspect}"
-      end
+      raise "Unknown component: #{symbol.inspect}" unless component
+
+      @components[symbol] = component.new(parent: self)
     end
 
     def component(symbol)
@@ -89,15 +86,15 @@ class IMICRTS
     end
 
     def body_image=(image)
-      @body_image = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
+      @body_image = get_image("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
     end
 
     def shell_image=(image)
-      @shell_image = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
+      @shell_image = get_image("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
     end
 
     def overlay_image=(image)
-      @overlay_image = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
+      @overlay_image = get_image("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
     end
 
     def target=(entity)
@@ -153,10 +150,11 @@ class IMICRTS
     end
 
     def tick(tick_id)
-      @components.values.each { |com| com.tick(tick_id) }
+      @components.each_value { |com| com.tick(tick_id) }
 
-      @on_tick.call if @on_tick
-      data.assigned_construction_workers ||= 4
+      @on_tick&.call
+
+      data.assigned_construction_workers ||= 1
       data.construction_speed ||= 1
       component(:building).construction_work(data.assigned_construction_workers * data.construction_speed) if component(:building)
     end

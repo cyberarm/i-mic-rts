@@ -6,7 +6,7 @@ tiles = [
   [false, :path, :path, :path, false],
 ]
 
-IMICRTS::Entity.define_entity(:barracks, :building, 400, "Builds and soldiers", tiles) do |entity|
+IMICRTS::Entity.define_entity(:barracks, :building, 400, 40, "Builds and soldiers", tiles) do |entity|
   entity.has(:building)
   entity.has(:waypoint)
   entity.has(:spawner)

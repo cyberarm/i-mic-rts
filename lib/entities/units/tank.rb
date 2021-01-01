@@ -1,4 +1,4 @@
-IMICRTS::Entity.define_entity(:tank, :unit, 800, "Attacks ground targets") do |entity|
+IMICRTS::Entity.define_entity(:tank, :unit, 800, 80, "Attacks ground targets") do |entity|
   entity.has(:movement)
   entity.has(:turret)
 

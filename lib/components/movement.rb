@@ -16,12 +16,12 @@ class IMICRTS
     end
 
     def rotate_towards(vector)
-      _angle = Gosu.angle(@parent.position.x, @parent.position.y, vector.x, vector.y)
-      a = (360.0 + (_angle - @parent.angle)) % 360.0
+      angle = Gosu.angle(@parent.position.x, @parent.position.y, vector.x, vector.y)
+      a = (360.0 + (angle - @parent.angle)) % 360.0
 
       # FIXME: Fails if vector is directly behind entity
       if a.round == 180
-        @parent.angle = (_angle + 180.0) % 360.0
+        @parent.angle = (angle + 180.0) % 360.0
       elsif a < 180
         @parent.angle -= 1.0
       else

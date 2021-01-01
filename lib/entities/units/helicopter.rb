@@ -1,6 +1,7 @@
-IMICRTS::Entity.define_entity(:helicopter, :unit, 400, "Attacks ground targets") do |entity|
+IMICRTS::Entity.define_entity(:helicopter, :unit, 400, 40, "Attacks ground targets") do |entity|
   entity.has(:movement)
 
+  entity.speed = 2.5
   entity.radius = 14
   entity.movement = :air
   entity.max_health = 100.0

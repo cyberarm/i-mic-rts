@@ -6,13 +6,13 @@ tiles = [
   [false, :path, :path, :path, false],
 ]
 
-IMICRTS::Entity.define_entity(:construction_yard, :building, 2_000, "Provides radar and builds construction workers", tiles) do |entity|
+IMICRTS::Entity.define_entity(:construction_yard, :building, 2_000, 310, "Provides radar and builds construction workers", tiles) do |entity|
   entity.has(:building)
   entity.has(:waypoint)
   entity.has(:spawner)
   entity.has(:build_queue)
   entity.has(:sidebar_actions)
-  entity.component(:sidebar_actions).add(:add_to_build_queue, {entity: :construction_worker})
+  entity.component(:sidebar_actions).add(:add_to_build_queue, { entity: :construction_worker })
 
   entity.radius = 40
   entity.max_health = 100.0

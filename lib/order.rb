@@ -29,6 +29,7 @@ class IMICRTS
     end
 
     attr_reader :id, :arguments
+
     def initialize(id:, arguments:, &handler)
       @id = id
       @arguments = arguments
@@ -36,7 +37,7 @@ class IMICRTS
     end
 
     def execute(director, *arguments)
-      pp Order.order_name(self.id)
+      pp Order.order_name(id)
       @handler.call(struct(arguments), director)
     end
 
@@ -48,7 +49,7 @@ class IMICRTS
         hash[key] = args[value]
       end
 
-      return hash
+      hash
     end
 
     def serialize(order, director)
@@ -76,13 +77,18 @@ class IMICRTS
     :ATTACK,
     :PATROL,
 
-    :BUILD_ORDER,
-    :CANCEL_BUILD_ORDER,
-    :BUILD_ORDER_COMPLETE,
+    :CONSTRUCT,
+    :CANCEL_CONSTRUCTION,
+    :CONSTRUCTION_COMPLETE,
+
+    :BUILD_UNIT,
+    :CANCEL_BUILD_UNIT,
+    :BUILD_UNIT_COMPLETE,
 
     :BUILDING_SET_WAYPOINT,
     :BUILDING_POWER_STATE,
-    :BUILDING_REPAIR,
+    :REPAIR_BUILDING,
+    :CANCEL_BUILDING_REPAIR,
     :BUILDING_SELL,
 
     :MESSAGE_BROADCAST,

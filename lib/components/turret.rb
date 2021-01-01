@@ -7,15 +7,15 @@ class IMICRTS
     end
 
     def body_image=(image)
-      @body_image = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
+      @body_image = get_image("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
     end
 
     def shell_image=(image)
-      @shell_image = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
+      @shell_image = get_image("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
     end
 
     def overlay_image=(image)
-      @overlay_image = Gosu::Image.new("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
+      @overlay_image = get_image("#{IMICRTS::ASSETS_PATH}/#{image}", retro: true)
     end
 
     def render
@@ -28,8 +28,11 @@ class IMICRTS
 
     def draw
       render unless @render
-      @angle += 0.1
       @render.draw_rot(@parent.position.x, @parent.position.y, @parent.position.z, @angle, @center.x, @center.y)
+    end
+
+    def update
+      @angle = @parent.angle
     end
   end
 end

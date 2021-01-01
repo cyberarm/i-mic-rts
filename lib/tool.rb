@@ -1,5 +1,7 @@
 class IMICRTS
   class Tool
+    include CyberarmEngine::Common
+
     @@tools = {}
     def self.get(tool)
       @@tools.dig(tool)

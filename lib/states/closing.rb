@@ -2,7 +2,7 @@ class IMICRTS
   class Closing < CyberarmEngine::GuiState
     def setup
       window.show_cursor = false
-      @logo = Gosu::Image.new("#{ASSETS_PATH}/logo.png")
+      @logo = get_image("#{ASSETS_PATH}/logo.png")
       @color = Gosu::Color.new(0xffffffff)
 
       @started_at = Gosu.milliseconds

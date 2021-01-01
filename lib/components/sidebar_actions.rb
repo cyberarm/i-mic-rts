@@ -17,7 +17,9 @@ class IMICRTS
 
         action.label = ent.name.to_s.split("_").map{ |s| s.capitalize }.join(" ")
         action.description = "Cost: #{ent.cost}\n#{ent.description}"
-        action.block = proc { @parent.component(:build_queue).add(data[:entity]) }
+        action.block = proc do
+          @parent.director.schedule_order(IMICRTS::Order::BUILD_UNIT, @parent.player.id, @parent.id, data[:entity])
+        end
 
       when :set_tool
         ent = IMICRTS::Entity.get(data[:entity])
