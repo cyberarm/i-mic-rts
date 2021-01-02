@@ -14,8 +14,12 @@ class IMICRTS
           button("Refresh") do
             refresh_games
           end
-          button("Host Game")
-          button("Join Game")
+          button("Host Game") do
+            push_state(HostMultiplayerGameMenu)
+          end
+          button("Join Game") do
+            push_state(MultiplayerLobbyMenu)
+          end
         end
 
         button("Back", width: 1.0, margin_top: 20) do

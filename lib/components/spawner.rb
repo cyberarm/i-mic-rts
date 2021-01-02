@@ -5,15 +5,12 @@ class IMICRTS
 
       return unless item
 
-      item.progress += 1
+      item.progress += 1 if @parent.component(:building).construction_complete?
 
-      if item.progress >= item.entity.build_steps
-        unless item.completed
-          item.completed = true
+      return unless item.progress >= item.entity.build_steps && !item.completed
 
-          @parent.director.schedule_order(IMICRTS::Order::BUILD_UNIT_COMPLETE, @parent.player.id, @parent.id)
-        end
-      end
+      item.completed = true
+      @parent.director.schedule_order(IMICRTS::Order::BUILD_UNIT_COMPLETE, @parent.player.id, @parent.id)
     end
   end
 end

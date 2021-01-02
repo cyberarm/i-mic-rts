@@ -2,17 +2,31 @@ class IMICRTS
   class Game < CyberarmEngine::GuiState
     Overlay = Struct.new(:image, :position, :angle, :alpha)
 
-    attr_reader :sidebar, :sidebar_actions, :overlays
+    attr_reader :sidebar, :sidebar_actions, :overlays, :director
     attr_accessor :selected_entities
+
     def setup
       window.show_cursor = true
-      @options[:networking_mode] ||= :host
+      @options[:networking_mode] ||= :virtual
+      @options[:map] ||= Map.new(map_file: "maps/test_map.tmx")
+      @options[:local_player_id] ||= 0
 
-      @director = Director.new(game: self, map: Map.new(map_file: "maps/test_map.tmx"), networking_mode: @options[:networking_mode])
-      @player = Player.new(id: 0, spawnpoint: @director.map.spawnpoints.last)
-      @player2 = Player.new(id: 1, spawnpoint: @director.map.spawnpoints.first)
-      @director.add_player(@player)
-      @director.add_player(@player2)
+      @director = Director.new(game: self, map: @options[:map], networking_mode: @options[:networking_mode])
+      @options[:players] ||= [
+        { id: 0, team: 1, spawnpoint: @director.map.spawnpoints.last, color: :orange },
+        { id: 1, team: 2, spawnpoint: @director.map.spawnpoints.first, color: :lightblue }
+      ]
+
+      @options[:players].each do |pl|
+        player = Player.new(id: pl[:id], spawnpoint: pl[:spawnpoint], team: pl[:team], color: TeamColors[pl[:color]])
+        @player = player if player.id == @options[:local_player_id]
+        @director.add_player(player)
+      end
+
+      # @player = Player.new(id: 0, spawnpoint: @director.map.spawnpoints.last)
+      # @player2 = Player.new(id: 1, spawnpoint: @director.map.spawnpoints.first)
+      # @director.add_player(@player)
+      # @director.add_player(@player2)
 
       @selected_entities = []
       @tool = set_tool(:entity_controller)
@@ -20,7 +34,7 @@ class IMICRTS
 
       @debug_info = CyberarmEngine::Text.new("", y: 10, z: Float::INFINITY, shadow_color: Gosu::Color.rgba(0, 0, 0, 200))
 
-      @sidebar = stack(height: 1.0) do
+      @sidebar = stack(width: 350, height: 1.0) do
         background [0x55555555, 0x55666666]
 
         label "SIDEBAR", text_size: 78, margin_bottom: 20
@@ -115,6 +129,8 @@ class IMICRTS
 
       @tool.button_down(id) if @tool
       @player.camera.button_down(id) unless @sidebar.hit?(window.mouse_x, window.mouse_y)
+
+      push_state(PauseMenu) if id == Gosu::KB_ESCAPE
     end
 
     def button_up(id)

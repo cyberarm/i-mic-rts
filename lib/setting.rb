@@ -12,6 +12,8 @@ class IMICRTS
     def self.save_defaults
       hash = {
         player_name: "Rookie",
+        player_color: :orange,
+        player_team: 1,
         player_default_map_spawn: 0,
         default_map: "test_map",
 
@@ -43,7 +45,7 @@ class IMICRTS
     end
 
     def self.save!
-      File.open(Setting.file_path, "w") {|f| f.write(JSON.dump(@store))}
+      File.open(Setting.file_path, "w") { |f| f.write(JSON.dump(@store)) }
     end
   end
 end

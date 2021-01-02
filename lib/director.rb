@@ -2,17 +2,22 @@ class IMICRTS
   class Director
     attr_reader :current_tick, :map, :game, :players
 
-    def initialize(game:, map:, players: [], networking_mode:, tick_rate: 10)
+    def initialize(game:, map:, players: [], networking_mode:, tick_rate: 10, local_game: true)
       @game = game
       @map = map
       @players = players
       @connection = IMICRTS::Connection.new(director: self, mode: networking_mode)
       @networking_mode = networking_mode
       @tick_rate = tick_rate
+      @local_game = local_game
 
       @last_tick_at = Gosu.milliseconds
       @tick_time = 1000.0 / @tick_rate
       @current_tick = 0
+    end
+
+    def local_game?
+      @local_game
     end
 
     def add_player(player)
@@ -145,7 +150,8 @@ class IMICRTS
     end
 
     def finalize
-      @connection.finalize
+      @server&.stop
+      @connection&.finalize
     end
   end
 end
