@@ -5,10 +5,11 @@ class IMICRTS
 
       background [0xff7b6ead, 0xff7a0d71, 0xff7a0d71, 0xff7b6ead]
 
-      stack(width: 350, height: 1.0) do
+      stack(width: IMICRTS::MENU_WIDTH, height: 1.0, padding: IMICRTS::MENU_PADDING) do
         background [0xff555555, Gosu::Color::GRAY]
-        label "I-MIC-RTS", text_size: 78, margin: 20
-        button("Campaign", width: 1.0) do
+        label IMICRTS::NAME, text_size: 78, margin: 20
+        button("Campaign", width: 1.0, enabled: false) do
+          push_state(CampaignMenu)
         end
 
         button("Skirmish", width: 1.0) do
@@ -20,7 +21,11 @@ class IMICRTS
           push_state(MultiplayerMenu)
         end
 
-        button("Settings", width: 1.0, margin_top: 20) do
+        button("Load", width: 1.0, margin_top: 20) do
+          push_state(LoadMenu)
+        end
+
+        button("Settings", width: 1.0) do
           push_state(SettingsMenu)
         end
 

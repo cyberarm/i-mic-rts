@@ -34,7 +34,7 @@ class IMICRTS
 
       @debug_info = CyberarmEngine::Text.new("", y: 10, z: Float::INFINITY, shadow_color: Gosu::Color.rgba(0, 0, 0, 200))
 
-      @sidebar = stack(width: 350, height: 1.0) do
+      @sidebar = stack(width: IMICRTS::MENU_WIDTH, height: 1.0, padding: IMICRTS::MENU_PADDING) do
         background [0x55555555, 0x55666666]
 
         label "SIDEBAR", text_size: 78, margin_bottom: 20

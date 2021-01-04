@@ -99,7 +99,7 @@ class IMICRTS
 
     def target=(entity)
       @target = entity
-      component(:movement).pathfinder = @director.find_path(player: @player, entity: self, goal: @target) if component(:movement) && @movement == :ground
+      component(:movement).pathfinder = @director.find_path(player: @player, entity: self, goal: @target) if @target && component(:movement) && @movement == :ground
     end
 
     def hit?(x_or_vector, y = nil)

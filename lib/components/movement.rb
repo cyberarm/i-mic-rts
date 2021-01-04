@@ -10,6 +10,8 @@ class IMICRTS
 
         follow_path
       else
+        return unless @parent.target
+
         rotate_towards(@parent.target)
         @parent.position -= (@parent.position.xy - @parent.target.xy).normalized * @parent.speed
       end

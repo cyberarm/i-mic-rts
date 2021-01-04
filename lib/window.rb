@@ -22,9 +22,9 @@ class IMICRTS
     end
 
     def draw
-      @cursor.draw(mouse_x, mouse_y, Float::INFINITY) if @show_cursor
-
       super
+
+      @cursor.draw(mouse_x, mouse_y, Float::INFINITY) if @show_cursor
     end
 
     def update

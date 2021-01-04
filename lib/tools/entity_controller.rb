@@ -36,7 +36,7 @@ class IMICRTS
         )
 
       when Gosu::KB_S
-        @director.schedule_order(Order::STOP, @player.id)
+        @director.schedule_order(Order::STOP, @player.id) if @player.selected_entities.size.positive?
 
       when Gosu::MS_LEFT
         unless @game.sidebar.hit?(@game.window.mouse_x, @game.window.mouse_y)

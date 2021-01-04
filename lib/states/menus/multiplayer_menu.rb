@@ -3,7 +3,7 @@ class IMICRTS
     def setup
       background [0xff7b6ead, 0xff7a0d71, 0xff7a0d71, 0xff7b6ead]
 
-      stack(height: 1.0) do
+      stack(width: IMICRTS::MENU_WIDTH, height: 1.0, padding: IMICRTS::MENU_PADDING) do
         background [0xff555555, Gosu::Color::GRAY]
 
         label "Multiplayer", text_size: 78, margin: 20

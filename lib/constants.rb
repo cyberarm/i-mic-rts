@@ -1,0 +1,4 @@
+class IMICRTS
+  MENU_WIDTH = 350
+  MENU_PADDING = 8
+end
