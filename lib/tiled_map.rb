@@ -1,11 +1,12 @@
 class IMICRTS
   class TiledMap
-    attr_reader :width, :height, :tile_size
-    attr_reader :layers, :tilesets, :spawnpoints
+    attr_reader :width, :height, :tile_size, :layers, :tilesets, :spawnpoints
+
     def initialize(map_file)
       @xml = Nokogiri::XML(File.read("#{IMICRTS::ASSETS_PATH}/#{map_file}"))
 
-      @width, @height = 0, 0
+      @width  = 0
+      @height = 0
       @tile_size = 32
 
       @layers = []
@@ -17,7 +18,8 @@ class IMICRTS
       parse
 
       terrain = @layers.find { |layer| layer.name.downcase == "terrain" }
-      @width, @height = terrain.width, terrain.height
+      @width  = terrain.width
+      @height = terrain.height
 
       @tilesets.each do |tileset|
         @tiles.push(*tileset.tiles)
@@ -36,11 +38,12 @@ class IMICRTS
       end
 
       @xml.search("//objectgroup").each do |objectgroup|
-        if objectgroup.attr("name") == "spawns"
-          objectgroup.children.each do |object|
-            next unless object.attr("name") && object.attr("name").downcase.strip == "spawn"
-            @spawnpoints << SpawnPoint.new(object)
-          end
+        next unless objectgroup.attr("name") == "spawns"
+
+        objectgroup.children.each do |object|
+          next unless object.attr("name") && object.attr("name").downcase.strip == "spawn"
+
+          @spawnpoints << SpawnPoint.new(object)
         end
       end
     end
@@ -55,9 +58,11 @@ class IMICRTS
 
     class Layer
       attr_reader :name, :width, :height
+
       def initialize(xml_layer)
         @name = xml_layer["name"]
-        @width, @height = Integer(xml_layer["width"]), Integer(xml_layer["height"])
+        @width = Integer(xml_layer["width"])
+        @height = Integer(xml_layer["height"])
         @data = []
 
         xml_layer.css("data").inner_html.each_line do |line|
@@ -74,8 +79,8 @@ class IMICRTS
 
 
     class TileSet
-      attr_reader :first_gid, :name, :tile_width, :tile_height, :tile_count, :columns, :rows
-      attr_reader :tiles
+      attr_reader :first_gid, :name, :tile_width, :tile_height, :tile_count, :columns, :rows, :tiles
+
       Tile = Struct.new(:image, :data)
       def initialize(xml_tileset)
         @first_gid = nil
@@ -116,7 +121,7 @@ class IMICRTS
         end
 
         path = tileset.search("//image").first.attributes.detect { |a, v| a == "source" }.last.value
-        images = Gosu::Image.load_tiles("#{IMICRTS::ASSETS_PATH}/tilesets/#{path}", @tile_width, @tile_height, retro: true)
+        images = Gosu::Image.load_tiles("#{IMICRTS::ASSETS_PATH}/tilesets/#{path}", @tile_width, @tile_height, retro: true, tileable: true)
 
         tileset.search("//tile").each_with_index do |xml, index|
           tile = Tile.new
@@ -136,8 +141,10 @@ class IMICRTS
 
     class SpawnPoint
       attr_reader :x, :y
+
       def initialize(xml_object)
-        @x, @y = Integer(xml_object.attr("x")), Integer(xml_object.attr("y"))
+        @x = Integer(xml_object.attr("x"))
+        @y = Integer(xml_object.attr("y"))
       end
     end
   end

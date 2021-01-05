@@ -3,7 +3,7 @@ class IMICRTS
     def setup
       background [0xff7b6ead, 0xff7a0d71, 0xff7a0d71, 0xff7b6ead]
 
-      stack(width: 0.5, min_width: 720, height: 1.0, padding: IMICRTS::MENU_PADDING) do
+      stack(width: 1.0, height: 1.0, padding: IMICRTS::MENU_PADDING) do
         background [0xff555555, Gosu::Color::GRAY]
 
         label "Lobby", text_size: 78, margin: 20
@@ -51,7 +51,12 @@ class IMICRTS
             # TODO: Show preview image
             label "Map"
             @map_name = list_box items: [:test_map], choose: :test_map, width: 1.0
-            image "#{GAME_ROOT_PATH}/assets/logo.png", width: 1.0
+            @map_name.subscribe(:changed) do |sender, value|
+              map = Map.new(map_file: "maps/#{value}.tmx")
+              @map_preview.instance_variable_set(:"@image", map.render_preview)
+              @map_preview.recalculate
+            end
+            @map_preview = image "#{GAME_ROOT_PATH}/assets/logo.png", width: 1.0, border_thickness: 2, border_color: Gosu::Color::BLACK, background: Gosu::Color::GRAY
           end
         end
 

@@ -4,7 +4,8 @@ class IMICRTS
     def initialize(map_file:)
       @tiled_map = TiledMap.new(map_file)
 
-      @width, @height = @tiled_map.width, @tiled_map.height
+      @width = @tiled_map.width
+      @height = @tiled_map.height
       @tile_size = @tiled_map.tile_size
 
       @tiles = {}
@@ -59,6 +60,27 @@ class IMICRTS
     def draw(camera)
       visible_tiles(camera).each do |tile|
         tile.image.draw(tile.position.x, tile.position.y, tile.position.z)
+      end
+    end
+
+    def render_preview
+      Gosu.render(1024, 1024, retro: true) do
+        Gosu.scale(1024 / (@width.to_f * @tile_size), 1024 / (@height.to_f * @tile_size)) do
+          @height.times do |y|
+            @width.times do |x|
+              tile = tile_at(x, y)
+              ore  = ore_at(x, y)
+
+              tile.image.draw(tile.position.x, tile.position.y, tile.position.z) if tile
+              ore.image.draw(ore.position.x, ore.position.y, ore.position.z) if ore
+            end
+          end
+
+          @spawnpoints.each do |spawnpoint|
+            Gosu.draw_circle(spawnpoint.x, spawnpoint.y, @tile_size.to_f / 4 * 3, 36, Gosu::Color::BLACK, Float::INFINITY)
+            Gosu.draw_circle(spawnpoint.x, spawnpoint.y, @tile_size.to_f / 2, 36, Gosu::Color::GRAY, Float::INFINITY)
+          end
+        end
       end
     end
 

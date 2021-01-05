@@ -16,7 +16,7 @@ class IMICRTS
         raise "Failed to find entity: #{data[:entity].inspect}" unless ent
 
         action.label = ent.name.to_s.split("_").map{ |s| s.capitalize }.join(" ")
-        action.description = "Cost: #{ent.cost}\n#{ent.description}"
+        action.description = "#{action.label}\nCost: #{ent.cost}\n#{ent.description}"
         action.block = proc do
           @parent.director.schedule_order(IMICRTS::Order::BUILD_UNIT, @parent.player.id, @parent.id, data[:entity])
         end
@@ -26,7 +26,7 @@ class IMICRTS
         raise "Failed to find entity: #{data[:entity].inspect}" unless ent
 
         action.label = ent.name.to_s.split("_").map { |s| s.capitalize }.join(" ")
-        action.description = "Cost: #{ent.cost}\n#{ent.description}"
+        action.description = "#{action.label}\nCost: #{ent.cost}\n#{ent.description}"
         action.block = proc { @parent.director.game.set_tool(data[:tool], data) }
 
       else
