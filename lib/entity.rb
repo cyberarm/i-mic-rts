@@ -177,6 +177,15 @@ class IMICRTS
       # healthbar
       Gosu.draw_rect(@position.x - @radius, @position.y - (@radius + 2), @radius * 2, 2, Gosu::Color::GREEN, ZOrder::ENTITY_GIZMOS)
 
+      # build queue progress
+      if component(:build_queue) && component(:build_queue).queue.size.positive?
+        item = component(:build_queue).queue.first
+        factor = item.progress / item.entity.build_steps.to_f
+
+        Gosu.draw_rect(@position.x - @radius, @position.y - (@radius + 6), @radius * 2, 2, Gosu::Color::BLACK, ZOrder::ENTITY_GIZMOS)
+        Gosu.draw_rect(@position.x - @radius, @position.y - (@radius + 6), (@radius * 2) * factor, 2, Gosu::Color::WHITE, ZOrder::ENTITY_GIZMOS)
+      end
+
       if Setting.enabled?(:debug_pathfinding) && component(:movement) && component(:movement).pathfinder && component(:movement).pathfinder.path_current_node
         current_node = component(:movement).pathfinder.path_current_node.tile.position + @director.map.tile_size / 2
         Gosu.draw_line(

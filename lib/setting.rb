@@ -11,9 +11,10 @@ class IMICRTS
 
     def self.save_defaults
       hash = {
-        player_name: "Rookie",
+        player_name: "Commander",
         player_color: :orange,
         player_team: 1,
+        player_position: "A",
         player_default_map_spawn: 0,
         default_map: "test_map",
 

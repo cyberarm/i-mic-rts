@@ -11,6 +11,6 @@ class IMICRTS
     gold: Gosu::Color::YELLOW,
     lightgray: Gosu::Color::WHITE,
     gray: Gosu::Color::GRAY,
-    black: Gosu::Color.rgb(25, 25, 25),
+    black: Gosu::Color.rgb(50, 50, 50),
   }
 end
