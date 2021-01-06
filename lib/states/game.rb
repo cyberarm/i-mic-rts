@@ -2,7 +2,7 @@ class IMICRTS
   class Game < CyberarmEngine::GuiState
     Overlay = Struct.new(:image, :position, :angle, :alpha)
 
-    attr_reader :sidebar, :sidebar_actions, :overlays, :director
+    attr_reader :sidebar, :sidebar_title, :sidebar_actions, :overlays, :director
     attr_accessor :selected_entities
 
     def setup
@@ -23,11 +23,6 @@ class IMICRTS
         @director.add_player(player)
       end
 
-      # @player = Player.new(id: 0, spawnpoint: @director.map.spawnpoints.last)
-      # @player2 = Player.new(id: 1, spawnpoint: @director.map.spawnpoints.first)
-      # @director.add_player(@player)
-      # @director.add_player(@player2)
-
       @selected_entities = []
       @tool = set_tool(:entity_controller)
       @overlays = []
@@ -35,12 +30,21 @@ class IMICRTS
       @debug_info = CyberarmEngine::Text.new("", y: 10, z: Float::INFINITY, shadow_color: Gosu::Color.rgba(0, 0, 0, 200))
 
       @sidebar = stack(width: IMICRTS::MENU_WIDTH, height: 1.0, padding: IMICRTS::MENU_PADDING) do
-        background [0x55555555, 0x55666666]
+        background [0xff555555, 0xff666666]
 
-        banner "SIDEBAR", margin_bottom: 20
+        @sidebar_radar = stack(width: 1.0) do
+          image @director.map.render_preview, width: 1.0
+        end
+
+        flow(width: 1.0) do
+          para "$10,000", width: 0.49
+          para "Power 250/250", width: 0.49, text_align: :right
+        end
+
+        @sidebar_title = title ""
 
         flow(width: 1.0, height: 1.0) do
-          @sidebar_actions = stack(width: 0.9) do
+          @sidebar_actions = flow(width: 0.9) do
           end
 
           # Power meter
@@ -69,12 +73,12 @@ class IMICRTS
           position: CyberarmEngine::Vector.new(player.spawnpoint.x - 64, player.spawnpoint.y + 64, ZOrder::GROUND_VEHICLE)
         )
       end
+
+      button_down(Gosu::KB_H) if @player
     end
 
     def draw
       super
-
-      # Gosu.draw_rect(0, 0, window.width, window.height, Gosu::Color.rgb(10, 175, 35))
 
       @player.camera.draw do
         @director.map.draw(@player.camera)
@@ -122,6 +126,10 @@ class IMICRTS
       ).lines.map { |line| line.strip }.join("\n")
 
       @debug_info.x = @sidebar.width + 20
+
+      # entity = @director.players.map { |pl| pl.entities.find { |ent| mouse.distance(ent.position) <= ent.radius } }.first
+      # @tip.value = "#{entity.player.name}: #{entity.name}" if entity
+      # @tip.value = "" unless entity
     end
 
     def button_down(id)

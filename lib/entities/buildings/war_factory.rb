@@ -6,15 +6,17 @@ tiles = [
   [false, :path, :path, :path, false],
 ]
 
-IMICRTS::Entity.define_entity(:war_factory, :building, 2_000, 310, "Builds units", tiles) do |entity|
-  entity.has(:building)
-  entity.has(:waypoint)
-  entity.has(:spawner)
-  entity.has(:build_queue)
-  entity.has(:sidebar_actions)
-  entity.component(:sidebar_actions).add(:add_to_build_queue, { entity: :jeep })
-  entity.component(:sidebar_actions).add(:add_to_build_queue, { entity: :tank })
-  entity.component(:sidebar_actions).add(:add_to_build_queue, { entity: :harvester })
+IMICRTS::Entity.define_entity(:war_factory, :building, 2_000, 310, "Builds and repairs ground vehicles", tiles) do |entity|
+  unless entity.proto_entity
+    entity.has(:building)
+    entity.has(:waypoint)
+    entity.has(:spawner)
+    entity.has(:build_queue)
+    entity.has(:sidebar_actions)
+    entity.component(:sidebar_actions).add(:add_to_build_queue, { entity: :jeep })
+    entity.component(:sidebar_actions).add(:add_to_build_queue, { entity: :tank })
+    entity.component(:sidebar_actions).add(:add_to_build_queue, { entity: :harvester })
+  end
 
   entity.radius = 48
   entity.max_health = 100.0

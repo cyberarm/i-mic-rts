@@ -4,6 +4,7 @@ class IMICRTS
     red: Gosu::Color::RED,
     lightblue: Gosu::Color.rgb(100, 100, 255),
     blue: Gosu::Color::BLUE,
+    purple: Gosu::Color::FUCHSIA,
     lime: Gosu::Color::GREEN,
     lightgreen: Gosu::Color.rgb(50, 200, 50),
     green: Gosu::Color.rgb(0, 200, 0),

@@ -7,7 +7,9 @@ tiles = [
 ]
 
 IMICRTS::Entity.define_entity(:power_plant, :building, 800, 45, "Generates power", tiles) do |entity|
-  entity.has(:building)
+  unless entity.proto_entity
+    entity.has(:building)
+  end
 
   entity.radius = 24
   entity.max_health = 100.0
@@ -29,14 +31,13 @@ IMICRTS::Entity.define_entity(:power_plant, :building, 800, 45, "Generates power
 
 
   emitters.each do |pos|
-    entity.particle_emitters << IMICRTS::SmokeEmitter.new(position: pos)
+    entity.particle_emitters << IMICRTS::SmokeEmitter.new(position: pos, emitting: false)
   end
 
   entity.on_tick do
     # entity.produce_power
 
-    if entity.component(:building).data.state == :idle
-
+    if entity.component(:building).construction_complete?
       entity.particle_emitters.each do |emitter|
         emitter.emitting = true
       end

@@ -70,6 +70,7 @@ class IMICRTS
 
         diff = (@player.selected_entities - @game.selected_entities)
         @game.sidebar_actions.clear
+        @game.sidebar_title.value = ""
 
         @director.schedule_order(Order::DESELECTED_UNITS, @player.id, diff) if diff.size.positive?
         if @game.selected_entities.size.positive?
@@ -81,9 +82,11 @@ class IMICRTS
         if @game.selected_entities.size < 2 && ent = @game.selected_entities.first
           return unless ent.component(:sidebar_actions)
 
+          @game.sidebar_title.value = ent.name.to_s.split("_").map { |s| s.capitalize }.join(" ")
+
           @game.sidebar_actions.clear do
             ent.component(:sidebar_actions).actions.each do |action|
-              @game.button action.label, tip: action.description, width: 1.0 do
+              @game.button action.image, tip: action.description, image_width: 0.30 do
                 action.block&.call
               end
             end

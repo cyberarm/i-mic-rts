@@ -14,7 +14,7 @@ class IMICRTS
       @entities[name] = Stub.new(name, type, cost, build_steps, description, tiles, block)
     end
 
-    attr_reader :director, :player, :id, :name, :type, :data
+    attr_reader :director, :player, :id, :name, :type, :data, :proto_entity
     attr_accessor :position, :angle, :radius, :target, :state, :movement, :health, :max_health,
                   :speed, :turret, :center, :particle_emitters, :color
 
@@ -123,10 +123,14 @@ class IMICRTS
     end
 
     def render
+      turret = component(:turret).render if component(:turret) && @proto_entity
+
       @render = Gosu.render(@shell_image.width, @shell_image.height, retro: true) do
         @body_image.draw(0, 0, 0) if @body_image
         @shell_image.draw(0, 0, 0, 1, 1, @player.color)
         @overlay_image.draw(0, 0, 0) if @overlay_image
+
+        turret.draw(0, 0, 2) if component(:turret) && @proto_entity
       end
     end
 

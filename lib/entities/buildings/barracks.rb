@@ -6,11 +6,13 @@ tiles = [
   [false, :path, :path, :path, false],
 ]
 
-IMICRTS::Entity.define_entity(:barracks, :building, 400, 40, "Builds and soldiers", tiles) do |entity|
-  entity.has(:building)
-  entity.has(:waypoint)
-  entity.has(:spawner)
-  entity.has(:build_queue)
+IMICRTS::Entity.define_entity(:barracks, :building, 400, 40, "Builds and heals soldiers", tiles) do |entity|
+  unless entity.proto_entity
+    entity.has(:building)
+    entity.has(:waypoint)
+    entity.has(:spawner)
+    entity.has(:build_queue)
+  end
 
   entity.radius = 44
   entity.max_health = 100.0
