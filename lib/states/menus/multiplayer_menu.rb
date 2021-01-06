@@ -6,8 +6,8 @@ class IMICRTS
       stack(width: IMICRTS::MENU_WIDTH, height: 1.0, padding: IMICRTS::MENU_PADDING) do
         background [0xff555555, Gosu::Color::GRAY]
 
-        label "Multiplayer", text_size: 78, margin: 20
-        label "Games", text_size: 32
+        banner "Multiplayer", margin: 20
+        title "Games"
         @games_list = stack(border_color: Gosu::Color::WHITE, border_thickness: 2) do
         end
         flow do
@@ -15,10 +15,10 @@ class IMICRTS
             refresh_games
           end
           button("Host Game") do
-            push_state(HostMultiplayerGameMenu)
+            # push_state(HostMultiplayerGameMenu)
           end
           button("Join Game") do
-            push_state(MultiplayerLobbyMenu)
+            # push_state(MultiplayerLobbyMenu)
           end
         end
 

@@ -7,7 +7,7 @@ class IMICRTS
         stack(width: IMICRTS::MENU_WIDTH, height: 1.0, padding: IMICRTS::MENU_PADDING) do
           background [0xff555555, Gosu::Color::GRAY]
 
-          label "Credits", text_size: 78, margin: 20
+          banner "Credits", margin: 20
 
           licenses = Gosu::LICENSES.lines
           preamble = licenses.shift

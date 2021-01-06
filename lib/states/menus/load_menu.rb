@@ -7,7 +7,7 @@ class IMICRTS
 
       stack(width: IMICRTS::MENU_WIDTH, height: 1.0, padding: IMICRTS::MENU_PADDING) do
         background [0xff555555, Gosu::Color::GRAY]
-        label "Load", text_size: 78, margin: 20
+        banner "Load", margin: 20
 
         label "Replays"
         stack(width: 1.0, height: 0.30) do

@@ -6,7 +6,7 @@ class IMICRTS
       stack(width: IMICRTS::MENU_WIDTH, height: 1.0, padding: IMICRTS::MENU_PADDING) do
         background [0xff555555, Gosu::Color::GRAY]
 
-        label "Settings", text_size: 78, margin: 20
+        banner "Settings", margin: 20
 
         @skip_intro = check_box "Skip Intro", checked: Setting.enabled?(:skip_intro)
 

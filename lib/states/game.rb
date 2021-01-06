@@ -37,7 +37,7 @@ class IMICRTS
       @sidebar = stack(width: IMICRTS::MENU_WIDTH, height: 1.0, padding: IMICRTS::MENU_PADDING) do
         background [0x55555555, 0x55666666]
 
-        label "SIDEBAR", text_size: 78, margin_bottom: 20
+        banner "SIDEBAR", margin_bottom: 20
 
         flow(width: 1.0, height: 1.0) do
           @sidebar_actions = stack(width: 0.9) do

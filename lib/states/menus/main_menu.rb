@@ -7,7 +7,7 @@ class IMICRTS
 
       stack(width: IMICRTS::MENU_WIDTH, height: 1.0, padding: IMICRTS::MENU_PADDING) do
         background [0xff555555, Gosu::Color::GRAY]
-        label IMICRTS::NAME, text_size: 78, margin: 20
+        banner IMICRTS::NAME, margin: 20
         button("Campaign", width: 1.0, enabled: false, tip: "No campaign available, yet...") do
           push_state(CampaignMenu)
         end

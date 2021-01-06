@@ -6,7 +6,7 @@ class IMICRTS
       stack(width: 1.0, height: 1.0, padding: IMICRTS::MENU_PADDING) do
         background [0xff555555, Gosu::Color::GRAY]
 
-        label "Lobby", text_size: 78, margin: 20
+        banner "Lobby", margin: 20
         flow(width: 1.0, height: 0.8) do
           flow(width: 0.70, height: 1.0) do
             stack(width: 0.40) do
@@ -50,25 +50,29 @@ class IMICRTS
           stack(width: 0.30, height: 1.0) do
             # TODO: Show preview image
             label "Map"
-            @map_name = list_box items: [:test_map], choose: :test_map, width: 1.0
-            @map_name.subscribe(:changed) do |sender, value|
-              map = Map.new(map_file: "maps/#{value}.tmx")
-              @map_preview.instance_variable_set(:"@image", map.render_preview)
-              @map_preview.recalculate
+            maps_list = Dir.glob("#{GAME_ROOT_PATH}/assets/maps/*.tmx").map do |m|
+              File.basename(m, ".tmx").to_sym
             end
-            @map_preview = image "#{GAME_ROOT_PATH}/assets/logo.png", width: 1.0, border_thickness: 2, border_color: Gosu::Color::BLACK, background: Gosu::Color::GRAY
+
+            @map_name = list_box items: maps_list, choose: Setting.get(:default_map).to_sym, width: 1.0
+            @map_name.subscribe(:changed) do |sender, value|
+              @map_preview.value = map_preview(value)
+            end
+
+            @map_preview = image map_preview(@map_name.value), width: 1.0, border_thickness: 2, border_color: Gosu::Color::BLACK, background: Gosu::Color::GRAY
           end
         end
 
         flow(width: 1.0, height: 0.2) do
           button("Accept") do
             save_playerdata
-            map = Map.new(map_file: "maps/#{@map_name.value}.tmx")
+
             players = [
-              { id: 0, team: @player_team.value.to_i, spawnpoint: map.spawnpoints.last, color: @player_color.value.to_sym },
-              { id: 1, team: 2, spawnpoint: map.spawnpoints.first, color: :lightblue }
+              { id: 0, team: @player_team.value.to_i, spawnpoint: @map.spawnpoints.last, color: @player_color.value.to_sym },
+              { id: 1, team: 2, spawnpoint: @map.spawnpoints.first, color: :lightblue }
             ]
-            push_state(Game, networking_mode: :virtual, map: map, players: players)
+
+            push_state(Game, networking_mode: :virtual, map: @map, players: players)
           end
 
           button("Back", align: :right) do
@@ -83,8 +87,14 @@ class IMICRTS
       Setting.set(:player_name, @player_name.value)
       Setting.set(:player_color, @player_color.value.to_sym)
       Setting.set(:player_team, @player_team.value.to_i)
+      Setting.set(:default_map, @map_name.value.to_s)
 
       Setting.save!
+    end
+
+    def map_preview(map_name)
+      @map = Map.new(map_file: "maps/#{map_name}.tmx")
+      @map.render_preview
     end
   end
 end

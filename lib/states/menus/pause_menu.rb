@@ -3,7 +3,7 @@ class IMICRTS
     def setup
       stack(width: IMICRTS::MENU_WIDTH, height: 1.0, padding: IMICRTS::MENU_PADDING) do
         background [0xff555555, Gosu::Color::GRAY]
-        label "Paused", text_size: 78, margin: 20
+        banner "Paused", margin: 20
 
         button "Resume", width: 1.0 do
           pop_state

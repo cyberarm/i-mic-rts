@@ -11,13 +11,13 @@ class IMICRTS
       @status = @messages[@messages_index]
 
       @last_update = Gosu.milliseconds
-      @update_interval = 250
+      @update_interval = 200
 
-      @switcher = CyberarmEngine::Timer.new(5_000) do
+      @switcher = CyberarmEngine::Timer.new(3_000) do
         push_state(MainMenu)
       end
 
-      @loader = CyberarmEngine::Timer.new(250) do
+      @loader = CyberarmEngine::Timer.new(@update_interval) do
         split = @status.scan(".")
         if split.size >= 3
           @messages_index+=1
