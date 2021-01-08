@@ -9,9 +9,10 @@ IMICRTS::Entity.define_entity(:jeep, :unit, 400, 40, "Attacks ground targets") d
 
   entity.body_image = "vehicles/jeep/jeep.png"
   entity.shell_image = "vehicles/jeep/jeep_shell.png"
+  entity.overlay_image = "vehicles/jeep/jeep_overlay.png"
 
   entity.component(:turret).shell_image = "vehicles/jeep/jeep_turret_shell.png"
-  entity.component(:turret).center.y = 0.3125
+  entity.component(:turret).center.y = 0.5
 
   entity.on_tick do
   end

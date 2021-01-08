@@ -1,5 +1,5 @@
 IMICRTS::Order.define_handler(IMICRTS::Order::CAMERA_MOVE, arguments: [:player_id, :x, :y, :zoom]) do |order, director|
-  director.player(order.player_id).camera.move_to(order.x, order.y, order.zoom)
+  director.player(order.player_id).camera.move_to(order.x, order.y, order.zoom) if director.replay?
 end
 
 IMICRTS::Order.define_serializer(IMICRTS::Order::CAMERA_MOVE) do |order, director|

@@ -60,6 +60,7 @@ class IMICRTS
           position: CyberarmEngine::Vector.new(player.spawnpoint.x, player.spawnpoint.y, ZOrder::BUILDING)
         )
         construction_yard.component(:building).data.construction_progress = Entity.get(construction_yard.name).build_steps
+        construction_yard.component(:building).data.construction_complete = true
         @director.each_tile(@director.map.world_to_grid(construction_yard.position), construction_yard.name) do |tile, space_required|
           if space_required == true
             tile.entity = construction_yard

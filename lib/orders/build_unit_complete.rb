@@ -10,8 +10,8 @@ IMICRTS::Order.define_handler(IMICRTS::Order::BUILD_UNIT_COMPLETE, arguments: [:
 end
 
 IMICRTS::Order.define_serializer(IMICRTS::Order::BUILD_UNIT_COMPLETE) do |order, director|
-  # Order ID | Player ID
-  # char     | char
+  # Order ID | Player ID | Entity ID
+  # char     | char      | Integer
 
   [IMICRTS::Order::BUILD_UNIT_COMPLETE, order.player_id, order.entity_id].pack("CCN")
 end

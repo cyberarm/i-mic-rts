@@ -37,10 +37,12 @@ IMICRTS::Entity.define_entity(:war_factory, :building, 2_000, 310, "Builds and r
   entity.particle_emitters << IMICRTS::SmokeEmitter.new(position: p2, emitting: false)
 
   entity.on_tick do
-    item = entity.component(:build_queue).queue.first
+    if entity.component(:building).construction_complete?
+      item = entity.component(:build_queue).queue.first
 
-    entity.particle_emitters.each do |pe|
-      pe.emitting = !!item
+      entity.particle_emitters.each do |pe|
+        pe.emitting = !!item
+      end
     end
   end
 end

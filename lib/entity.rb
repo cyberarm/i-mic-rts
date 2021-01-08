@@ -16,7 +16,7 @@ class IMICRTS
 
     attr_reader :director, :player, :id, :name, :type, :data, :proto_entity
     attr_accessor :position, :angle, :radius, :target, :state, :movement, :health, :max_health,
-                  :speed, :turret, :center, :particle_emitters, :color
+                  :speed, :turret, :center, :scale, :particle_emitters, :color
 
     def initialize(name:, player:, id:, position:, angle:, director:, proto_entity: false)
       @player = player
@@ -37,6 +37,8 @@ class IMICRTS
       @target = nil
       @state  = :idle
       @center = CyberarmEngine::Vector.new(0.5, 0.5)
+      @scale  = CyberarmEngine::Vector.new(1, 1)
+      @scale *= 1 / 6.0
       @particle_emitters = []
 
       @components = {}
@@ -136,7 +138,7 @@ class IMICRTS
 
     def draw
       render unless @render
-      @render.draw_rot(@position.x, @position.y, @position.z, @angle, @center.x, @center.y, 1, 1, @color)
+      @render.draw_rot(@position.x, @position.y, @position.z, @angle, @center.x, @center.y, @scale.x, @scale.y, @color)
 
       unless @proto_entity
         @components.values.each(&:draw)

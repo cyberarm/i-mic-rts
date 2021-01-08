@@ -3,6 +3,8 @@ class IMICRTS
     def setup
       data.construction_progress ||= 0
       data.construction_goal ||= Entity.get(@parent.name).build_steps
+      data.construction_complete ||= false
+      data.construction_complete_ordered ||= false
 
       @text = CyberarmEngine::Text.new("", y: @parent.position.y, z: Float::INFINITY, size: 12)
       data.state = :construct # deconstruct, building, idle
@@ -32,7 +34,7 @@ class IMICRTS
     end
 
     def construction_complete?
-      data.construction_progress >= data.construction_goal
+      data.construction_progress >= data.construction_goal && data.construction_complete
     end
 
     # WARNING: returns a floating point number, not network safe!
@@ -44,7 +46,14 @@ class IMICRTS
       raise TypeError, "Got a non integer value!" unless work.is_a?(Integer)
 
       data.construction_progress += work
-      data.construction_progress = data.construction_goal if construction_complete?
+      return unless data.construction_progress > data.construction_goal
+
+      data.construction_progress = data.construction_goal
+
+      unless data.construction_complete_ordered
+        @parent.director.schedule_order(IMICRTS::Order::CONSTRUCTION_COMPLETE, @parent.player.id, @parent.id)
+        data.construction_complete_ordered = true
+      end
     end
 
     def draw_construction

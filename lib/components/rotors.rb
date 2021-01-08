@@ -1,9 +1,10 @@
 class IMICRTS
-  class Turret < Component
-    attr_accessor :angle, :center
+  class Rotors < Component
+    attr_accessor :angle, :speed, :center
 
     def setup
       @angle = 0
+      @speed = 1
       @center = CyberarmEngine::Vector.new(0.5, 0.5)
     end
 
@@ -35,7 +36,7 @@ class IMICRTS
     end
 
     def update
-      @angle = @parent.angle
+      @angle += @speed
     end
   end
 end

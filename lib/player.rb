@@ -12,12 +12,18 @@ class IMICRTS
       @entities = []
       @orders = []
       @camera = Camera.new(viewport: [0, 0, $window.width, $window.height])
+      @last_camera_position = @camera.position.clone
+      @camera_moved = true
+      @camera_move_threshold = 5
 
       @selected_entities = []
       @current_entity_id = 0
     end
 
     def tick(tick_id)
+      @camera_moved = (@last_camera_position - @camera.position.clone).sum > @camera_move_threshold
+      @last_camera_position = @camera.position.clone
+
       @entities.each { |ent| ent.tick(tick_id) }
     end
 
@@ -31,6 +37,10 @@ class IMICRTS
 
     def next_entity_id
       @current_entity_id += 1
+    end
+
+    def camera_moved?
+      @camera_moved
     end
 
     class ScheduledOrder

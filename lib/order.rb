@@ -37,7 +37,7 @@ class IMICRTS
     end
 
     def execute(director, *arguments)
-      pp Order.order_name(id)
+      puts "Executing order: #{Order.order_name(id).inspect} [tick: #{director.current_tick}]" if Setting.enabled?(:debug_mode)
       @handler.call(struct(arguments), director)
     end
 

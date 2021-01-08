@@ -2,7 +2,7 @@ class IMICRTS
   class Director
     attr_reader :current_tick, :map, :game, :players
 
-    def initialize(game:, map:, players: [], networking_mode:, tick_rate: 10, local_game: true)
+    def initialize(game:, map:, players: [], networking_mode:, tick_rate: 10, local_game: true, replay: false)
       @game = game
       @map = map
       @players = players
@@ -10,6 +10,7 @@ class IMICRTS
       @networking_mode = networking_mode
       @tick_rate = tick_rate
       @local_game = local_game
+      @replay = replay
 
       @last_tick_at = Gosu.milliseconds
       @tick_time = 1000.0 / @tick_rate
@@ -18,6 +19,10 @@ class IMICRTS
 
     def local_game?
       @local_game
+    end
+
+    def replay?
+      @replay
     end
 
     def add_player(player)
@@ -40,22 +45,21 @@ class IMICRTS
         player.tick(@current_tick)
 
         # Records where player is looking at tick
-        # record_order(Order::CAMERA_MOVE, player.id, *player.camera.to_a)# if player.camera_moved?
+        schedule_order(Order::CAMERA_MOVE, player.id, *player.camera.to_a) if player.camera_moved?
 
-        player.orders.sort_by {|order| order.tick_id }.each do |order|
+        player.orders.sort_by(&:tick_id).each do |order|
           raise DesyncError, "Have orders from an already processed tick! (#{order.tick_id} < #{current_tick})" if order.tick_id < @current_tick
+          next if order.tick_id > @current_tick
 
-          if _order = Order.get(Integer(order.serialized_order.unpack("C").first))
-            # Chop off Order ID
-            _order_data = order.serialized_order
-            _order_args = _order.deserialize(_order_data[1.._order_data.length - 1], self)
+          raise UndefinedOrderError unless (o = Order.get(Integer(order.serialized_order.unpack1("C"))))
 
-            execute_order(_order.id, *_order_args)
+          # Chop off Order ID
+          order_data = order.serialized_order
+          order_args = o.deserialize(order_data[1..order_data.length - 1], self)
 
-            player.orders.delete(order)
-          else
-            raise UndefinedOrderError
-          end
+          execute_order(o.id, *order_args)
+
+          player.orders.delete(order)
 
           break if order.tick_id > @current_tick
         end
@@ -77,38 +81,22 @@ class IMICRTS
       klass.new(director: self, entity: entity, goal: goal, travels_along: travels_along, allow_diagonal: allow_diagonal)
     end
 
-    def record_order(order_id, *args)
-      if order = Order.get(order_id)
-        struct = order.struct(args)
-
-        scheduled_order = Player::ScheduledOrder.new( order_id, @current_tick + 1, order.serialize(struct, self) )
-        @connection.add_order(scheduled_order)
-        player(struct.player_id).orders.push(scheduled_order)
-      else
-        raise "Undefined order: #{Order.order_name(order_id)}"
-      end
-    end
-
     def schedule_order(order_id, *args)
-      if order = Order.get(order_id)
-        struct = order.struct(args)
+      raise UndefinedOrderError, "Undefined order: #{Order.order_name(order_id)}" unless (order = Order.get(order_id))
 
-        pp Order.order_name(order_id)
+      struct = order.struct(args)
 
-        scheduled_order = Player::ScheduledOrder.new( order_id, @current_tick + 2, order.serialize(struct, self) )
-        @connection.add_order(scheduled_order)
-        player(struct.player_id).orders.push(scheduled_order)
-      else
-        raise "Undefined order: #{Order.order_name(order_id)}"
-      end
+      puts "Issued order: #{Order.order_name(order_id).inspect} [tick: #{@current_tick}]" if Setting.enabled?(:debug_mode)
+
+      scheduled_order = Player::ScheduledOrder.new(order_id, @current_tick + 2, order.serialize(struct, self))
+      @connection.add_order(scheduled_order)
+      player(struct.player_id).orders.push(scheduled_order)
     end
 
     def execute_order(order_id, *args)
-      if order = Order.get(order_id)
-        order.execute(self, *args)
-      else
-        raise "Undefined order: #{Order.order_name(order_id)}"
-      end
+      raise UndefinedOrderError, "Undefined order: #{Order.order_name(order_id)}" unless (order = Order.get(order_id))
+
+      order.execute(self, *args)
     end
 
     def each_tile(vector, entity, &block)

@@ -48,7 +48,7 @@ IMICRTS::Entity.define_entity(:construction_yard, :building, 2_000, 310, "Provid
 
   entity.on_tick do
 
-    if entity.component(:building).data.state == :idle
+    if entity.component(:building).construction_complete?
       item = entity.component(:build_queue).queue.first
 
       entity.particle_emitters.each_with_index do |emitter, i|
