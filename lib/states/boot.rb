@@ -13,7 +13,7 @@ class IMICRTS
       @last_update = Gosu.milliseconds
       @update_interval = 200
 
-      @switcher = CyberarmEngine::Timer.new(3_000) do
+      @switcher = CyberarmEngine::Timer.new(5_000) do
         push_state(MainMenu)
       end
 
@@ -56,7 +56,7 @@ class IMICRTS
       )
 
 
-      @logo.draw(window.width/2 - @logo.width/2, window.height/2 - (@logo.height/3 + 14), 0)
+      @logo.draw(window.width / 2 - @logo.width / 4, window.height / 2 - (@logo.height / 4) + 48, 0, 0.5, 0.5)
 
       @text.draw_text(@status, window.width - (@text.text_width(@status.gsub(".", "")) + @text.text_width("...")), window.height - @text.height, 0)
     end
