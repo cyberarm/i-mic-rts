@@ -6,9 +6,9 @@ tiles = [
   [false, false, false, false, false],
 ]
 
-IMICRTS::Entity.define_entity(:helipad, :building, 1_000, 100, "Builds and rearms aircraft", tiles) do |entity|
+IMICRTS::Entity.define_entity(:helipad, :structure, 1_000, 100, "Builds and rearms aircraft", tiles) do |entity|
   unless entity.proto_entity
-    entity.has(:building)
+    entity.has(:structure)
     entity.has(:waypoint)
     entity.has(:spawner)
     entity.has(:build_queue)

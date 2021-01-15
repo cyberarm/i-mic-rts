@@ -6,9 +6,9 @@ tiles = [
   [false, false, :path, :path, false],
 ]
 
-IMICRTS::Entity.define_entity(:refinery, :building, 1_400, 200, "Generates credits", tiles) do |entity|
+IMICRTS::Entity.define_entity(:refinery, :structure, 1_400, 200, "Generates credits", tiles) do |entity|
   unless entity.proto_entity
-    entity.has(:building)
+    entity.has(:structure)
   end
 
   entity.radius = 44
@@ -28,7 +28,7 @@ IMICRTS::Entity.define_entity(:refinery, :building, 1_400, 200, "Generates credi
   entity.particle_emitters << IMICRTS::SmokeEmitter.new(position: p1, emitting: false)
 
   entity.on_tick do
-    if entity.component(:building).data.state == :idle
+    if entity.component(:structure).data.state == :idle
 
       entity.particle_emitters.each do |emitter|
         emitter.emitting = true

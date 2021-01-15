@@ -1,7 +1,7 @@
 IMICRTS::Order.define_handler(IMICRTS::Order::CONSTRUCTION_COMPLETE, arguments: [:player_id, :entity_id]) do |order, director|
   entity = director.player(order.player_id).entity(order.entity_id)
 
-  entity.component(:building).data.construction_complete = true
+  entity.component(:structure).data.construction_complete = true
 end
 
 IMICRTS::Order.define_serializer(IMICRTS::Order::CONSTRUCTION_COMPLETE) do |order, director|

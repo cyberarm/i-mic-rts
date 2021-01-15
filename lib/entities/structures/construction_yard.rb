@@ -6,9 +6,9 @@ tiles = [
   [false, :path, :path, :path, false],
 ]
 
-IMICRTS::Entity.define_entity(:construction_yard, :building, 2_000, 310, "Provides radar and builds construction workers", tiles) do |entity|
+IMICRTS::Entity.define_entity(:construction_yard, :structure, 2_000, 310, "Provides radar and builds construction workers", tiles) do |entity|
   unless entity.proto_entity
-    entity.has(:building)
+    entity.has(:structure)
     entity.has(:waypoint)
     entity.has(:spawner)
     entity.has(:build_queue)
@@ -48,7 +48,7 @@ IMICRTS::Entity.define_entity(:construction_yard, :building, 2_000, 310, "Provid
 
   entity.on_tick do
 
-    if entity.component(:building).construction_complete?
+    if entity.component(:structure).construction_complete?
       item = entity.component(:build_queue).queue.first
 
       entity.particle_emitters.each_with_index do |emitter, i|

@@ -5,7 +5,7 @@ class IMICRTS
 
       return unless item
 
-      item.progress += 1 if @parent.component(:building).construction_complete?
+      item.progress += 1 if @parent.component(:structure).construction_complete?
 
       return unless item.progress >= item.entity.build_steps && !item.completed
 

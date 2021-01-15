@@ -6,9 +6,9 @@ tiles = [
   [false, :path, :path, :path, false],
 ]
 
-IMICRTS::Entity.define_entity(:barracks, :building, 400, 40, "Builds and heals soldiers", tiles) do |entity|
+IMICRTS::Entity.define_entity(:barracks, :structure, 400, 40, "Builds and heals soldiers", tiles) do |entity|
   unless entity.proto_entity
-    entity.has(:building)
+    entity.has(:structure)
     entity.has(:waypoint)
     entity.has(:spawner)
     entity.has(:build_queue)

@@ -1,5 +1,5 @@
 class IMICRTS
-  class Building < Component
+  class Structure < Component
     def setup
       data.construction_progress ||= 0
       data.construction_goal ||= Entity.get(@parent.name).build_steps
@@ -18,7 +18,7 @@ class IMICRTS
         @text.x = @parent.position.x - @text.width / 2
         @text.draw
       when :deconstruct
-      when :building
+      when :structure
       when :idle
       else
         raise "Unknown state!"

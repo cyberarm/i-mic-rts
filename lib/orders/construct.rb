@@ -1,13 +1,13 @@
-IMICRTS::Order.define_handler(IMICRTS::Order::CONSTRUCT, arguments: [:player_id, :vector, :building]) do |order, director|
+IMICRTS::Order.define_handler(IMICRTS::Order::CONSTRUCT, arguments: [:player_id, :vector, :structure]) do |order, director|
   tile = director.map.tile_at(order.vector.x, order.vector.y)
   position = tile.position + director.map.tile_size / 2
 
   ent = director.spawn_entity(
-    player_id: order.player_id, name: order.building,
+    player_id: order.player_id, name: order.structure,
     position: CyberarmEngine::Vector.new(position.x, position.y, IMICRTS::ZOrder::BUILDING)
   )
 
-  director.each_tile(order.vector, order.building) do |tile, space_required|
+  director.each_tile(order.vector, order.structure) do |tile, space_required|
     if space_required == true
       tile.entity = ent
     else
@@ -24,7 +24,7 @@ IMICRTS::Order.define_serializer(IMICRTS::Order::CONSTRUCT) do |order, director|
   # Order ID | Player ID | Vector X | Vector Y | Entity Name
   # char     | char      | integer  | integer  | string
 
-  [IMICRTS::Order::CONSTRUCT, order.player_id, order.vector.x, order.vector.y, order.building.to_s].pack("CCNNA*")
+  [IMICRTS::Order::CONSTRUCT, order.player_id, order.vector.x, order.vector.y, order.structure.to_s].pack("CCNNA*")
 end
 
 IMICRTS::Order.define_deserializer(IMICRTS::Order::CONSTRUCT) do |string, director|

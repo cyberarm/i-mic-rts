@@ -6,9 +6,9 @@ tiles = [
   [false, false, :path, false, false],
 ]
 
-IMICRTS::Entity.define_entity(:power_plant, :building, 800, 45, "Generates power", tiles) do |entity|
+IMICRTS::Entity.define_entity(:power_plant, :structure, 800, 45, "Generates power", tiles) do |entity|
   unless entity.proto_entity
-    entity.has(:building)
+    entity.has(:structure)
   end
 
   entity.radius = 24
@@ -37,7 +37,7 @@ IMICRTS::Entity.define_entity(:power_plant, :building, 800, 45, "Generates power
   entity.on_tick do
     # entity.produce_power
 
-    if entity.component(:building).construction_complete?
+    if entity.component(:structure).construction_complete?
       entity.particle_emitters.each do |emitter|
         emitter.emitting = true
       end

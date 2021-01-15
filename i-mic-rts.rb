@@ -6,10 +6,10 @@ rescue LoadError
   require "cyberarm_engine"
 end
 
-require "nokogiri"
-
 require "json"
 require "socket"
+
+require "nokogiri"
 
 require_relative "lib/exts/string"
 

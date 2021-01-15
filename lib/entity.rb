@@ -162,7 +162,7 @@ class IMICRTS
 
       data.assigned_construction_workers ||= 1
       data.construction_speed ||= 1
-      component(:building).construction_work(data.assigned_construction_workers * data.construction_speed) if component(:building)
+      component(:structure).construction_work(data.assigned_construction_workers * data.construction_speed) if component(:structure)
     end
 
     def on_tick(&block)
