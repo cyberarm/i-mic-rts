@@ -13,6 +13,8 @@ IMICRTS::Entity.define_entity(:helipad, :structure, 1_000, 100, "Builds and rear
     entity.has(:spawner)
     entity.has(:build_queue)
     entity.has(:sidebar_actions)
+
+    entity.component(:spawner).spawnpoint = entity.position.clone
     entity.component(:sidebar_actions).add(:add_to_build_queue, { entity: :helicopter })
   end
 

@@ -1,6 +1,7 @@
 class IMICRTS
   class Map
     attr_reader :tile_size, :tiles, :ores, :spawnpoints, :width, :height
+
     def initialize(map_file:)
       @tiled_map = TiledMap.new(map_file)
 
@@ -26,11 +27,10 @@ class IMICRTS
     end
 
     def add_terrain(x, y, tile_id)
-      if tile = @tiled_map.get_tile(tile_id - 1)
+      if (tile = @tiled_map.get_tile(tile_id - 1))
         _tile = Tile.new(
           position: CyberarmEngine::Vector.new(x * @tile_size, y * @tile_size, ZOrder::TILE),
           image: tile.image,
-          visible: true,
           type: tile.data.type.to_sym,
           tile_size: @tile_size
         )
@@ -43,11 +43,10 @@ class IMICRTS
     end
 
     def add_ore(x, y, tile_id)
-      if tile = @tiled_map.get_tile(tile_id - 1)
+      if (tile = @tiled_map.get_tile(tile_id - 1))
         _ore = Tile.new(
           position: CyberarmEngine::Vector.new(x * @tile_size, y * @tile_size, ZOrder::ORE),
           image: tile.image,
-          visible: true,
           type: nil,
           tile_size: @tile_size
         )
@@ -57,8 +56,8 @@ class IMICRTS
       end
     end
 
-    def draw(camera)
-      visible_tiles(camera).each do |tile|
+    def draw(observer)
+      visible_tiles(observer).each do |tile|
         tile.image.draw(tile.position.x, tile.position.y, tile.position.z)
       end
     end
@@ -84,10 +83,11 @@ class IMICRTS
       end
     end
 
-    def visible_tiles(camera)
+    def visible_tiles(observer)
       _tiles = []
+      visiblity_map = observer.visiblity_map
 
-      top_left = (camera.center - camera.position) - CyberarmEngine::Vector.new($window.width / 2, $window.height / 2) / camera.zoom
+      top_left = (observer.camera.center - observer.camera.position) - CyberarmEngine::Vector.new($window.width / 2, $window.height / 2) / observer.camera.zoom
       top_left /= @tile_size
 
       top_left.x = top_left.x.floor
@@ -95,8 +95,8 @@ class IMICRTS
 
 
       # +1 to overdraw a bit to hide pop-in
-      _width  = ((($window.width / @tile_size)  + 2) / camera.zoom).ceil
-      _height = ((($window.height / @tile_size) + 2) / camera.zoom).ceil
+      _width  = ((($window.width / @tile_size)  + 2) / observer.camera.zoom).ceil
+      _height = ((($window.height / @tile_size) + 2) / observer.camera.zoom).ceil
 
       _height.times do |y|
         _width.times do |x|
@@ -104,12 +104,14 @@ class IMICRTS
           next if _x < 0 || _x > @width
           next if _y < 0 || _y > @height
 
-          if tile = tile_at(_x, _y)
-            _tiles.push(tile) if tile.visible
+          visible = visiblity_map.visible?(_x, _y)
+
+          if (tile = tile_at(_x, _y))
+            _tiles.push(tile) if visible
           end
 
-          if ore = ore_at(_x, _y)
-            _tiles.push(ore) if ore.visible
+          if (ore = ore_at(_x, _y))
+            _tiles.push(ore) if visible
           end
         end
       end
@@ -130,15 +132,15 @@ class IMICRTS
     end
 
     class Tile
-      attr_accessor :position, :grid_position, :image, :visible, :entity, :reserved, :type
-      def initialize(position:, image:, visible:, type:, tile_size:)
+      attr_accessor :position, :grid_position, :image, :entity, :reserved, :type
+
+      def initialize(position:, image:, type:, tile_size:)
         @position = position
         @grid_position = position.clone
         @grid_position /= tile_size
         @grid_position.x, @grid_position.y = @grid_position.x.floor, @grid_position.y.floor
 
         @image = image
-        @visible = visible
         @entity = nil
         @reserved = nil
         @type = type

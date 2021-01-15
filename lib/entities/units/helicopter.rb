@@ -6,6 +6,7 @@ IMICRTS::Entity.define_entity(:helicopter, :unit, 400, 40, "Attacks ground targe
   entity.radius = 14
   entity.movement = :air
   entity.max_health = 100.0
+  entity.position.z = IMICRTS::ZOrder::AIR_VEHICLE
 
   entity.body_image = "vehicles/helicopter/helicopter.png"
   entity.shell_image = "vehicles/helicopter/helicopter_shell.png"

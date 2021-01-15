@@ -13,12 +13,18 @@ class IMICRTS
 
       @director = Director.new(game: self, map: @options[:map], networking_mode: @options[:networking_mode])
       @options[:players] ||= [
-        { id: 0, team: 1, spawnpoint: @director.map.spawnpoints.last, color: :orange },
-        { id: 1, team: 2, spawnpoint: @director.map.spawnpoints.first, color: :lightblue }
+        { id: 0, team: 1, spawnpoint: @director.map.spawnpoints.last, color: :orange, bot: false },
+        { id: 1, team: 2, spawnpoint: @director.map.spawnpoints.first, color: :lightblue, bot: :brutal }
       ]
 
       @options[:players].each do |pl|
-        player = Player.new(id: pl[:id], spawnpoint: pl[:spawnpoint], team: pl[:team], color: TeamColors[pl[:color]])
+        player = nil
+        visiblity_map = VisibilityMap.new(width: @director.map.width, height: @director.map.height, tile_size: @director.map.tile_size)
+        unless pl[:bot]
+          player = Player.new(id: pl[:id], spawnpoint: pl[:spawnpoint], team: pl[:team], color: TeamColors[pl[:color]], visiblity_map: visiblity_map)
+        else
+          player = AIPlayer.new(id: pl[:id], spawnpoint: pl[:spawnpoint], team: pl[:team], color: TeamColors[pl[:color]], bot: pl[:bot], visiblity_map: visiblity_map)
+        end
         @player = player if player.id == @options[:local_player_id]
         @director.add_player(player)
       end
@@ -82,7 +88,7 @@ class IMICRTS
       super
 
       @player.camera.draw do
-        @director.map.draw(@player.camera)
+        @director.map.draw(@player)
         @director.entities.each(&:draw)
         @selected_entities.each(&:selected_draw)
 

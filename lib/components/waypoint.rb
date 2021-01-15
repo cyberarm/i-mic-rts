@@ -2,7 +2,7 @@ class IMICRTS
   class Waypoint < Component
     def setup
       @waypoint = @parent.position.clone
-      @waypoint.y += @parent.director.map.tile_size
+      @waypoint.y += @parent.director.map.tile_size * 2
       @waypoint_color = 0xffffff00
     end
 

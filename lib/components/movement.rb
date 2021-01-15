@@ -17,6 +17,16 @@ class IMICRTS
       end
     end
 
+    def on_order(type, order)
+      case type
+      when IMICRTS::Order::MOVE
+        @parent.target = order.vector
+      when IMICRTS::Order::STOP
+        @parent.target = nil
+        @pathfinder = nil
+      end
+    end
+
     def rotate_towards(vector)
       angle = Gosu.angle(@parent.position.x, @parent.position.y, vector.x, vector.y)
       a = (360.0 + (angle - @parent.angle)) % 360.0
@@ -34,7 +44,7 @@ class IMICRTS
     end
 
     def follow_path
-      if @pathfinder && node = @pathfinder.path_current_node
+      if @pathfinder && (node = @pathfinder.path_current_node)
         @pathfinder.path_next_node if @pathfinder.at_current_path_node?(@parent)
         @parent.position -= (@parent.position.xy - (node.tile.position + @parent.director.map.tile_size / 2).xy).normalized * @parent.speed
       end

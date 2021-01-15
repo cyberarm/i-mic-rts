@@ -1,6 +1,6 @@
 IMICRTS::Order.define_handler(IMICRTS::Order::STOP, arguments: [:player_id]) do |order, director|
   director.player(order.player_id).selected_entities.each do |entity|
-    entity.target = nil
+    entity.handle_order(IMICRTS::Order::STOP, order)
   end
 end
 

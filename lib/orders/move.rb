@@ -1,6 +1,6 @@
 IMICRTS::Order.define_handler(IMICRTS::Order::MOVE, arguments: [:player_id, :vector]) do |order, director|
   director.player(order.player_id).selected_entities.each do |entity|
-    entity.target = order.vector
+    entity.handle_order(IMICRTS::Order::MOVE, order)
   end
 end
 

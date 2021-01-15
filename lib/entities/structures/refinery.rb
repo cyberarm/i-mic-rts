@@ -35,4 +35,15 @@ IMICRTS::Entity.define_entity(:refinery, :structure, 1_400, 200, "Generates cred
       end
     end
   end
+
+  entity.on_order do |type, order|
+    case type
+    when IMICRTS::Order::CONSTRUCTION_COMPLETE
+      pos = entity.position.clone
+      pos.x += 32
+      pos.y += 64
+
+      entity.director.spawn_entity(player_id: entity.player.id, name: :harvester, position: pos)
+    end
+  end
 end

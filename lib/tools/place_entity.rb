@@ -48,24 +48,11 @@ class IMICRTS
       return if @game.sidebar.hit?(@game.window.mouse_x, @game.window.mouse_y)
 
       tile = @director.map.tile_at(vector.x, vector.y)
-      pp vector
+
       return unless tile
       position = tile.position + @director.map.tile_size / 2
 
-      # ent = @director.spawn_entity(
-      #   player_id: @player.id, name: @entity,
-      #   position: CyberarmEngine::Vector.new(position.x, position.y, ZOrder::BUILDING)
-      # )
-
       @director.schedule_order(Order::CONSTRUCT, @player.id, vector, @entity)
-
-      # each_tile(vector) do |tile, space_required|
-      #   if space_required == true
-      #     tile.entity = ent
-      #   else
-      #     tile.reserved = ent
-      #   end
-      # end
 
       cancel_tool
     end

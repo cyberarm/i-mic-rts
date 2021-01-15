@@ -33,6 +33,13 @@ class IMICRTS
       end
     end
 
+    def on_order(type, order)
+      case type
+      when IMICRTS::Order::CONSTRUCTION_COMPLETE
+        data.construction_complete = true
+      end
+    end
+
     def construction_complete?
       data.construction_progress >= data.construction_goal && data.construction_complete
     end

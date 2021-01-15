@@ -15,7 +15,7 @@ class IMICRTS
     end
 
     attr_reader :director, :player, :id, :name, :type, :data, :proto_entity
-    attr_accessor :position, :angle, :radius, :target, :state, :movement, :health, :max_health,
+    attr_accessor :position, :angle, :sight_radius, :range_radius, :radius, :target, :state, :movement, :health, :max_health,
                   :speed, :turret, :center, :scale, :particle_emitters, :color
 
     def initialize(name:, player:, id:, position:, angle:, director:, proto_entity: false)
@@ -167,6 +167,18 @@ class IMICRTS
 
     def on_tick(&block)
       @on_tick = block
+    end
+
+    def on_order(&block)
+      @on_order = block
+    end
+
+    def handle_order(type, order)
+      @components.each do |key, comp|
+        comp.on_order(type, order)
+      end
+
+      @on_order&.call(type, order)
     end
 
     def selected_draw

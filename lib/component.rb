@@ -44,6 +44,9 @@ class IMICRTS
 
     def tick(tick_id)
     end
+
+    def on_order(type, order)
+    end
   end
 end
 
