@@ -1,9 +1,7 @@
 # I-MIC RTS
 Building a Command & Conquer style RTS in Ruby
 
-### Status
-* Can load Tiled maps
-* Can render vehicles
+![In Game Screenshot](https://raw.githubusercontent.com/cyberarm/i-mic-rts/master/screenshots/screenshot-game.png)
 
 ## Using
 * Clone or Download this repository
