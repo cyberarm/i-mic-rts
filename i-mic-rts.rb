@@ -8,6 +8,7 @@ end
 
 require "json"
 require "socket"
+require "digest/sha2"
 
 require "nokogiri"
 
@@ -20,6 +21,7 @@ require_relative "lib/camera"
 require_relative "lib/setting"
 require_relative "lib/team_colors"
 require_relative "lib/constants"
+require_relative "lib/game_save"
 
 require_relative "lib/states/boot"
 require_relative "lib/states/game"

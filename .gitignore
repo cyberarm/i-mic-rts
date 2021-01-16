@@ -1,5 +1,5 @@
 data/settings.json
-data/replays/*.replay
-data/saves/*.save
+data/replays/*.dat
+data/saves/*.dat
 doc/
 .yardoc/

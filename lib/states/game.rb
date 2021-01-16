@@ -11,23 +11,25 @@ class IMICRTS
       @options[:map] ||= Map.new(map_file: "maps/test_map.tmx")
       @options[:local_player_id] ||= 0
 
-      @director = Director.new(game: self, map: @options[:map], networking_mode: @options[:networking_mode])
       @options[:players] ||= [
-        { id: 0, team: 1, spawnpoint: @director.map.spawnpoints.last, color: :orange, bot: false },
-        { id: 1, team: 2, spawnpoint: @director.map.spawnpoints.first, color: :lightblue, bot: :brutal }
+        { id: 0, name: "0xdeadbeef", team: 1, spawnpoint: "B", color: :orange, bot: false },
+        { id: 1, name: "BrutalAI", team: 2, spawnpoint: "A", color: :lightblue, bot: :brutal }
       ]
 
-      @options[:players].each do |pl|
+      players = @options[:players].map do |pl|
         player = nil
-        visiblity_map = VisibilityMap.new(width: @director.map.width, height: @director.map.height, tile_size: @director.map.tile_size)
+        visiblity_map = VisibilityMap.new(width: @options[:map].width, height: @options[:map].height, tile_size: @options[:map].tile_size)
         unless pl[:bot]
-          player = Player.new(id: pl[:id], spawnpoint: pl[:spawnpoint], team: pl[:team], color: TeamColors[pl[:color]], visiblity_map: visiblity_map)
+          player = Player.new(id: pl[:id], name: pl[:name], spawnpoint: pl[:spawnpoint], team: pl[:team], color: TeamColors[pl[:color]], visiblity_map: visiblity_map)
         else
-          player = AIPlayer.new(id: pl[:id], spawnpoint: pl[:spawnpoint], team: pl[:team], color: TeamColors[pl[:color]], bot: pl[:bot], visiblity_map: visiblity_map)
+          player = AIPlayer.new(id: pl[:id], name: pl[:name], spawnpoint: pl[:spawnpoint], team: pl[:team], color: TeamColors[pl[:color]], bot: pl[:bot], visiblity_map: visiblity_map)
         end
         @player = player if player.id == @options[:local_player_id]
-        @director.add_player(player)
+
+        player
       end
+
+      @director = Director.new(game: self, players: players, map: @options[:map], networking_mode: @options[:networking_mode])
 
       @selected_entities = []
       @tool = set_tool(:entity_controller)
@@ -61,9 +63,11 @@ class IMICRTS
       end
 
       @director.players.each do |player|
+        spawnpoint = @director.map.spawnpoints[player.spawnpoint.bytes.first - 65]
+
         construction_yard = @director.spawn_entity(
           player_id: player.id, name: :construction_yard,
-          position: CyberarmEngine::Vector.new(player.spawnpoint.x, player.spawnpoint.y, ZOrder::BUILDING)
+          position: CyberarmEngine::Vector.new(spawnpoint.x, spawnpoint.y, ZOrder::BUILDING)
         )
         construction_yard.component(:structure).data.construction_progress = Entity.get(construction_yard.name).build_steps
         construction_yard.component(:structure).data.construction_complete = true
@@ -77,7 +81,7 @@ class IMICRTS
 
         @director.spawn_entity(
           player_id: player.id, name: :construction_worker,
-          position: CyberarmEngine::Vector.new(player.spawnpoint.x - 64, player.spawnpoint.y + 64, ZOrder::GROUND_VEHICLE)
+          position: CyberarmEngine::Vector.new(construction_yard.position.x - 64, construction_yard.position.y + 64, ZOrder::GROUND_VEHICLE)
         )
       end
 

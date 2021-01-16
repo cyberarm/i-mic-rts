@@ -2,7 +2,7 @@ class IMICRTS
   class Director
     attr_reader :current_tick, :map, :game, :players
 
-    def initialize(game:, map:, players: [], networking_mode:, tick_rate: 10, local_game: true, replay: false)
+    def initialize(game:, map:, players:, networking_mode:, tick_rate: 15, local_game: true, replay: false, game_save: false, gamesave_file: nil)
       @game = game
       @map = map
       @players = players
@@ -11,6 +11,10 @@ class IMICRTS
       @tick_rate = tick_rate
       @local_game = local_game
       @replay = replay
+      @game_save = game_save
+      @gamesave_file = gamesave_file ? gamesave_file : "#{IMICRTS::GAME_ROOT_PATH}/data/saves/savegame_#{Time.now.to_i}.dat"
+      @game_save_host = GameSave.new(mode: :write, gamesave_file: @gamesave_file, players: players, map_file: @map.map_file, gamesave: true)
+      @game_save_host.write_header
 
       @last_tick_at = Gosu.milliseconds
       @tick_time = 1000.0 / @tick_rate
@@ -25,8 +29,8 @@ class IMICRTS
       @replay
     end
 
-    def add_player(player)
-      @players << player
+    def game_save?
+      @game_save
     end
 
     def update
@@ -35,6 +39,7 @@ class IMICRTS
 
         tick
         @connection.update
+        @game_save_host&.feed_tick(@current_tick) if @replay
       end
 
       @players.each { |player| player.update }
@@ -58,6 +63,7 @@ class IMICRTS
           order_args = o.deserialize(order_data[1..order_data.length - 1], self)
 
           execute_order(o.id, *order_args)
+          @game_save_host&.write_order(order_data) unless @replay
 
           player.orders.delete(order)
 
@@ -140,6 +146,7 @@ class IMICRTS
     def finalize
       @server&.stop
       @connection&.finalize
+      @game_save_host&.finalize
     end
   end
 end
