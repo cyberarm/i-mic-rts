@@ -80,8 +80,8 @@ class IMICRTS
             save_playerdata
 
             players = [
-              { id: 0, team: @player_team.value.to_i, spawnpoint: @map.spawnpoints.last, color: @player_color.value.to_sym },
-              { id: 1, team: 2, spawnpoint: @map.spawnpoints.first, color: :lightblue }
+              { id: 0, team: @player_team.value.to_i, spawnpoint: @player_position.value, color: @player_color.value.to_sym, bot: false },
+              { id: 1, team: 2, spawnpoint: @player_position.value == "A" ? "B" : "A", color: :lightblue, bot: :brutal }
             ]
 
             push_state(Game, networking_mode: :virtual, map: @map, players: players)
