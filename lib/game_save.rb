@@ -9,6 +9,7 @@ class IMICRTS
       @player_id = player_id
 
       @version = IMICRTS::VERSION
+      @map_file_digest = Digest::SHA256.digest(File.read("#{IMICRTS::GAME_ROOT_PATH}/assets/#{@map_file}")) if @map_file
     end
 
     def parse
@@ -32,7 +33,7 @@ class IMICRTS
       end
 
 s = %{#{@version}
-#{@map_file}?#{Digest::SHA256.digest(File.read("#{IMICRTS::GAME_ROOT_PATH}/assets/#{@map_file}"))}
+#{@map_file}?#{@map_file_digest}
 #{@gamesave ? "GAMESAVE?#{@player_id}" : "REPLAY"}
 #{JSON.dump(player_data)}}
 

@@ -22,7 +22,10 @@ class IMICRTS
               label "Color"
               @player_color = list_box items: TeamColors.keys, choose: Setting.get(:player_color).to_sym, width: 1.0
               @player_color.style.background = (TeamColors[@player_color.value.to_sym])
+              @player_color.style.default[:background] = (TeamColors[@player_color.value.to_sym])
               @player_color.style.color = Gosu::Color.new(@player_color.style.background&.gl).value > 0.9 ? Gosu::Color::BLACK : Gosu::Color::WHITE
+              @player_color.style.default[:color] = Gosu::Color.new(@player_color.style.background&.gl).value > 0.9 ? Gosu::Color::BLACK : Gosu::Color::WHITE
+
               @player_color.subscribe(:changed) do |sender, value|
                 @player_color.style.background = TeamColors[value.to_sym]
                 @player_color.style.color = Gosu::Color.new(@player_color.style.background&.gl).value > 0.9 ? Gosu::Color::BLACK : Gosu::Color::WHITE
@@ -32,10 +35,14 @@ class IMICRTS
               7.times do |i|
                 box = list_box items: TeamColors.keys, choose: TeamColors.keys[i + 1], width: 1.0
                 box.style.background = (TeamColors[box.value.to_sym])
+                box.style.default[:background] = (TeamColors[box.value.to_sym])
                 box.style.color = Gosu::Color.new(box.style.background&.gl).value > 0.9 ? Gosu::Color::BLACK : Gosu::Color::WHITE
+                box.style.default[:color] = Gosu::Color.new(box.style.background&.gl).value > 0.9 ? Gosu::Color::BLACK : Gosu::Color::WHITE
                 box.subscribe(:changed) do |sender, value|
                   box.style.background = TeamColors[value.to_sym]
+                  box.style.default[:background] = TeamColors[value.to_sym]
                   box.style.color = Gosu::Color.new(box.style.background&.gl).value > 0.9 ? Gosu::Color::BLACK : Gosu::Color::WHITE
+                  box.style.default[:color] = Gosu::Color.new(box.style.background&.gl).value > 0.9 ? Gosu::Color::BLACK : Gosu::Color::WHITE
                   :handled
                 end
               end
