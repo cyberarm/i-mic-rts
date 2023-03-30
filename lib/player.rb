@@ -14,7 +14,7 @@ class IMICRTS
 
       @entities = []
       @orders = []
-      @camera = Camera.new(viewport: [0, 0, $window.width, $window.height])
+      @camera = Camera.new
       @last_camera_position = @camera.position.clone
       @camera_moved = true
       @camera_move_threshold = 5
@@ -27,7 +27,10 @@ class IMICRTS
       @camera_moved = (@last_camera_position - @camera.position.clone).sum > @camera_move_threshold
       @last_camera_position = @camera.position.clone
 
-      @entities.each { |ent| ent.tick(tick_id); @visiblity_map.update(ent) }
+      @entities.each do |ent|
+        ent.tick(tick_id)
+        @visiblity_map.update(ent)
+      end
     end
 
     def update

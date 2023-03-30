@@ -87,7 +87,7 @@ class IMICRTS
     end
 
     def update
-      @position -= (@direction * @speed) * $window.dt
+      @position -= (@direction * @speed) * CyberarmEngine::Window.dt
     end
 
     def die?

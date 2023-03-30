@@ -1,5 +1,7 @@
 class IMICRTS
   class Map
+    include CyberarmEngine::Common
+
     attr_reader :tile_size, :tiles, :ores, :spawnpoints, :width, :height, :map_file
 
     def initialize(map_file:)
@@ -88,7 +90,7 @@ class IMICRTS
       _tiles = []
       visiblity_map = observer.visiblity_map
 
-      top_left = (observer.camera.center - observer.camera.position) - CyberarmEngine::Vector.new($window.width / 2, $window.height / 2) / observer.camera.zoom
+      top_left = (observer.camera.center - observer.camera.position) - CyberarmEngine::Vector.new(window.width / 2, window.height / 2) / observer.camera.zoom
       top_left /= @tile_size
 
       top_left.x = top_left.x.floor
@@ -96,8 +98,8 @@ class IMICRTS
 
 
       # +1 to overdraw a bit to hide pop-in
-      _width  = ((($window.width / @tile_size)  + 2) / observer.camera.zoom).ceil
-      _height = ((($window.height / @tile_size) + 2) / observer.camera.zoom).ceil
+      _width  = (((window.width / @tile_size)  + 2) / observer.camera.zoom).ceil
+      _height = (((window.height / @tile_size) + 2) / observer.camera.zoom).ceil
 
       _height.times do |y|
         _width.times do |x|

@@ -1,8 +1,10 @@
 class IMICRTS
   class Camera
+    include CyberarmEngine::Common
+
     attr_reader :viewport, :position, :velocity, :zoom, :drag
 
-    def initialize(viewport:, scroll_speed: 10, position: CyberarmEngine::Vector.new(0.0, 0.0))
+    def initialize(viewport: [0, 0, window.width, window.height], scroll_speed: 10, position: CyberarmEngine::Vector.new(0.0, 0.0))
       @viewport = CyberarmEngine::BoundingBox.new(viewport[0], viewport[1], viewport[2], viewport[3])
       @scroll_speed = scroll_speed
       @position = position
@@ -14,10 +16,6 @@ class IMICRTS
 
       @drag = 0.8 # Used to arrest velocity
       @grab_drag = 0.5 # Used when camera is panned using middle mouse button
-    end
-
-    def window;
-      $window;
     end
 
     def draw(&block)
